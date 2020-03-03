@@ -11,7 +11,7 @@ different environments, including:
 *   [Cloud Run and Cloud Run on GKE](https://cloud.google.com/run/)
 *   [Knative](https://github.com/knative/)-based environments
 
-## Installation
+## Prerequisites
 
 The Functions Framework for .NET requires the [.NET Core SDK 3.1](https://dotnet.microsoft.com/download).
 
@@ -20,16 +20,16 @@ The Functions Framework for .NET requires the [.NET Core SDK 3.1](https://dotnet
 First, install the template package into the .NET tooling:
 
 ```sh
-$ dotnet new -i Google.Cloud.Functions.Templates::1.0.0-alpha01
+dotnet new -i Google.Cloud.Functions.Templates::1.0.0-alpha01
 ```
 
 Next, create a directory for your project, and use `dotnet new` to
 create a new HTTP function:
 
 ```sh
-$ mkdir HelloFunctions
-$ cd HelloFunctions
-$ dotnet new gcf-http
+mkdir HelloFunctions
+cd HelloFunctions
+dotnet new gcf-http
 ```
 
 That will create `HelloFunctions.csproj` and `Function.cs` in
@@ -46,7 +46,7 @@ There are two ways of specifying this:
 - Passing it on the command line as the first argument to the program
 
 ```sh
-$ dotnet run HelloFunctions.Function
+dotnet run HelloFunctions.Function
 ```
 
 The default port is 8080; this can be changed with the `PORT`

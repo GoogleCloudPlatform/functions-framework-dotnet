@@ -5,5 +5,9 @@
     <OutputType>Library</OutputType>
     <Version>1.0.0-alpha01</Version>
     <IsPackable>True</IsPackable>
+    <Title>Google Cloud Functions Framework</Title>
+    <Authors>Google LLC</Authors>
+    <Description>Google Cloud Functions Framework</Description>
+    <PackageTags>google;cloud;functions</PackageTags>
   </PropertyGroup>
 </Project>

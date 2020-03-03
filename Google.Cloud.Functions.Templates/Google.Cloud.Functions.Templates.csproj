@@ -4,7 +4,7 @@
     <PackageType>Template</PackageType>
     <PackageVersion>1.0.0-alpha01</PackageVersion>
     <Title>Templates for Google Cloud Functions Framework</Title>
-    <Authors>Google Inc.</Authors>
+    <Authors>Google LLC</Authors>
     <Description>Templates for Google Cloud Functions Framework</Description>
     <PackageTags>dotnet-new;templates;google;cloud;functions</PackageTags>
     <TargetFramework>netstandard2.0</TargetFramework>
