@@ -1,0 +1,9 @@
+language: csharp
+mono: none
+dotnet: 3.1
+dist: xenial
+
+# No tests yet, but let's just check it builds correctly.
+script:
+  - dotnet build
+  - dotnet pack
