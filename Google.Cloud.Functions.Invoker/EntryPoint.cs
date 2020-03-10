@@ -33,6 +33,16 @@ namespace Google.Cloud.Functions.Invoker
     public static class EntryPoint
     {
         /// <summary>
+        /// The environment variable used to detect the function target name, when not otherwise provided.
+        /// </summary>
+        public const string FunctionTargetEnvironmentVariable = "FUNCTION_TARGET";
+
+        /// <summary>
+        /// The environment variable used to detect the port to listen on.
+        /// </summary>
+        public const string PortEnvironmentVariable = "PORT";
+
+        /// <summary>
         /// Starts a web server to serve the function in the specified assembly. This method is called
         /// automatically be the generated entry point.
         /// </summary>
@@ -61,7 +71,7 @@ namespace Google.Cloud.Functions.Invoker
         private static RequestDelegate BuildHandler(Assembly functionAssembly, string[] args)
         {
             // TODO: Better command line parsing, e.g. --target=xyz --port=5000
-            var target = args.FirstOrDefault() ?? Environment.GetEnvironmentVariable("FUNCTION_NAME");
+            var target = args.FirstOrDefault() ?? Environment.GetEnvironmentVariable(FunctionTargetEnvironmentVariable);
             if (string.IsNullOrEmpty(target))
             {
                 throw new Exception("No target provided");
@@ -81,12 +91,12 @@ namespace Google.Cloud.Functions.Invoker
 
         private static int DeterminePort(string[] args)
         {
-            var environmentVariable = Environment.GetEnvironmentVariable("PORT");
+            var environmentVariable = Environment.GetEnvironmentVariable(PortEnvironmentVariable);
             if (!string.IsNullOrEmpty(environmentVariable))
             {
                 if (!int.TryParse(environmentVariable, NumberStyles.None, CultureInfo.InvariantCulture, out var parsed))
                 {
-                    throw new Exception($"Can't part PORT environment variable '{environmentVariable}'");
+                    throw new Exception($"Can't parse {PortEnvironmentVariable} environment variable value '{environmentVariable}'");
                 }
                 return parsed;
             }

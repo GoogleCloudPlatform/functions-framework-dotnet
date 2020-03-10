@@ -42,7 +42,7 @@ The Functions Framework needs to know the target function to run.
 This is the name of the class implementing `IHttpFunction` (and other interfaces later).
 There are two ways of specifying this:
 
-- Using the `FUNCTION_NAME` environment variable
+- Using the `FUNCTION_TARGET` environment variable
 - Passing it on the command line as the first argument to the program
 
 ```sh
