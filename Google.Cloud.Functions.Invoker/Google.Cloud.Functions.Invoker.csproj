@@ -19,6 +19,9 @@
     <PackageProjectUrl>https://github.com/GoogleCloudPlatform/functions-framework-dotnet</PackageProjectUrl>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/GoogleCloudPlatform/functions-framework-dotnet</RepositoryUrl>
+
+    <!-- Stop Visual Studio adding a launchSettings.properties file -->
+    <NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>
   </PropertyGroup>
 
   <ItemGroup>    
