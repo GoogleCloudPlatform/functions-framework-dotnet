@@ -24,7 +24,8 @@
     <NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>
   </PropertyGroup>
 
-  <ItemGroup>    
+  <ItemGroup>
+    <None Include="../LICENSE" Pack="true" PackagePath="" />
     <Content Include="targets/*" PackagePath="build/$(TargetFramework)/" />
     <ProjectReference Include="..\Google.Cloud.Functions.Framework\Google.Cloud.Functions.Framework.csproj" />
   </ItemGroup>

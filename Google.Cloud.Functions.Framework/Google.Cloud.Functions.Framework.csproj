@@ -24,4 +24,8 @@
     <!-- Stop Visual Studio adding a launchSettings.properties file -->
     <NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="../LICENSE" Pack="true" PackagePath="" />
+  </ItemGroup>
 </Project>
