@@ -1,7 +1,9 @@
 # Functions Framework for .NET
 
+![Build Status](https://travis-ci.com/GoogleCloudPlatform/functions-framework-dotnet.svg?branch=master)](https://travis-ci.com/GoogleCloudPlatform/functions-framework-dotnet)
+
 An open source FaaS (Function as a service) framework for writing portable
-Java functions -- brought to you by the Google Cloud Functions team.
+.NET functions -- brought to you by the Google Cloud Functions team.
 
 The Functions Framework lets you write lightweight functions that run in many
 different environments, including:
