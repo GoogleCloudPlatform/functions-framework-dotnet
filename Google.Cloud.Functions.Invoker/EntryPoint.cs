@@ -57,51 +57,14 @@ namespace Google.Cloud.Functions.Invoker
             // TODO: Catch exceptions and return 1, or just let the exception propagate? It probably
             // doesn't matter much. Potentially catch exceptions during configuration, but let any
             // during web server execution propagate.
-            RequestDelegate handler = BuildHandler(functionAssembly, args);
-            int port = DeterminePort(args);
+            var environment = FunctionEnvironment.Create(functionAssembly, args, EnvironmentVariableProvider.System);
             var builder = Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder => webBuilder
-                    .ConfigureKestrel(serverOptions => serverOptions.Listen(IPAddress.Any, port))
-                    .Configure(app => app.Run(handler))
+                    .ConfigureKestrel(serverOptions => serverOptions.Listen(environment.Address, environment.Port))
+                    .Configure(app => app.Run(environment.RequestHandler))
                 );
             await builder.Build().RunAsync();
             return 0;
-        }
-
-        private static RequestDelegate BuildHandler(Assembly functionAssembly, string[] args)
-        {
-            // TODO: Better command line parsing, e.g. --target=xyz --port=5000
-            var target = args.FirstOrDefault() ?? Environment.GetEnvironmentVariable(FunctionTargetEnvironmentVariable);
-            if (string.IsNullOrEmpty(target))
-            {
-                throw new Exception("No target provided");
-            }
-            var type = functionAssembly.GetType(target);
-            if (type is null)
-            {
-                throw new Exception($"Can't load target type '{target}'");
-            }
-            var instance = Activator.CreateInstance(type);
-            return instance switch
-            {
-                IHttpFunction function => context => function.HandleAsync(context),
-                _ => throw new Exception("Function doesn't support known interfaces")
-            };
-        }
-
-        private static int DeterminePort(string[] args)
-        {
-            var environmentVariable = Environment.GetEnvironmentVariable(PortEnvironmentVariable);
-            if (!string.IsNullOrEmpty(environmentVariable))
-            {
-                if (!int.TryParse(environmentVariable, NumberStyles.None, CultureInfo.InvariantCulture, out var parsed))
-                {
-                    throw new Exception($"Can't parse {PortEnvironmentVariable} environment variable value '{environmentVariable}'");
-                }
-                return parsed;
-            }
-            // TODO: Parse args
-            return 8080;
         }
     }
 }
