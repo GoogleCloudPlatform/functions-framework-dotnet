@@ -5,6 +5,7 @@
     <ProjectReference Include="..\Google.Cloud.Functions.Invoker\Google.Cloud.Functions.Invoker.csproj" />
   </ItemGroup>
   <PropertyGroup>
+    <WarnOnPackingNonPackableProject>False</WarnOnPackingNonPackableProject>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
