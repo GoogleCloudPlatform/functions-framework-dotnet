@@ -9,9 +9,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Google.Cloud.Functions.Invo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Google.Cloud.Functions.Templates", "Google.Cloud.Functions.Templates\Google.Cloud.Functions.Templates.csproj", "{D7F6169F-AC1B-43EF-A1BA-D678A3525293}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Google.Cloud.Functions.Framework.Tests", "Google.Cloud.Functions.Framework.Tests\Google.Cloud.Functions.Framework.Tests.csproj", "{21AFB864-91BD-42F6-BC7C-135182569911}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Google.Cloud.Functions.Framework.Tests", "Google.Cloud.Functions.Framework.Tests\Google.Cloud.Functions.Framework.Tests.csproj", "{21AFB864-91BD-42F6-BC7C-135182569911}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Google.Cloud.Functions.Invoker.Tests", "Google.Cloud.Functions.Invoker.Tests\Google.Cloud.Functions.Invoker.Tests.csproj", "{E3EB87DB-08CB-4850-B4DA-A6ADBEA34A7D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Google.Cloud.Functions.Invoker.Tests", "Google.Cloud.Functions.Invoker.Tests\Google.Cloud.Functions.Invoker.Tests.csproj", "{E3EB87DB-08CB-4850-B4DA-A6ADBEA34A7D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Google.Cloud.Functions.SampleHttpFunction", "Google.Cloud.Functions.SampleHttpFunction\Google.Cloud.Functions.SampleHttpFunction.csproj", "{FD3F5C43-DCAA-4678-958D-B9CE46647E0D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -83,6 +85,18 @@ Global
 		{E3EB87DB-08CB-4850-B4DA-A6ADBEA34A7D}.Release|x64.Build.0 = Release|Any CPU
 		{E3EB87DB-08CB-4850-B4DA-A6ADBEA34A7D}.Release|x86.ActiveCfg = Release|Any CPU
 		{E3EB87DB-08CB-4850-B4DA-A6ADBEA34A7D}.Release|x86.Build.0 = Release|Any CPU
+		{FD3F5C43-DCAA-4678-958D-B9CE46647E0D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FD3F5C43-DCAA-4678-958D-B9CE46647E0D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FD3F5C43-DCAA-4678-958D-B9CE46647E0D}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{FD3F5C43-DCAA-4678-958D-B9CE46647E0D}.Debug|x64.Build.0 = Debug|Any CPU
+		{FD3F5C43-DCAA-4678-958D-B9CE46647E0D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{FD3F5C43-DCAA-4678-958D-B9CE46647E0D}.Debug|x86.Build.0 = Debug|Any CPU
+		{FD3F5C43-DCAA-4678-958D-B9CE46647E0D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FD3F5C43-DCAA-4678-958D-B9CE46647E0D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FD3F5C43-DCAA-4678-958D-B9CE46647E0D}.Release|x64.ActiveCfg = Release|Any CPU
+		{FD3F5C43-DCAA-4678-958D-B9CE46647E0D}.Release|x64.Build.0 = Release|Any CPU
+		{FD3F5C43-DCAA-4678-958D-B9CE46647E0D}.Release|x86.ActiveCfg = Release|Any CPU
+		{FD3F5C43-DCAA-4678-958D-B9CE46647E0D}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

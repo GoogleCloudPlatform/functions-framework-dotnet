@@ -1,9 +1,18 @@
 <Project>
-  <PropertyGroup Condition="'$(AutoGenerateEntryPoint)' == 'true'">
-    <!-- The location of the generated program file. For the moment we just support C#.-->
-    <_GeneratedEntryPointFile>$(IntermediateOutputPath)$(MSBuildProjectName).Program.g.cs</_GeneratedEntryPointFile>
-  </PropertyGroup>
-
+  <!-- 
+    - Target just to set the _GeneratedEntryPointFile property. This has to execute before CoreGenerateFunctionEntryPoint
+    - so that it has a reasonable output, but we don't want to generate the file unless we're really doing a build.
+    - (If the IntermediateOutputPath is just the current directory, we'll end up creating the file in the wrong
+    - place, which seems to happen if this target file is imported directly.)
+    - TODO: Work out exactly why this is required.
+    -->
+  <Target Name="SetGeneratedEntryPointFile" Condition="'$(AutoGenerateEntryPoint)' == 'true'">
+    <PropertyGroup>
+      <!-- The location of the generated program file. For the moment we just support C#.-->
+      <_GeneratedEntryPointFile>$(IntermediateOutputPath)$(MSBuildProjectName).Program.g.cs</_GeneratedEntryPointFile>
+    </PropertyGroup>
+  </Target>
+  
   <Target Name="_GenerateRealEntryPointType"
           BeforeTargets="CoreCompile"
           DependsOnTargets="PrepareForBuild;CoreGenerateFunctionEntryPoint"
@@ -14,6 +23,7 @@
   </Target>
 
   <Target Name="CoreGenerateFunctionEntryPoint"
+          DependsOnTargets="SetGeneratedEntryPointFile"
           Condition="'$(Language)' == 'C#'"
           Inputs="$(MSBuildAllProjects)"
           Outputs="$(_GeneratedEntryPointFile)">
