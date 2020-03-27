@@ -86,3 +86,14 @@ Cloud Run and Cloud Run on GKE both implement the [Knative Serving
 API](https://www.knative.dev/docs/). The Functions Framework is designed to be
 compatible with Knative environments. Just build and deploy your container to a
 Knative environment.
+
+## Configure the Functions Framework
+
+You can configure the Functions Framework using command-line flags or
+environment variables. If you specify both, the environment variable will be
+ignored.
+
+Command-line flag         | Environment variable      | Description
+------------------------- | ------------------------- | -----------
+Not implemented           | `PORT`                    | The port on which the Functions Framework listens for requests. Default: `8080`
+First argument            | `FUNCTION_TARGET`         | The name of the exported function to be invoked in response to requests.
