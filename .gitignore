@@ -17,6 +17,9 @@ nupkg/
 *.userosscache
 *.sln.docstates
 
+# Launch settings, e.g. from running samples
+launchSettings.json
+
 # Build results
 [Dd]ebug/
 [Dd]ebugPublic/
