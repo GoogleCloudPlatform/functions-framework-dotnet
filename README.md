@@ -38,21 +38,11 @@ That will create `HelloFunctions.csproj` and `Function.cs` in
 the current directory. Edit `Function.cs` to have a look at what's
 required, and provide a custom message if you want.
 
-## Run the function
-
-The Functions Framework needs to know the target function to run.
-This is the name of the class implementing `IHttpFunction` (and other interfaces later).
-There are two ways of specifying this:
-
-* Using the `FUNCTION_TARGET` environment variable
-* Passing it on the command line as the first argument to the program
+Run the function:
 
 ```sh
 dotnet run HelloFunctions.Function
 ```
-
-The default port is 8080; this can be changed with the `PORT`
-environment variable.
 
 Once the server is running, browse to http://localhost:8080 to
 invoke the function. Press Ctrl-C in the console to stop the server.
@@ -96,4 +86,4 @@ ignored.
 Command-line flag         | Environment variable      | Description
 ------------------------- | ------------------------- | -----------
 Not implemented           | `PORT`                    | The port on which the Functions Framework listens for requests. Default: `8080`
-First argument            | `FUNCTION_TARGET`         | The name of the exported function to be invoked in response to requests.
+First argument            | `FUNCTION_TARGET`         | The name of the target function implementing `IHttpFunction` to be invoked in response to requests.
