@@ -59,9 +59,10 @@ Once you've written your function and added the Functions Framework, all that's
 left is to create a container image. [Check out the Cloud Run
 quickstart](https://cloud.google.com/run/docs/quickstarts/build-and-deploy) for
 C# to create a container image and deploy it to Cloud Run. You'll write a
-`Dockerfile` when you build your container. This Dockerfile allows you to specify
+`Dockerfile` when you build your container. This `Dockerfile` allows you to specify
 exactly what goes into your container (including custom binaries, a specific
-operating system, and more).
+operating system, and more). In the `Dockerfile`, you need to set an environment
+variable `FUNCTION_TARGET` to point to the target function to be invoked.
 
 If you want even more control over the environment, you can [deploy your
 container image to Cloud Run on
