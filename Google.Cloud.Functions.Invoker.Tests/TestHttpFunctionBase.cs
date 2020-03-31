@@ -18,7 +18,7 @@ using System.Threading.Tasks;
 
 namespace Google.Cloud.Functions.Invoker.Tests
 {
-    public abstract class TestFunctionBase : IHttpFunction
+    public abstract class TestHttpFunctionBase : IHttpFunction
     {
         public const string TypeKey = "FunctionTypeKey";
 
