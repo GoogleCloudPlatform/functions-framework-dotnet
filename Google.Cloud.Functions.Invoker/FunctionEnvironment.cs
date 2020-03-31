@@ -84,6 +84,7 @@ namespace Google.Cloud.Functions.Invoker
                 return instance switch
                 {
                     IHttpFunction function => context => function.HandleAsync(context),
+                    ICloudEventFunction function => new CloudEventAdapter(function).HandleAsync,
                     _ => throw new Exception("Function doesn't support known interfaces")
                 };
             }
