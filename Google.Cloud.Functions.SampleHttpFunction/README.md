@@ -8,5 +8,3 @@ dotnet new gcf-http
 
 This is kept up-to-date with the template, and is used as a smoke
 test for changes in the framework.
-
-(TODO: Generation script...)
