@@ -1,0 +1,15 @@
+<Project>
+  <!-- 
+    - Currently CloudNative.CloudEvents isn't strongly-named, which
+    - means none of our assemblies can be either
+    -->
+  <Target Name="_DisableStrongNaming"
+          BeforeTargets="ResolveKeySource"
+          Condition="'$(DisableStrongNaming)' == 'true'">
+    <PropertyGroup>
+      <SignAssembly>false</SignAssembly>
+      <DefineConstants>$(DefineConstants);STRONG_NAMING_DISABLED</DefineConstants>
+      <AssemblyOriginatorKeyFile></AssemblyOriginatorKeyFile>
+    </PropertyGroup>
+  </Target>
+</Project>
