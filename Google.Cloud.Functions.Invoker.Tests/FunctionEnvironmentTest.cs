@@ -52,14 +52,14 @@ namespace Google.Cloud.Functions.Invoker.Tests
         public async Task TargetFunction_CommandLine()
         {
             var environment = CreateEnvironment(DefaultFunctionCommandLine, Empty);
-            await AssertRequestHandlerType<DefaultFunction>(environment);
+            await AssertHttpFunctionType<DefaultFunction>(environment);
         }
 
         [Fact]
         public async Task TargetFunction_EnvironmentVariable()
         {
             var environment = CreateEnvironment(Empty, new[] { $"FUNCTION_TARGET={DefaultFunctionName}" });
-            await AssertRequestHandlerType<DefaultFunction>(environment);
+            await AssertHttpFunctionType<DefaultFunction>(environment);
         }
 
         [Fact]
@@ -77,11 +77,11 @@ namespace Google.Cloud.Functions.Invoker.Tests
         private static void AssertBadEnvironment(string[] commandLine, string[] variables) =>
             Assert.ThrowsAny<Exception>(() => CreateEnvironment(commandLine, variables));
 
-        private static async Task AssertRequestHandlerType<T>(FunctionEnvironment environment) where T : IHttpFunction
+        private static async Task AssertHttpFunctionType<T>(FunctionEnvironment environment) where T : IHttpFunction
         {
             var context = new DefaultHttpContext();
             await environment.RequestHandler(context);
-            Assert.Equal(typeof(T), context.Items[TestFunctionBase.TypeKey]);
+            Assert.Equal(typeof(T), context.Items[TestHttpFunctionBase.TypeKey]);
         }
 
         /// <summary>
@@ -97,7 +97,7 @@ namespace Google.Cloud.Functions.Invoker.Tests
             return FunctionEnvironment.Create(typeof(FunctionEnvironmentTest).Assembly, commandLine, provider);
         }
 
-        public class DefaultFunction : TestFunctionBase
+        public class DefaultFunction : TestHttpFunctionBase
         {
         }
 
@@ -105,7 +105,7 @@ namespace Google.Cloud.Functions.Invoker.Tests
         {
         }
 
-        public class NonInstantiableFunction : TestFunctionBase
+        public class NonInstantiableFunction : TestHttpFunctionBase
         {
             private NonInstantiableFunction()
             {
