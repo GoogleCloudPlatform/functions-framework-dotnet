@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using CloudNative.CloudEvents;
 using Google.Cloud.Functions.Framework;
 using Microsoft.AspNetCore.Http;
 using System;
@@ -74,6 +75,31 @@ namespace Google.Cloud.Functions.Invoker.Tests
         public void TargetFunction_NonInstantiableFunctionType() =>
             AssertBadEnvironment(new[] { typeof(NonInstantiableFunction).FullName }, Empty);
 
+        [Fact]
+        public async Task TargetFunction_EventFunction()
+        {
+            var environment = CreateEnvironment(new[] { typeof(EventIdRememberingFunction).FullName }, Empty);
+            string eventId = Guid.NewGuid().ToString();
+            var context = new DefaultHttpContext
+            {
+                Request =
+                {
+                    // No actual content, but that's okay.
+                    ContentType = "application/json",
+                    Headers =
+                    {
+                        { "ce-specversion", "1.0" },
+                        { "ce-source", "test" },
+                        { "ce-type", "test" },
+                        { "ce-id", eventId }
+                    }
+                }
+            };
+
+            await environment.RequestHandler.Invoke(context);
+            Assert.Equal(eventId, EventIdRememberingFunction.LastEventId);
+        }
+
         private static void AssertBadEnvironment(string[] commandLine, string[] variables) =>
             Assert.ThrowsAny<Exception>(() => CreateEnvironment(commandLine, variables));
 
@@ -99,6 +125,22 @@ namespace Google.Cloud.Functions.Invoker.Tests
 
         public class DefaultFunction : TestHttpFunctionBase
         {
+        }
+
+        public class EventIdRememberingFunction : ICloudEventFunction
+        {
+            /// <summary>
+            /// Horrible way of testing which function was actually used: remember the last event ID.
+            /// Currently we only have a single test using this; if we have more, we'll need to disable
+            /// parallelism.
+            /// </summary>
+            public static string LastEventId { get; private set; }
+
+            public Task HandleAsync(CloudEvent cloudEvent)
+            {
+                LastEventId = cloudEvent.Id;
+                return Task.CompletedTask;
+            }
         }
 
         public class NonFunction
