@@ -46,13 +46,36 @@ namespace Google.Cloud.Functions.Invoker.Tests
         }
 
         [Fact]
+        public async Task Port_SetViaCommandLine()
+        {
+            var environment = CreateEnvironment(new[] { "--port", "12345", "--target", DefaultFunctionName }, Empty);
+            Assert.Equal(12345, environment.Port);
+            await AssertHttpFunctionType<DefaultFunction>(environment);
+        }
+
+        [Fact]
+        public async Task Port_CommandLineOverridesEnvironment()
+        {
+            var environment = CreateEnvironment(new[] { "--port", "12345", "--target", DefaultFunctionName }, new[] { "PORT=98765" });
+            Assert.Equal(12345, environment.Port);
+            await AssertHttpFunctionType<DefaultFunction>(environment);
+        }
+
+        [Fact]
         public void Port_InvalidEnvironmentVariable() =>
             AssertBadEnvironment(DefaultFunctionCommandLine, new[] { "PORT=INVALID" });
 
         [Fact]
-        public async Task TargetFunction_CommandLine()
+        public async Task TargetFunction_CommandLine_SingleArgument()
         {
             var environment = CreateEnvironment(DefaultFunctionCommandLine, Empty);
+            await AssertHttpFunctionType<DefaultFunction>(environment);
+        }
+
+        [Fact]
+        public async Task TargetFunction_CommandLine_ArgumentWithKey()
+        {
+            var environment = CreateEnvironment(new[] { "--target", DefaultFunctionName }, Empty);
             await AssertHttpFunctionType<DefaultFunction>(environment);
         }
 
@@ -60,6 +83,13 @@ namespace Google.Cloud.Functions.Invoker.Tests
         public async Task TargetFunction_EnvironmentVariable()
         {
             var environment = CreateEnvironment(Empty, new[] { $"FUNCTION_TARGET={DefaultFunctionName}" });
+            await AssertHttpFunctionType<DefaultFunction>(environment);
+        }
+
+        [Fact]
+        public async Task TargetFunction_CommandLineOverridesEnvironmentVariable()
+        {
+            var environment = CreateEnvironment(DefaultFunctionCommandLine, new[] { $"FUNCTION_TARGET=ThisTargetDoesNotExist" });
             await AssertHttpFunctionType<DefaultFunction>(environment);
         }
 
@@ -119,7 +149,7 @@ namespace Google.Cloud.Functions.Invoker.Tests
         private static FunctionEnvironment CreateEnvironment(string[] commandLine, string[] variables)
         {
             var variableDictionary = variables.ToDictionary(v => v.Split('=')[0], v => v.Split('=')[1]);
-            var provider = new DictionaryEnvironmentVariableProvider(variableDictionary);
+            var provider = ConfigurationVariableProvider.FromDictionary(variableDictionary);
             return FunctionEnvironment.Create(typeof(FunctionEnvironmentTest).Assembly, commandLine, provider);
         }
 
