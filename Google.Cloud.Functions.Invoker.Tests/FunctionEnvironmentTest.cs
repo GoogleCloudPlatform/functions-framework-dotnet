@@ -94,6 +94,8 @@ namespace Google.Cloud.Functions.Invoker.Tests
             await AssertHttpFunctionType<DefaultFunction>(environment);
         }
 
+        // The test will pass because CreateEnvironment throws: the environment is "bad"
+        // because there are multiple function types in this assembly.
         [Fact]
         public void TargetFunction_Unspecified() =>
             AssertBadEnvironment(Empty, Empty);
@@ -129,6 +131,34 @@ namespace Google.Cloud.Functions.Invoker.Tests
 
             await environment.RequestHandler.Invoke(context);
             Assert.Equal(eventId, EventIdRememberingFunction.LastEventId);
+        }
+
+        [Fact]
+        public void FindDefaultFunctionType_NoFunctionTypes() =>
+            Assert.Throws<ArgumentException>(() => FunctionEnvironment.FindDefaultFunctionType(
+                typeof(FunctionEnvironmentTest),
+                typeof(ConfigurationVariableProviderTest),
+                typeof(TestHttpFunctionBase), // Abstract, doesn't count
+                typeof(INamedHttpFunction)    // Interface, doesn't count
+                ));
+
+        [Fact]
+        public void FindDefaultFunctionType_MultipleFunctionTypes() =>
+            Assert.Throws<ArgumentException>(() => FunctionEnvironment.FindDefaultFunctionType(
+                typeof(DefaultFunction),
+                typeof(EventIdRememberingFunction)));
+
+        [Fact]
+        public void FindDefaultFunctionType_SingleFunctionType()
+        {
+            var expected = typeof(DefaultFunction);
+            var actual = FunctionEnvironment.FindDefaultFunctionType(
+                typeof(FunctionEnvironmentTest),
+                typeof(ConfigurationVariableProviderTest),
+                typeof(TestHttpFunctionBase), // Abstract, doesn't count
+                typeof(INamedHttpFunction),    // Interface, doesn't count
+                typeof(DefaultFunction));
+            Assert.Equal(expected, actual);
         }
 
         [Fact]
@@ -207,6 +237,12 @@ namespace Google.Cloud.Functions.Invoker.Tests
             private NonInstantiableFunction()
             {
             }
+        }
+
+        // Just a sample interface extending a function interface.
+        public interface INamedHttpFunction : IHttpFunction
+        {
+            public string Name { get; }
         }
     }
 }

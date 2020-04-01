@@ -41,7 +41,7 @@ required, and provide a custom message if you want.
 Run the function:
 
 ```sh
-dotnet run HelloFunctions.Function
+dotnet run
 ```
 
 Once the server is running, browse to http://localhost:8080 to
@@ -84,14 +84,20 @@ You can configure the Functions Framework using command-line flags or
 environment variables. If you specify both, the environment variable will be
 ignored. For convenience, if you specify just a single command line
 argument, that is assumed to be the target.
-
 Command-line flag             | Environment variable      | Description
 ----------------------------- | ------------------------- | -----------
 `--port`                      | `PORT`                    | The port on which the Functions Framework listens for requests. Default: `8080`
 `--target` (or only argument) | `FUNCTION_TARGET`         | The name of the target function implementing `IHttpFunction` to be invoked in response to requests.
 
+
+If the function isn't specified at all, the assembly is scanned for
+compatible types. If a single suitable type is found, that is used
+as the function. If multiple types are found, the target type must
+be specified.
+
 Examples:
 
+- `dotnet run`
 - `dotnet run HelloFunctions.Function`
 - `dotnet run --target HelloFunctions.Function`
 - `dotnet run --target HelloFunctions.Function --port 8000`
