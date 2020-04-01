@@ -13,7 +13,11 @@
 // limitations under the License.
 
 using Google.Cloud.Functions.Framework;
+using Google.Cloud.Functions.Invoker.Logging;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Console;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -46,8 +50,13 @@ namespace Google.Cloud.Functions.Invoker
         /// </summary>
         public int Port { get; }
 
-        private FunctionEnvironment(RequestDelegate handler, IPAddress address, int port) =>
-            (RequestHandler, Address, Port) = (handler, address, port);
+        /// <summary>
+        /// The logger provider to use in the web server.
+        /// </summary>
+        public ILoggerProvider LoggerProvider { get; }
+
+        private FunctionEnvironment(RequestDelegate handler, IPAddress address, int port, ILoggerProvider loggerProvider) =>
+            (RequestHandler, Address, Port, LoggerProvider) = (handler, address, port, loggerProvider);
 
         internal static FunctionEnvironment Create(Assembly functionAssembly, string[] commandLine, ConfigurationVariableProvider variableProvider) =>
             new Builder(functionAssembly, commandLine, variableProvider).Build();
@@ -81,7 +90,8 @@ namespace Google.Cloud.Functions.Invoker
                 RequestDelegate handler = BuildHandler();
                 int port = DeterminePort();
                 IPAddress address = DetermineAddress();
-                return new FunctionEnvironment(handler, address, port);
+                ILoggerProvider loggerProvider = DetermineLoggerProvider();
+                return new FunctionEnvironment(handler, address, port, loggerProvider);
             }
 
             private RequestDelegate BuildHandler()
@@ -119,6 +129,14 @@ namespace Google.Cloud.Functions.Invoker
             // variable or similar - but we'll wait until the requirement emerges.
             private IPAddress DetermineAddress() =>
                 string.Equals(_variables["DOTNET_RUNNING_IN_CONTAINER"], "true", StringComparison.OrdinalIgnoreCase) ? IPAddress.Any : IPAddress.Loopback;
+
+            private ILoggerProvider DetermineLoggerProvider()
+            {
+                bool useJsonLogging = _variables["K_SERVICE"] is object;
+                return useJsonLogging
+                    ? new FactoryLoggerProvider(category => new JsonConsoleLogger(category))
+                    : new FactoryLoggerProvider(category => new SimpleConsoleLogger(category));
+            }
         }
     }
 }
