@@ -57,7 +57,7 @@ namespace Google.Cloud.Functions.Invoker
             // TODO: Catch exceptions and return 1, or just let the exception propagate? It probably
             // doesn't matter much. Potentially catch exceptions during configuration, but let any
             // during web server execution propagate.
-            var environment = FunctionEnvironment.Create(functionAssembly, args, EnvironmentVariableProvider.System);
+            var environment = FunctionEnvironment.Create(functionAssembly, args, ConfigurationVariableProvider.System);
             var builder = Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder => webBuilder
                     .ConfigureKestrel(serverOptions => serverOptions.Listen(environment.Address, environment.Port))

@@ -15,6 +15,7 @@
 using Google.Cloud.Functions.Framework;
 using Microsoft.AspNetCore.Http;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Net;
@@ -48,20 +49,35 @@ namespace Google.Cloud.Functions.Invoker
         private FunctionEnvironment(RequestDelegate handler, IPAddress address, int port) =>
             (RequestHandler, Address, Port) = (handler, address, port);
 
-        internal static FunctionEnvironment Create(Assembly functionAssembly, string[] commandLine, EnvironmentVariableProvider variableProvider) =>
+        internal static FunctionEnvironment Create(Assembly functionAssembly, string[] commandLine, ConfigurationVariableProvider variableProvider) =>
             new Builder(functionAssembly, commandLine, variableProvider).Build();
 
         private class Builder
         {
-            private readonly Assembly _functionAssembly;
-            private readonly string[] _commandLine;
-            private readonly EnvironmentVariableProvider _variableProvider;
+            private static readonly IDictionary<string, string> CommandLineArgumentToVariableMapping = new Dictionary<string, string>
+            {
+                { "target", EntryPoint.FunctionTargetEnvironmentVariable },
+                { "port", EntryPoint.PortEnvironmentVariable }
+            };
 
-            internal Builder(Assembly functionAssembly, string[] commandLine, EnvironmentVariableProvider variableProvider) =>
-                (_functionAssembly, _commandLine, _variableProvider) = (functionAssembly, commandLine, variableProvider);
+            private readonly Assembly _functionAssembly;
+            private readonly ConfigurationVariableProvider _variables;
+
+            internal Builder(Assembly functionAssembly, string[] commandLine, ConfigurationVariableProvider environmentVariables)
+            {
+                _functionAssembly = functionAssembly;
+                // For the convenience of running from the command line, treat a single command line variable as if it's a "--target" value.
+                if (commandLine.Length == 1)
+                {
+                    commandLine = new[] { "--target", commandLine[0] };
+                }
+                var commandLineVariables = ConfigurationVariableProvider.FromCommandLine(commandLine, CommandLineArgumentToVariableMapping);
+                _variables = ConfigurationVariableProvider.Combine(commandLineVariables, environmentVariables);
+            }
 
             internal FunctionEnvironment Build()
             {
+                
                 RequestDelegate handler = BuildHandler();
                 int port = DeterminePort();
                 return new FunctionEnvironment(handler, IPAddress.Any, port);
@@ -69,8 +85,7 @@ namespace Google.Cloud.Functions.Invoker
 
             private RequestDelegate BuildHandler()
             {
-                // TODO: Better command line parsing, e.g. --target=xyz --port=5000
-                var target = _commandLine.FirstOrDefault() ?? _variableProvider[EntryPoint.FunctionTargetEnvironmentVariable];
+                var target = _variables[EntryPoint.FunctionTargetEnvironmentVariable];
                 if (string.IsNullOrEmpty(target))
                 {
                     throw new Exception("No target provided");
@@ -91,17 +106,10 @@ namespace Google.Cloud.Functions.Invoker
 
             private int DeterminePort()
             {
-                var environmentVariable = _variableProvider[EntryPoint.PortEnvironmentVariable];
-                if (environmentVariable is object)
-                {
-                    if (!int.TryParse(environmentVariable, NumberStyles.None, CultureInfo.InvariantCulture, out var parsed))
-                    {
-                        throw new Exception($"Can't parse {EntryPoint.PortEnvironmentVariable} environment variable value '{environmentVariable}'");
-                    }
-                    return parsed;
-                }
-                // TODO: Parse args
-                return 8080;
+                var portVariableOrDefault = _variables[EntryPoint.PortEnvironmentVariable] ?? "8080";
+                return int.TryParse(portVariableOrDefault, NumberStyles.None, CultureInfo.InvariantCulture, out var parsed)
+                    ? parsed
+                    : throw new Exception($"Can't parse port value '{portVariableOrDefault}'");
             }
         }
     }

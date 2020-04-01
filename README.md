@@ -82,9 +82,16 @@ Knative environment.
 
 You can configure the Functions Framework using command-line flags or
 environment variables. If you specify both, the environment variable will be
-ignored.
+ignored. For convenience, if you specify just a single command line
+argument, that is assumed to be the target.
 
-Command-line flag         | Environment variable      | Description
-------------------------- | ------------------------- | -----------
-Not implemented           | `PORT`                    | The port on which the Functions Framework listens for requests. Default: `8080`
-First argument            | `FUNCTION_TARGET`         | The name of the target function implementing `IHttpFunction` to be invoked in response to requests.
+Command-line flag             | Environment variable      | Description
+----------------------------- | ------------------------- | -----------
+`--port`                      | `PORT`                    | The port on which the Functions Framework listens for requests. Default: `8080`
+`--target` (or only argument) | `FUNCTION_TARGET`         | The name of the target function implementing `IHttpFunction` to be invoked in response to requests.
+
+Examples:
+
+- `dotnet run HelloFunctions.Function`
+- `dotnet run --target HelloFunctions.Function`
+- `dotnet run --target HelloFunctions.Function --port 8000`
