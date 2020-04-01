@@ -12,15 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Cloud.Functions.Framework;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using System;
-using System.Globalization;
-using System.Linq;
-using System.Net;
 using System.Reflection;
 using System.Threading.Tasks;
 
@@ -54,12 +50,22 @@ namespace Google.Cloud.Functions.Invoker
         /// </returns>
         public static async Task<int> StartAsync(Assembly functionAssembly, string[] args)
         {
+            // Clear out the ASPNETCORE_URLS environment variable in order to avoid a warning when we start the server.
+            // An alternative would be to *use* the environment variable, but as it's populated (with a non-ideal value) by
+            // default, I suspect that would be tricky.
+            Environment.SetEnvironmentVariable("ASPNETCORE_URLS", null);
+
             // TODO: Catch exceptions and return 1, or just let the exception propagate? It probably
             // doesn't matter much. Potentially catch exceptions during configuration, but let any
             // during web server execution propagate.
             var environment = FunctionEnvironment.Create(functionAssembly, args, ConfigurationVariableProvider.System);
-            var builder = Host.CreateDefaultBuilder(args)
+            IHostBuilder builder = Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder => webBuilder
+                    .ConfigureLogging(logging =>
+                    {
+                        logging.ClearProviders();
+                        logging.AddProvider(environment.LoggerProvider);
+                    })
                     .ConfigureKestrel(serverOptions => serverOptions.Listen(environment.Address, environment.Port))
                     .Configure(app => app.Run(environment.RequestHandler))
                 );
