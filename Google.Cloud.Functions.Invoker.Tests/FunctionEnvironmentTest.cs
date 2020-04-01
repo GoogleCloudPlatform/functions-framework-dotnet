@@ -17,6 +17,7 @@ using Google.Cloud.Functions.Framework;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -128,6 +129,30 @@ namespace Google.Cloud.Functions.Invoker.Tests
 
             await environment.RequestHandler.Invoke(context);
             Assert.Equal(eventId, EventIdRememberingFunction.LastEventId);
+        }
+
+        [Fact]
+        public void Address_NoEnvironmentVariable()
+        {
+            var environment = CreateEnvironment(DefaultFunctionCommandLine, Empty);
+            Assert.Equal(IPAddress.Loopback, environment.Address);
+        }
+
+        [Theory]
+        [InlineData("true")]
+        [InlineData("TRUE")]
+        [InlineData("True")]
+        public void Address_DotnetRunningInContainer_True(string value)
+        {
+            var environment = CreateEnvironment(DefaultFunctionCommandLine, new[] { $"DOTNET_RUNNING_IN_CONTAINER={value}" });
+            Assert.Equal(IPAddress.Any, environment.Address);
+        }
+
+        [Fact]
+        public void Address_DotnetRunningInContainer_NotTrue()
+        {
+            var environment = CreateEnvironment(DefaultFunctionCommandLine, new[] { "DOTNET_RUNNING_IN_CONTAINER=not-true" });
+            Assert.Equal(IPAddress.Loopback, environment.Address);
         }
 
         private static void AssertBadEnvironment(string[] commandLine, string[] variables) =>
