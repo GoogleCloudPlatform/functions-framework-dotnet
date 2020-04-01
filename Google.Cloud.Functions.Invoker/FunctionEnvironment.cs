@@ -77,10 +77,11 @@ namespace Google.Cloud.Functions.Invoker
 
             internal FunctionEnvironment Build()
             {
-                
+
                 RequestDelegate handler = BuildHandler();
                 int port = DeterminePort();
-                return new FunctionEnvironment(handler, IPAddress.Any, port);
+                IPAddress address = DetermineAddress();
+                return new FunctionEnvironment(handler, address, port);
             }
 
             private RequestDelegate BuildHandler()
@@ -111,6 +112,13 @@ namespace Google.Cloud.Functions.Invoker
                     ? parsed
                     : throw new Exception($"Can't parse port value '{portVariableOrDefault}'");
             }
+
+            // Using just the loopback environment variable avoids Windows Defender asking for permission...
+            // but isn't useful in container environments.
+            // At some point we might also want to allow this to be configured directly, e.g. via a FUNCTION_ADDRESS environment
+            // variable or similar - but we'll wait until the requirement emerges.
+            private IPAddress DetermineAddress() =>
+                string.Equals(_variables["DOTNET_RUNNING_IN_CONTAINER"], "true", StringComparison.OrdinalIgnoreCase) ? IPAddress.Any : IPAddress.Loopback;
         }
     }
 }
