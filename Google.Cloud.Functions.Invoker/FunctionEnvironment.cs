@@ -61,6 +61,33 @@ namespace Google.Cloud.Functions.Invoker
         internal static FunctionEnvironment Create(Assembly functionAssembly, string[] commandLine, ConfigurationVariableProvider variableProvider) =>
             new Builder(functionAssembly, commandLine, variableProvider).Build();
 
+        /// <summary>
+        /// Attempts to find a single valid non-abstract function class within the given set of types.
+        /// (Note that "non-abstract class" is a pretty low bar; we could enforce non-generic etc, but we'll
+        /// discover problems there easily enough anyway.)
+        /// </summary>
+        /// <remarks>
+        /// This method is internal and in this class rather than being private and in Builder for the sake of testability.
+        /// </remarks>
+        /// <param name="types">The types to search through.</param>
+        /// <returns>The function type to use by default</returns>
+        /// <exception cref="ArgumentException">There isn't a single valid function type.</exception>
+        internal static Type FindDefaultFunctionType(params Type[] types)
+        {
+            var validTypes = types.Where(IsFunctionClass).ToList();
+            return validTypes.Count switch
+            {
+                0 => throw new ArgumentException("No valid Cloud Function types found."),
+                1 => validTypes[0],
+                _ => throw new ArgumentException(
+                    $"Multiple Cloud Function types found. Please specify the function to run via the command line or the {EntryPoint.FunctionTargetEnvironmentVariable} environment variable."),
+            };
+
+            bool IsFunctionClass(Type t) =>
+                t.IsClass && !t.IsAbstract &&
+                (typeof(IHttpFunction).IsAssignableFrom(t) || typeof(ICloudEventFunction).IsAssignableFrom(t));
+        }
+
         private class Builder
         {
             private static readonly IDictionary<string, string> CommandLineArgumentToVariableMapping = new Dictionary<string, string>
@@ -97,11 +124,9 @@ namespace Google.Cloud.Functions.Invoker
             private RequestDelegate BuildHandler()
             {
                 var target = _variables[EntryPoint.FunctionTargetEnvironmentVariable];
-                if (string.IsNullOrEmpty(target))
-                {
-                    throw new Exception("No target provided");
-                }
-                var type = _functionAssembly.GetType(target);
+                var type = target is null
+                    ? FindDefaultFunctionType(_functionAssembly.GetTypes())
+                    : _functionAssembly.GetType(target);
                 if (type is null)
                 {
                     throw new Exception($"Can't load target type '{target}'");
