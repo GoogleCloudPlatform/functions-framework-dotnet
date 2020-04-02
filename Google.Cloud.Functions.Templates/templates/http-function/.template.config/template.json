@@ -1,9 +1,9 @@
 {
   "$schema": "http://json.schemastore.org/template",
   "author": "Google Inc.",
-  "classifications": [ "Google", "Functions", "Http" ],
+  "classifications": [ "Google", "Cloud", "Functions", "Http" ],
   "identity": "Google.Cloud.Functions.Templates.HttpFunction",
-  "groupIdentity": "Google.Cloud.Functions",
+  "groupIdentity": "Google.Cloud.Functions.HttpFunction",
   "name": "Google Cloud Functions HttpFunction",
   "shortName": "gcf-http",
   "sourceName": "MyFunction",

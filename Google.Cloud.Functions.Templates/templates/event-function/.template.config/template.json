@@ -1,0 +1,15 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "author": "Google Inc.",
+  "classifications": [ "Google", "Cloud", "Functions", "Events" ],
+  "identity": "Google.Cloud.Functions.Templates.CloudEventFunction",
+  "groupIdentity": "Google.Cloud.Functions.CloudEventFunction",
+  "name": "Google Cloud Functions CloudEventFunction",
+  "shortName": "gcf-event",
+  "sourceName": "MyFunction",
+  "tags": {
+    "language": "C#",
+    "type": "project"
+  },
+  "preferNameDirectory": true
+}

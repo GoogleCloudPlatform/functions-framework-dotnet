@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <PackageType>Template</PackageType>
-    <PackageVersion>1.0.0-alpha01</PackageVersion>
+    <PackageVersion>1.0.0-alpha02</PackageVersion>
     <Title>Templates for Google Cloud Functions Framework</Title>
     <Authors>Google LLC</Authors>
     <Description>Templates for Google Cloud Functions Framework</Description>
