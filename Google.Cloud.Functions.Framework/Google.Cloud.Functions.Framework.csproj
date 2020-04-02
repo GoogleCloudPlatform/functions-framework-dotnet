@@ -8,7 +8,7 @@
     <Deterministic>true</Deterministic>
     <OutputType>Library</OutputType>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <Version>1.0.0-alpha01</Version>
+    <Version>1.0.0-alpha02</Version>
     <IsPackable>True</IsPackable>
     <Title>Google Cloud Functions Framework</Title>
     <Authors>Google LLC</Authors>
