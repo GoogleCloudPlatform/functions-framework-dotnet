@@ -15,9 +15,8 @@
 using Google.Cloud.Functions.Framework;
 using Google.Cloud.Functions.Invoker.Logging;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Console;
-using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -131,13 +130,22 @@ namespace Google.Cloud.Functions.Invoker
                 {
                     throw new Exception($"Can't load target type '{target}'");
                 }
-                var instance = Activator.CreateInstance(type);
-                return instance switch
-                {
-                    IHttpFunction function => context => function.HandleAsync(context),
-                    ICloudEventFunction function => new CloudEventAdapter(function).HandleAsync,
-                    _ => throw new Exception("Function doesn't support known interfaces")
-                };
+                var functionFactory = ActivatorUtilities.CreateFactory(type, argumentTypes: Type.EmptyTypes);
+                return
+                    MaybeCreateHandler<IHttpFunction>(function => function) ??
+                    MaybeCreateHandler<ICloudEventFunction>(function => new CloudEventAdapter(function)) ??
+                    throw new Exception("Function doesn't support known interfaces");
+
+                // If the function type implements the given interface, create a request handler that converts
+                // the interface to the common IHttpFunction, then invokes HandleAsync. (This relies on all
+                // function interfaces having some way of adapting to IHttpFunction.)
+                // If the function type doesn't implement the interface, return null so we can try the next interface.
+                RequestDelegate? MaybeCreateHandler<TInterface>(Func<TInterface, IHttpFunction> functionAdapter) =>
+                    typeof(TInterface).IsAssignableFrom(type)
+                        // Create the function from the context, create the adapter from the function, then provide the context
+                        // to the adapter.
+                        ? context => functionAdapter((TInterface) functionFactory(context.RequestServices, null)).HandleAsync(context)
+                        : (RequestDelegate?) null;
             }
 
             private int DeterminePort()
