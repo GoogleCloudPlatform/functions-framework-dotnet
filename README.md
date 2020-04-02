@@ -22,7 +22,7 @@ The Functions Framework for .NET requires the [.NET Core SDK 3.1](https://dotnet
 First, install the template package into the .NET tooling:
 
 ```sh
-dotnet new -i Google.Cloud.Functions.Templates::1.0.0-alpha01
+dotnet new -i Google.Cloud.Functions.Templates::1.0.0-alpha02
 ```
 
 Next, create a directory for your project, and use `dotnet new` to
@@ -47,6 +47,23 @@ dotnet run
 Once the server is running, browse to http://localhost:8080 to
 invoke the function. Press Ctrl-C in the console to stop the server.
 
+## Cloud Event Functions
+
+After installing the same template package described above, use the
+`gcf-event` template:
+
+```sh
+mkdir HelloEvents
+cd HelloEvents
+dotnet new gcf-event
+```
+
+That will create the same set of files as before, but the `Function`
+class now implements `ICloudEventFunction`. This is a function that
+responds to [Cloud Events](https://cloudevents.io/). The procedure
+for running a Cloud Event Function is exactly the same as for an
+HTTP Function.
+
 ## Run your function on serverless platforms
 
 ### Google Cloud Functions
@@ -61,8 +78,7 @@ quickstart](https://cloud.google.com/run/docs/quickstarts/build-and-deploy) for
 C# to create a container image and deploy it to Cloud Run. You'll write a
 `Dockerfile` when you build your container. This `Dockerfile` allows you to specify
 exactly what goes into your container (including custom binaries, a specific
-operating system, and more). In the `Dockerfile`, you need to set an environment
-variable `FUNCTION_TARGET` to point to the target function to be invoked.
+operating system, and more).
 
 If you want even more control over the environment, you can [deploy your
 container image to Cloud Run on
@@ -87,7 +103,7 @@ argument, that is assumed to be the target.
 Command-line flag             | Environment variable      | Description
 ----------------------------- | ------------------------- | -----------
 `--port`                      | `PORT`                    | The port on which the Functions Framework listens for requests. Default: `8080`
-`--target` (or only argument) | `FUNCTION_TARGET`         | The name of the target function implementing `IHttpFunction` to be invoked in response to requests.
+`--target` (or only argument) | `FUNCTION_TARGET`         | The name of the target function implementing `IHttpFunction` or `ICloudEventFunction` to be invoked in response to requests.
 
 
 If the function isn't specified at all, the assembly is scanned for
