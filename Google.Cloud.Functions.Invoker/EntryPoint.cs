@@ -14,6 +14,7 @@
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
@@ -67,6 +68,7 @@ namespace Google.Cloud.Functions.Invoker
                         logging.AddProvider(environment.LoggerProvider);
                     })
                     .ConfigureKestrel(serverOptions => serverOptions.Listen(environment.Address, environment.Port))
+                    .ConfigureServices(environment.ConfigureServices)
                     .Configure(app => app.Run(environment.RequestHandler))
                 );
             await builder.Build().RunAsync();

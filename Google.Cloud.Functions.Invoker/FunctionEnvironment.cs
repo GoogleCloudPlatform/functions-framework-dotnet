@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using Google.Cloud.Functions.Framework;
+using Google.Cloud.Functions.Invoker.DependencyInjection;
 using Google.Cloud.Functions.Invoker.Logging;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
@@ -54,11 +55,31 @@ namespace Google.Cloud.Functions.Invoker
         /// </summary>
         public ILoggerProvider LoggerProvider { get; }
 
-        private FunctionEnvironment(RequestDelegate handler, IPAddress address, int port, ILoggerProvider loggerProvider) =>
-            (RequestHandler, Address, Port, LoggerProvider) = (handler, address, port, loggerProvider);
+        /// <summary>
+        /// The FunctionsStartup instances to use for configuring services.
+        /// This is currently private because they're just used in <see cref="ConfigureServices(IServiceCollection)"/>;
+        /// it could be made internal if we wanted.
+        /// </summary>
+        private IReadOnlyList<FunctionsStartup> Startups { get; }
+
+        private FunctionEnvironment(RequestDelegate handler, IPAddress address, int port, ILoggerProvider loggerProvider, IReadOnlyList<FunctionsStartup> startups) =>
+            (RequestHandler, Address, Port, LoggerProvider, Startups) = (handler, address, port, loggerProvider, startups);
 
         internal static FunctionEnvironment Create(Assembly functionAssembly, string[] commandLine, ConfigurationVariableProvider variableProvider) =>
             new Builder(functionAssembly, commandLine, variableProvider).Build();
+
+        /// <summary>
+        /// Configures the services for the application by asking each <see cref="FunctionsStartup"/>
+        /// that's been detected to contribute services.
+        /// </summary>
+        internal void ConfigureServices(IServiceCollection services)
+        {
+            var builder = new FunctionsHostBuilder(services);
+            foreach (var startup in Startups)
+            {
+                startup.Configure(builder);
+            }
+        }
 
         /// <summary>
         /// Attempts to find a single valid non-abstract function class within the given set of types.
@@ -117,7 +138,8 @@ namespace Google.Cloud.Functions.Invoker
                 int port = DeterminePort();
                 IPAddress address = DetermineAddress();
                 ILoggerProvider loggerProvider = DetermineLoggerProvider();
-                return new FunctionEnvironment(handler, address, port, loggerProvider);
+                IReadOnlyList<FunctionsStartup> startups = CreateStartups();
+                return new FunctionEnvironment(handler, address, port, loggerProvider, startups);
             }
 
             private RequestDelegate BuildHandler()
@@ -170,6 +192,15 @@ namespace Google.Cloud.Functions.Invoker
                     ? new FactoryLoggerProvider(category => new JsonConsoleLogger(category))
                     : new FactoryLoggerProvider(category => new SimpleConsoleLogger(category));
             }
+
+            // TODO: Nicer error handling, e.g. if the type isn't a startup?
+            private IReadOnlyList<FunctionsStartup> CreateStartups() =>
+                _functionAssembly
+                    .GetCustomAttributes<FunctionsStartupAttribute>()
+                    .Select(attr => Activator.CreateInstance(attr.StartupType))
+                    .Cast<FunctionsStartup>()
+                    .ToList()
+                    .AsReadOnly();
         }
     }
 }
