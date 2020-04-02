@@ -5,6 +5,7 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <AssemblyOriginatorKeyFile>../GoogleApis.snk</AssemblyOriginatorKeyFile>
     <SignAssembly>true</SignAssembly>
+    <Nullable>Enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
