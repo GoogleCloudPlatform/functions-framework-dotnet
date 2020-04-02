@@ -48,6 +48,7 @@ namespace Google.Cloud.Functions.Framework
             {
                 context.Response.StatusCode = 400;
                 await context.Response.WriteAsync("Request is expected to contain a Cloud Event.", context.RequestAborted);
+                return;
             }
             await _function.HandleAsync(cloudEvent);
         }
