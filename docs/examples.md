@@ -8,7 +8,12 @@ The examples are configured to refer to the projects in the
 [src](../src) directory rather than the NuGet packages for simple
 experimentation when building new features, but any function using
 released functionality can be made standalone simply by converting
-the project reference into a package reference.
+the project reference into a package reference and removing the
+imports for MSBuild files from the Invoker project.
+
+Some examples include multiple classes in a single source file. This
+is purely to make the examples easier to follow when browsing on
+GitHub.
 
 ## SimpleHttpFunction
 
@@ -29,6 +34,23 @@ template using the following command line:
 ```sh
 dotnet new gcf-event
 ```
+
+## SimpleDependencyInjection
+
+The [SimpleDependencyInjection](../examples/Google.Cloud.Functions.Examples.SimpleDependencyInjection)
+example demonstrates out-of-the-box dependency injection without
+any additional configuration.
+
+See the [dependency injection documentation](dependency-injection.md) for more details.
+
+## AdvancedDependencyInjection
+
+The [AdvancedDependencyInjection](../examples/Google.Cloud.Functions.Examples.AdvancedDependencyInjection)
+example demonstrates dependency injection with extra configuration
+provided via a startup class, including scoped and singleton
+dependencies.
+
+See the [dependency injection documentation](dependency-injection.md) for more details.
 
 ## Integration Tests
 

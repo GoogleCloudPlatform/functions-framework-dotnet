@@ -38,9 +38,10 @@ is a complete, standlone project. The example functions refer to the
 projects in `src` to allow for easy development. However, the expectation
 is that unless they use unreleased features, each example could be
 extracted from the repo, project references changed to package
-references, and the example should still work.
+references, additional MSBuild imports removed, and the example should still work.
 
 ## Additional documentation in this directory:
 
 - [Testing Functions](testing.md)
 - [Examples](examples.md)
+- [Dependency Injection](dependency-injection.md)
