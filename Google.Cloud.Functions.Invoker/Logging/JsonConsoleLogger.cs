@@ -53,7 +53,7 @@ namespace Google.Cloud.Functions.Invoker.Logging
             writer.WriteStartObject();
             writer.WritePropertyName("message");
             writer.WriteValue(message);
-            writer.WritePropertyName("log_name");
+            writer.WritePropertyName("category");
             writer.WriteValue(Category);
             if (exception != null)
             {
