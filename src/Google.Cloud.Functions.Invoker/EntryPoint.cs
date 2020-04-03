@@ -18,6 +18,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
 
@@ -60,19 +61,56 @@ namespace Google.Cloud.Functions.Invoker
             // doesn't matter much. Potentially catch exceptions during configuration, but let any
             // during web server execution propagate.
             var environment = FunctionEnvironment.Create(functionAssembly, args, ConfigurationVariableProvider.System);
-            IHostBuilder builder = Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder => webBuilder
-                    .ConfigureLogging(logging =>
-                    {
-                        logging.ClearProviders();
-                        logging.AddProvider(environment.LoggerProvider);
-                    })
-                    .ConfigureKestrel(serverOptions => serverOptions.Listen(environment.Address, environment.Port))
-                    .ConfigureServices(environment.ConfigureServices)
-                    .Configure(app => app.Run(environment.RequestHandler))
-                );
-            await builder.Build().RunAsync();
+            await environment.CreateHostBuilder().Build().RunAsync();
             return 0;
+        }
+
+        /// <summary>
+        /// Creates an <see cref="IWebHostBuilder"/> for the function type specified by
+        /// <typeparamref name="TFunction"/>. This is a convenience method equivalent to calling
+        /// <see cref="CreateHostBuilder(IReadOnlyDictionary{string, string}, Assembly)"/>, passing in a dictionary
+        /// that only contains the function target environment variable and the assembly
+        /// containing the function type. This method is primarily used for writing integration tests.
+        /// See the documentation for a fuller example.
+        /// </summary>
+        /// <returns>A host builder that can be used for integration testing.</returns>
+        /// <typeparam name="TFunction">The function type to host.</typeparam>
+        public static IHostBuilder CreateHostBuilder<TFunction>() => CreateHostBuilder(typeof(TFunction));
+
+        /// <summary>
+        /// Creates an <see cref="IWebHostBuilder"/> for the function type specified by
+        /// <paramref name="functionType"/>. This is a convenience method equivalent to calling
+        /// <see cref="CreateHostBuilder(IReadOnlyDictionary{string, string}, Assembly)"/>, passing in a dictionary
+        /// that only contains the function target environment variable and the assembly
+        /// containing the function type. This method is primarily used for writing integration tests
+        /// where the function type isn't known at compile time.
+        /// </summary>
+        /// <param name="functionType">The function type to host.</param>
+        /// <returns>A host builder that can be used for integration testing.</returns>
+        public static IHostBuilder CreateHostBuilder(Type functionType)
+        {
+            Preconditions.CheckNotNull(functionType, nameof(functionType));
+            var functionTarget = functionType.FullName ?? throw new ArgumentException("Target function type has no name.");
+            var environment = new Dictionary<string, string> { { FunctionTargetEnvironmentVariable, functionTarget } };
+            return CreateHostBuilder(environment, functionType.Assembly);
+        }
+
+        /// <summary>
+        /// Creates an <see cref="IWebHostBuilder"/> as if the environment variables are set as per <paramref name="environment"/>.
+        /// The actual system environment variables are ignored. Command line arguments are not supported, as (by design) everything
+        /// that can be specified on the command line can also be specified via environment variables.
+        /// This method is primarily used for writing integration tests where a high degree of control is required,
+        /// for example to simulate the difference between running in a container or not.
+        /// </summary>
+        /// <param name="environment">The fake environment variables to use when constructing the host builder.</param>
+        /// <param name="functionAssembly">The assembly containing the target function. May be null, in which case the calling assembly
+        /// is used.</param>
+        /// <returns>A host builder that can be used for integration testing.</returns>
+        public static IHostBuilder CreateHostBuilder(IReadOnlyDictionary<string, string> environment, Assembly? functionAssembly = null)
+        {
+            var variables = ConfigurationVariableProvider.FromDictionary(environment);
+            var functionEnvironment = FunctionEnvironment.Create(functionAssembly ?? Assembly.GetCallingAssembly(), new string[0], variables);
+            return functionEnvironment.CreateHostBuilder();
         }
     }
 }

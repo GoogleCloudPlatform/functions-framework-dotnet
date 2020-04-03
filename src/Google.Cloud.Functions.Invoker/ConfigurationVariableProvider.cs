@@ -28,8 +28,8 @@ namespace Google.Cloud.Functions.Invoker
         internal static ConfigurationVariableProvider Combine(ConfigurationVariableProvider primary, ConfigurationVariableProvider secondary) =>
             new CombinedVariableProvider(primary, secondary);
 
-        internal static ConfigurationVariableProvider FromDictionary(IDictionary<string, string> dictionary) =>
-            new DictionaryVariableProvider(dictionary);
+        internal static ConfigurationVariableProvider FromDictionary(IReadOnlyDictionary<string, string> environment) =>
+            new DictionaryVariableProvider(environment);
 
         /// <summary>
         /// Converts command line parameters into a <see cref="ConfigurationVariableProvider"/>, allowing a transformation
@@ -102,10 +102,10 @@ namespace Google.Cloud.Functions.Invoker
         /// </summary>
         private sealed class DictionaryVariableProvider : ConfigurationVariableProvider
         {
-            private readonly IDictionary<string, string> _environment;
+            private readonly IReadOnlyDictionary<string, string> _environment;
 
-            internal DictionaryVariableProvider(IDictionary<string, string> environment) =>
-                _environment = environment;
+            internal DictionaryVariableProvider(IReadOnlyDictionary<string, string> environment) =>
+                _environment = Preconditions.CheckNotNull(environment, nameof(environment));
 
             protected override string? GetVariable(string variable) =>
                 _environment.TryGetValue(variable, out var value) ? value : null;

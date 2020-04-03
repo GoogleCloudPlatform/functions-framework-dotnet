@@ -15,6 +15,8 @@ This repository contains the source code for three NuGet packages:
 - [Google.Cloud.Functions.Invoker](https://www.nuget.org/packages/Google.Cloud.Functions.Invoker)
   contains code to start up an ASP.NET Core webserver based on
   conventional environment variables etc.
+- [Google.Cloud.Functions.Invoker.Testing](https://www.nuget.org/packages/Google.Cloud.Functions.Invoker.Testing)
+  contains code to help simplify testing functions.
 - [Google.Cloud.Functions.Templates](https://www.nuget.org/packages/Google.Cloud.Functions.Templates)
   contains templates for the `dotnet` command line to create a very
   simple getting-started experience.
@@ -37,3 +39,8 @@ projects in `src` to allow for easy development. However, the expectation
 is that unless they use unreleased features, each example could be
 extracted from the repo, project references changed to package
 references, and the example should still work.
+
+## Additional documentation in this directory:
+
+- [Testing Functions](testing.md)
+- [Examples](examples.md)

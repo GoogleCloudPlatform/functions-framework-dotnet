@@ -7,9 +7,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Google.Cloud.Functions.Fram
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Google.Cloud.Functions.Invoker", "..\src\Google.Cloud.Functions.Invoker\Google.Cloud.Functions.Invoker.csproj", "{994A5912-B44E-41B6-B086-3A4420EDA8DC}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Google.Cloud.Functions.Invoker.Testing", "..\src\Google.Cloud.Functions.Invoker.Testing\Google.Cloud.Functions.Invoker.Testing.csproj", "{40BAC92F-40EA-41AC-852E-D2D04B934243}"
+EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Google.Cloud.Functions.Examples.SimpleEventFunction", "Google.Cloud.Functions.Examples.SimpleEventFunction\Google.Cloud.Functions.Examples.SimpleEventFunction.csproj", "{31959486-3FA8-4CDF-84E7-109A875C32F6}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Google.Cloud.Functions.Examples.SimpleHttpFunction", "Google.Cloud.Functions.Examples.SimpleHttpFunction\Google.Cloud.Functions.Examples.SimpleHttpFunction.csproj", "{41A3F818-E524-46DF-9EFF-1E92201956AA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Google.Cloud.Functions.Examples.IntegrationTests", "Google.Cloud.Functions.Examples.IntegrationTests\Google.Cloud.Functions.Examples.IntegrationTests.csproj", "{79F4BB7D-FB15-4B3D-B618-686D3A265834}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -69,6 +73,30 @@ Global
 		{41A3F818-E524-46DF-9EFF-1E92201956AA}.Release|x64.Build.0 = Release|Any CPU
 		{41A3F818-E524-46DF-9EFF-1E92201956AA}.Release|x86.ActiveCfg = Release|Any CPU
 		{41A3F818-E524-46DF-9EFF-1E92201956AA}.Release|x86.Build.0 = Release|Any CPU
+		{79F4BB7D-FB15-4B3D-B618-686D3A265834}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{79F4BB7D-FB15-4B3D-B618-686D3A265834}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{79F4BB7D-FB15-4B3D-B618-686D3A265834}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{79F4BB7D-FB15-4B3D-B618-686D3A265834}.Debug|x64.Build.0 = Debug|Any CPU
+		{79F4BB7D-FB15-4B3D-B618-686D3A265834}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{79F4BB7D-FB15-4B3D-B618-686D3A265834}.Debug|x86.Build.0 = Debug|Any CPU
+		{79F4BB7D-FB15-4B3D-B618-686D3A265834}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{79F4BB7D-FB15-4B3D-B618-686D3A265834}.Release|Any CPU.Build.0 = Release|Any CPU
+		{79F4BB7D-FB15-4B3D-B618-686D3A265834}.Release|x64.ActiveCfg = Release|Any CPU
+		{79F4BB7D-FB15-4B3D-B618-686D3A265834}.Release|x64.Build.0 = Release|Any CPU
+		{79F4BB7D-FB15-4B3D-B618-686D3A265834}.Release|x86.ActiveCfg = Release|Any CPU
+		{79F4BB7D-FB15-4B3D-B618-686D3A265834}.Release|x86.Build.0 = Release|Any CPU
+		{40BAC92F-40EA-41AC-852E-D2D04B934243}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{40BAC92F-40EA-41AC-852E-D2D04B934243}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{40BAC92F-40EA-41AC-852E-D2D04B934243}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{40BAC92F-40EA-41AC-852E-D2D04B934243}.Debug|x64.Build.0 = Debug|Any CPU
+		{40BAC92F-40EA-41AC-852E-D2D04B934243}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{40BAC92F-40EA-41AC-852E-D2D04B934243}.Debug|x86.Build.0 = Debug|Any CPU
+		{40BAC92F-40EA-41AC-852E-D2D04B934243}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{40BAC92F-40EA-41AC-852E-D2D04B934243}.Release|Any CPU.Build.0 = Release|Any CPU
+		{40BAC92F-40EA-41AC-852E-D2D04B934243}.Release|x64.ActiveCfg = Release|Any CPU
+		{40BAC92F-40EA-41AC-852E-D2D04B934243}.Release|x64.Build.0 = Release|Any CPU
+		{40BAC92F-40EA-41AC-852E-D2D04B934243}.Release|x86.ActiveCfg = Release|Any CPU
+		{40BAC92F-40EA-41AC-852E-D2D04B934243}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
