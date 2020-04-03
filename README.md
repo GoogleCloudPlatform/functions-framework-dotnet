@@ -117,3 +117,7 @@ Examples:
 - `dotnet run HelloFunctions.Function`
 - `dotnet run --target HelloFunctions.Function`
 - `dotnet run --target HelloFunctions.Function --port 8000`
+
+## Further documentation
+
+For more information, see the files in the [docs](docs) directory.

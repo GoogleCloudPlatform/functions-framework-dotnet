@@ -17,7 +17,7 @@ using Google.Cloud.Functions.Framework;
 using System;
 using System.Threading.Tasks;
 
-namespace Google.Cloud.Functions.SampleEventFunction
+namespace Google.Cloud.Functions.Examples.SimpleEventFunction
 {
     public class Function : ICloudEventFunction
     {
