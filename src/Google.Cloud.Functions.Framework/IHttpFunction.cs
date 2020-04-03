@@ -1,4 +1,4 @@
-// Copyright 2020, Google LLC
+﻿// Copyright 2020, Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,22 +12,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Cloud.Functions.Framework;
 using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
 
-namespace Google.Cloud.Functions.SampleHttpFunction
+namespace Google.Cloud.Functions.Framework
 {
-    public class Function : IHttpFunction
+    /// <summary>
+    /// A simple HTTP function, which populates the <see cref="HttpContext.Response"/>.
+    /// </summary>
+    public interface IHttpFunction
     {
         /// <summary>
-        /// Logic for your function goes here.
+        /// Asynchronously handles the request in <see cref="HttpContext.Request"/>,
+        /// populating <see cref="HttpContext.Response"/> to indicate the result.
         /// </summary>
-        /// <param name="context">The HTTP context, containing the request and the response.</param>
-        /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task HandleAsync(HttpContext context)
-        {
-            await context.Response.WriteAsync("Hello, Functions Framework.");
-        }
+        /// <param name="context">The HTTP context containing the request and response.</param>
+        /// <returns>A task to indicate when the request is complete.</returns>
+        Task HandleAsync(HttpContext context);
     }
 }
