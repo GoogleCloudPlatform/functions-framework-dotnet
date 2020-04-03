@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Google.Cloud.Functions.Invoker.Testing\Google.Cloud.Functions.Invoker.Testing.csproj" />
+    <ProjectReference Include="..\Google.Cloud.Functions.Examples.AdvancedDependencyInjection\Google.Cloud.Functions.Examples.AdvancedDependencyInjection.csproj" />
     <ProjectReference Include="..\Google.Cloud.Functions.Examples.SimpleHttpFunction\Google.Cloud.Functions.Examples.SimpleHttpFunction.csproj" />
   </ItemGroup>
 
