@@ -4,8 +4,17 @@ set -e
 
 export Configuration=Release
 
-dotnet build src
-dotnet test src
-dotnet build examples
-dotnet test examples
-dotnet pack src
+echo Building...
+dotnet build -nologo -clp:NoSummary -v quiet src
+dotnet build -nologo -clp:NoSummary -v quiet examples
+
+echo Testing...
+dotnet test -nologo --no-build -v quiet src
+dotnet test -nologo --no-build -v quiet examples
+
+echo Packing...
+rm -rf nupkg
+dotnet pack -nologo -v quiet src -o $PWD/nupkg
+
+echo Created packages:
+ls nupkg
