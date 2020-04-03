@@ -15,8 +15,11 @@
 using Google.Cloud.Functions.Framework;
 using Google.Cloud.Functions.Invoker.DependencyInjection;
 using Google.Cloud.Functions.Invoker.Logging;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -80,6 +83,25 @@ namespace Google.Cloud.Functions.Invoker
                 startup.Configure(builder);
             }
         }
+
+        /// <summary>
+        /// Creates a host builder, including configuring kestrel in terms of address and port.
+        /// If the builder is actually going to be used for testing instead, the kestrel configuration will
+        /// be irrelevant by the time the host starts.
+        /// </summary>
+        /// <returns>The configured host builder.</returns>
+        internal IHostBuilder CreateHostBuilder() =>
+            Host.CreateDefaultBuilder()
+                .ConfigureWebHostDefaults(webBuilder => webBuilder
+                    .ConfigureLogging(logging =>
+                    {
+                        logging.ClearProviders();
+                        logging.AddProvider(LoggerProvider);
+                    })
+                    .ConfigureKestrel(serverOptions => serverOptions.Listen(Address, Port))
+                    .ConfigureServices(ConfigureServices)
+                    .Configure(app => app.Run(RequestHandler)));
+
 
         /// <summary>
         /// Attempts to find a single valid non-abstract function class within the given set of types.
