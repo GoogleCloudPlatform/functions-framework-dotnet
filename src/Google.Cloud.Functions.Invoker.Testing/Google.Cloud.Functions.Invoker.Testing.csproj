@@ -1,42 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
-
+  <Import Project="..\CommonProperties.xml" />
+  
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <AssemblyOriginatorKeyFile>../GoogleApis.snk</AssemblyOriginatorKeyFile>
-    <SignAssembly>true</SignAssembly>
-    <Deterministic>true</Deterministic>
-    <OutputType>Library</OutputType>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <Version>1.0.0-alpha02</Version>
-    <IsPackable>True</IsPackable>
     <Title>Google Cloud Functions Framework Invoker Testing</Title>
-    <Authors>Google LLC</Authors>
     <Description>Simplifies integration tests for Google Cloud Functions Framework functions.</Description>
     <PackageTags>google;cloud;functions</PackageTags>
-    <!-- TODO: Find a Functions-specific icon URL. -->
-    <PackageIconUrl>https://cloud.google.com/images/gcp-icon-64x64.png</PackageIconUrl>
-    <PackageIcon>NuGetIcon.png</PackageIcon>
-    <PackageLicenseFile>LICENSE</PackageLicenseFile>
-    <PackageProjectUrl>https://github.com/GoogleCloudPlatform/functions-framework-dotnet</PackageProjectUrl>
-    <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://github.com/GoogleCloudPlatform/functions-framework-dotnet</RepositoryUrl>
-    <Nullable>Enable</Nullable>
-
-    <!-- Stop Visual Studio adding a launchSettings.properties file -->
-    <NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="../../LICENSE" Pack="true" PackagePath="" />
-    <None Include="../NuGetIcon.png" Pack="true" PackagePath="" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="3.1.3" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Google.Cloud.Functions.Invoker\Google.Cloud.Functions.Invoker.csproj" />
   </ItemGroup>
 </Project>
