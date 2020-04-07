@@ -39,6 +39,11 @@ namespace Google.Cloud.Functions.Invoker
     internal sealed class FunctionEnvironment
     {
         /// <summary>
+        /// The target function type.
+        /// </summary>
+        public Type FunctionType { get; }
+
+        /// <summary>
         /// The delegate to execute for HTTP requests.
         /// </summary>
         public RequestDelegate RequestHandler { get; }
@@ -65,8 +70,9 @@ namespace Google.Cloud.Functions.Invoker
         /// </summary>
         private IReadOnlyList<FunctionsStartup> Startups { get; }
 
-        private FunctionEnvironment(RequestDelegate handler, IPAddress address, int port, ILoggerProvider loggerProvider, IReadOnlyList<FunctionsStartup> startups) =>
-            (RequestHandler, Address, Port, LoggerProvider, Startups) = (handler, address, port, loggerProvider, startups);
+        private FunctionEnvironment(Type functionType, RequestDelegate handler, IPAddress address, int port, ILoggerProvider loggerProvider, IReadOnlyList<FunctionsStartup> startups) =>
+            (FunctionType, RequestHandler, Address, Port, LoggerProvider, Startups) =
+            (functionType, handler, address, port, loggerProvider, startups);
 
         internal static FunctionEnvironment Create(Assembly functionAssembly, string[] commandLine, ConfigurationVariableProvider variableProvider) =>
             new Builder(functionAssembly, commandLine, variableProvider).Build();
@@ -100,7 +106,15 @@ namespace Google.Cloud.Functions.Invoker
                     })
                     .ConfigureKestrel(serverOptions => serverOptions.Listen(Address, Port))
                     .ConfigureServices(ConfigureServices)
-                    .Configure(app => app.Run(RequestHandler)));
+                    .Configure(app =>
+                    {
+                        app.Run(RequestHandler);
+                        // Note: we can't use ILogger<EntryPoint> as EntryPoint is static. This is an equivalent.
+                        app.ApplicationServices
+                            .GetRequiredService<ILoggerFactory>()
+                            .CreateLogger(typeof(EntryPoint).FullName)
+                            .LogInformation($"Serving function {FunctionType.FullName}");
+                    }));
 
 
         /// <summary>
@@ -155,25 +169,25 @@ namespace Google.Cloud.Functions.Invoker
 
             internal FunctionEnvironment Build()
             {
-
-                RequestDelegate handler = BuildHandler();
+                Type functionType = DetermineFunctionType();
+                RequestDelegate handler = BuildHandler(functionType);
                 int port = DeterminePort();
                 IPAddress address = DetermineAddress();
                 ILoggerProvider loggerProvider = DetermineLoggerProvider();
                 IReadOnlyList<FunctionsStartup> startups = CreateStartups();
-                return new FunctionEnvironment(handler, address, port, loggerProvider, startups);
+                return new FunctionEnvironment(functionType, handler, address, port, loggerProvider, startups);
             }
 
-            private RequestDelegate BuildHandler()
+            private Type DetermineFunctionType()
             {
                 var target = _variables[EntryPoint.FunctionTargetEnvironmentVariable];
-                var type = target is null
+                return target is null
                     ? FindDefaultFunctionType(_functionAssembly.GetTypes())
-                    : _functionAssembly.GetType(target);
-                if (type is null)
-                {
-                    throw new Exception($"Can't load target type '{target}'");
-                }
+                    : _functionAssembly.GetType(target) ?? throw new Exception($"Can't load specified function type '{target}'");
+            }
+
+            private RequestDelegate BuildHandler(Type type)
+            {
                 var functionFactory = ActivatorUtilities.CreateFactory(type, argumentTypes: Type.EmptyTypes);
                 return
                     MaybeCreateHandler<IHttpFunction>(function => function) ??

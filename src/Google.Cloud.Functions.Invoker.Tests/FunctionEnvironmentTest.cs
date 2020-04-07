@@ -112,6 +112,7 @@ namespace Google.Cloud.Functions.Invoker.Tests
         public async Task TargetFunction_EventFunction()
         {
             var environment = CreateEnvironment(new[] { typeof(EventIdRememberingFunction).FullName }, Empty);
+            Assert.Equal(typeof(EventIdRememberingFunction), environment.FunctionType);
             string eventId = Guid.NewGuid().ToString();
             var context = new DefaultHttpContext
             {
@@ -190,6 +191,7 @@ namespace Google.Cloud.Functions.Invoker.Tests
 
         private static async Task AssertHttpFunctionType<T>(FunctionEnvironment environment) where T : IHttpFunction
         {
+            Assert.Equal(typeof(T), environment.FunctionType);
             var context = new DefaultHttpContext();
             await environment.RequestHandler(context);
             Assert.Equal(typeof(T), context.Items[TestHttpFunctionBase.TypeKey]);
