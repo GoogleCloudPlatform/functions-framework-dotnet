@@ -64,6 +64,21 @@ responds to [Cloud Events](https://cloudevents.io/). The procedure
 for running a Cloud Event Function is exactly the same as for an
 HTTP Function.
 
+## VB support
+
+The templates package also supports VB projects. Just use `-lang vb`
+in the `dotnet new` command. For example, the HTTP function example
+above can be used with VB like this:
+
+```sh
+mkdir HelloFunctions
+cd HelloFunctions
+dotnet new gcf-http -lang vb
+```
+
+The examples and documentation are primarily written in C# for the
+moment, but the same concepts and features apply equally to VB.
+
 ## Run your function on serverless platforms
 
 ### Google Cloud Functions

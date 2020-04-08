@@ -35,6 +35,26 @@ template using the following command line:
 dotnet new gcf-event
 ```
 
+## VbHttpFunction
+
+The [VbHttpFunction](../examples/Google.Cloud.Functions.Examples.VbHttpFunction)
+function is the result of creating a new HTTP function via the
+template using the following command line:
+
+```sh
+dotnet new gcf-http -lang vb
+```
+
+## VbEventFunction
+
+The [VbEventFunction](../examples/Google.Cloud.Functions.Examples.VbEventFunction)
+function is the result of creating a new Cloud Event function via the
+template using the following command line:
+
+```sh
+dotnet new gcf-event -lang vb
+```
+
 ## SimpleDependencyInjection
 
 The [SimpleDependencyInjection](../examples/Google.Cloud.Functions.Examples.SimpleDependencyInjection)
