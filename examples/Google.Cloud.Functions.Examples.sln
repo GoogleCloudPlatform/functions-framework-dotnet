@@ -15,9 +15,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Google.Cloud.Functions.Exam
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Google.Cloud.Functions.Examples.IntegrationTests", "Google.Cloud.Functions.Examples.IntegrationTests\Google.Cloud.Functions.Examples.IntegrationTests.csproj", "{79F4BB7D-FB15-4B3D-B618-686D3A265834}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Google.Cloud.Functions.Examples.SimpleDependencyInjection", "Google.Cloud.Functions.Examples.SimpleDependencyInjection\Google.Cloud.Functions.Examples.SimpleDependencyInjection.csproj", "{15D388EB-0831-45D1-B276-DF559960E369}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Google.Cloud.Functions.Examples.SimpleDependencyInjection", "Google.Cloud.Functions.Examples.SimpleDependencyInjection\Google.Cloud.Functions.Examples.SimpleDependencyInjection.csproj", "{15D388EB-0831-45D1-B276-DF559960E369}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Google.Cloud.Functions.Examples.AdvancedDependencyInjection", "Google.Cloud.Functions.Examples.AdvancedDependencyInjection\Google.Cloud.Functions.Examples.AdvancedDependencyInjection.csproj", "{66FE9A41-3495-4FCC-A9E6-1B9EC9721049}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Google.Cloud.Functions.Examples.AdvancedDependencyInjection", "Google.Cloud.Functions.Examples.AdvancedDependencyInjection\Google.Cloud.Functions.Examples.AdvancedDependencyInjection.csproj", "{66FE9A41-3495-4FCC-A9E6-1B9EC9721049}"
+EndProject
+Project("{778DAE3C-4631-46EA-AA77-85C1314464D9}") = "Google.Cloud.Functions.Examples.VbHttpFunction", "Google.Cloud.Functions.Examples.VbHttpFunction\Google.Cloud.Functions.Examples.VbHttpFunction.vbproj", "{0E59A7FD-E219-4B2C-8084-F7DEE4571783}"
+EndProject
+Project("{778DAE3C-4631-46EA-AA77-85C1314464D9}") = "Google.Cloud.Functions.Examples.VbEventFunction", "Google.Cloud.Functions.Examples.VbEventFunction\Google.Cloud.Functions.Examples.VbEventFunction.vbproj", "{491BBA04-1D7B-420A-8E4A-83A322FBEC5C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -125,6 +129,30 @@ Global
 		{66FE9A41-3495-4FCC-A9E6-1B9EC9721049}.Release|x64.Build.0 = Release|Any CPU
 		{66FE9A41-3495-4FCC-A9E6-1B9EC9721049}.Release|x86.ActiveCfg = Release|Any CPU
 		{66FE9A41-3495-4FCC-A9E6-1B9EC9721049}.Release|x86.Build.0 = Release|Any CPU
+		{0E59A7FD-E219-4B2C-8084-F7DEE4571783}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0E59A7FD-E219-4B2C-8084-F7DEE4571783}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0E59A7FD-E219-4B2C-8084-F7DEE4571783}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{0E59A7FD-E219-4B2C-8084-F7DEE4571783}.Debug|x64.Build.0 = Debug|Any CPU
+		{0E59A7FD-E219-4B2C-8084-F7DEE4571783}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{0E59A7FD-E219-4B2C-8084-F7DEE4571783}.Debug|x86.Build.0 = Debug|Any CPU
+		{0E59A7FD-E219-4B2C-8084-F7DEE4571783}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0E59A7FD-E219-4B2C-8084-F7DEE4571783}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0E59A7FD-E219-4B2C-8084-F7DEE4571783}.Release|x64.ActiveCfg = Release|Any CPU
+		{0E59A7FD-E219-4B2C-8084-F7DEE4571783}.Release|x64.Build.0 = Release|Any CPU
+		{0E59A7FD-E219-4B2C-8084-F7DEE4571783}.Release|x86.ActiveCfg = Release|Any CPU
+		{0E59A7FD-E219-4B2C-8084-F7DEE4571783}.Release|x86.Build.0 = Release|Any CPU
+		{491BBA04-1D7B-420A-8E4A-83A322FBEC5C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{491BBA04-1D7B-420A-8E4A-83A322FBEC5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{491BBA04-1D7B-420A-8E4A-83A322FBEC5C}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{491BBA04-1D7B-420A-8E4A-83A322FBEC5C}.Debug|x64.Build.0 = Debug|Any CPU
+		{491BBA04-1D7B-420A-8E4A-83A322FBEC5C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{491BBA04-1D7B-420A-8E4A-83A322FBEC5C}.Debug|x86.Build.0 = Debug|Any CPU
+		{491BBA04-1D7B-420A-8E4A-83A322FBEC5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{491BBA04-1D7B-420A-8E4A-83A322FBEC5C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{491BBA04-1D7B-420A-8E4A-83A322FBEC5C}.Release|x64.ActiveCfg = Release|Any CPU
+		{491BBA04-1D7B-420A-8E4A-83A322FBEC5C}.Release|x64.Build.0 = Release|Any CPU
+		{491BBA04-1D7B-420A-8E4A-83A322FBEC5C}.Release|x86.ActiveCfg = Release|Any CPU
+		{491BBA04-1D7B-420A-8E4A-83A322FBEC5C}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
