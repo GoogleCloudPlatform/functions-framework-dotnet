@@ -64,10 +64,10 @@ responds to [Cloud Events](https://cloudevents.io/). The procedure
 for running a Cloud Event Function is exactly the same as for an
 HTTP Function.
 
-## VB support
+## VB and F# support
 
-The templates package also supports VB projects. Just use `-lang vb`
-in the `dotnet new` command. For example, the HTTP function example
+The templates package also supports VB and F# projects. Just use `-lang vb`
+or `-lang f#` in the `dotnet new` command. For example, the HTTP function example
 above can be used with VB like this:
 
 ```sh
@@ -78,6 +78,10 @@ dotnet new gcf-http -lang vb
 
 The examples and documentation are primarily written in C# for the
 moment, but the same concepts and features apply equally to VB.
+
+F# support is currently not "idiomatic F#", but regular F# functions
+should be easy to wrap using the code in the templates. Feedback on
+how we can provide a more familiar F# experience is welcome.
 
 ## Run your function on serverless platforms
 
