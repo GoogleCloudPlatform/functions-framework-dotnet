@@ -1,0 +1,15 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "author": "Google Inc.",
+  "classifications": [ "Google", "Cloud", "Functions", "Http" ],
+  "identity": "Google.Cloud.Functions.Templates.HttpFunction.VisualBasic",
+  "groupIdentity": "Google.Cloud.Functions.HttpFunction",
+  "name": "Google Cloud Functions HttpFunction",
+  "shortName": "gcf-http",
+  "sourceName": "MyFunction",
+  "tags": {
+    "language": "VB",
+    "type": "project"
+  },
+  "preferNameDirectory": true
+}
