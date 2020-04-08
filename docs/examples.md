@@ -92,6 +92,16 @@ dependencies.
 
 See the [dependency injection documentation](dependency-injection.md) for more details.
 
+## TimeZoneConverter
+
+The [TimeZoneConverter](../examples/Google.Cloud.Functions.Examples.TimeZoneConverter)
+example provides a function with more business logic than most simple examples. It uses
+the [Noda Time](https://nodatime.org) library to perform time zone conversions based
+on the [IANA time zone database](https://www.iana.org/time-zones).
+
+See the [README.md file](../examples/Google.Cloud.Functions.Examples.TimeZoneConverter/README.md)
+for more details.
+
 ## Integration Tests
 
 The [IntegrationTests](../examples/Google.Cloud.Functions.Examples.IntegrationTests)
