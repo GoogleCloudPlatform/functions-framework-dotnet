@@ -161,6 +161,10 @@ namespace Google.Cloud.Functions.Invoker
                 // For the convenience of running from the command line, treat a single command line variable as if it's a "--target" value.
                 if (commandLine.Length == 1)
                 {
+                    if (commandLine[0] == "%LAUNCHER_ARGS%")
+                    {
+                        throw new Exception("Unable to launch Web SDK project with launch settings. Please see https://github.com/GoogleCloudPlatform/functions-framework-dotnet/blob/master/docs/launch-settings.md");
+                    }
                     commandLine = new[] { "--target", commandLine[0] };
                 }
                 var commandLineVariables = ConfigurationVariableProvider.FromCommandLine(commandLine, CommandLineArgumentToVariableMapping);

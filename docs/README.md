@@ -45,3 +45,4 @@ references, additional MSBuild imports removed, and the example should still wor
 - [Testing Functions](testing.md)
 - [Examples](examples.md)
 - [Dependency Injection](dependency-injection.md)
+- [Microsoft.NET.Sdk.Web and launchSettings.json](launch-settings.md)

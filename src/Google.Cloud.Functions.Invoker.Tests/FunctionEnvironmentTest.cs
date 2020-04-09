@@ -33,6 +33,15 @@ namespace Google.Cloud.Functions.Invoker.Tests
         private static readonly string[] Empty = new string[0];
 
         [Fact]
+        public void LaunchSettingsGiveInstructions()
+        {
+            // See https://github.com/GoogleCloudPlatform/functions-framework-dotnet/issues/41 for the background
+            var exception = AssertBadEnvironment(new[] { "%LAUNCHER_ARGS%" }, Empty);
+            // The exception should contain a message with a link to documentation.
+            Assert.Contains("https://github.com", exception.Message);
+        }
+
+        [Fact]
         public void Port_DefaultsTo8080()
         {
             var environment = CreateEnvironment(DefaultFunctionCommandLine, Empty);
@@ -186,7 +195,7 @@ namespace Google.Cloud.Functions.Invoker.Tests
             Assert.Equal(IPAddress.Loopback, environment.Address);
         }
 
-        private static void AssertBadEnvironment(string[] commandLine, string[] variables) =>
+        private static Exception AssertBadEnvironment(string[] commandLine, string[] variables) =>
             Assert.ThrowsAny<Exception>(() => CreateEnvironment(commandLine, variables));
 
         private static async Task AssertHttpFunctionType<T>(FunctionEnvironment environment) where T : IHttpFunction
