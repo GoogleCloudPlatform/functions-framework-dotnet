@@ -27,6 +27,7 @@ using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace Google.Cloud.Functions.Invoker
 {
@@ -108,6 +109,8 @@ namespace Google.Cloud.Functions.Invoker
                     .ConfigureServices(ConfigureServices)
                     .Configure(app =>
                     {
+                        app.Map("/robots.txt", ReturnNotFound);
+                        app.Map("/favicon.ico", ReturnNotFound);
                         app.Run(RequestHandler);
                         // Note: we can't use ILogger<EntryPoint> as EntryPoint is static. This is an equivalent.
                         app.ApplicationServices
@@ -116,6 +119,12 @@ namespace Google.Cloud.Functions.Invoker
                             .LogInformation($"Serving function {FunctionType.FullName}");
                     }));
 
+        private static void ReturnNotFound(IApplicationBuilder app) =>
+            app.Run(context =>
+            {
+                context.Response.StatusCode = (int) HttpStatusCode.NotFound;
+                return Task.CompletedTask;
+            });
 
         /// <summary>
         /// Attempts to find a single valid non-abstract function class within the given set of types.
