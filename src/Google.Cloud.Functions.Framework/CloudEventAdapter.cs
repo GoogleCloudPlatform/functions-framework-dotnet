@@ -38,7 +38,7 @@ namespace Google.Cloud.Functions.Framework
         /// original Cloud Event Function. The request fails if it does not contain a Cloud Event.
         /// </summary>
         /// <param name="context">The HTTP context containing the request and response.</param>
-        /// <returns></returns>
+        /// <returns>A task representing the asynchronous operation.</returns>
         public async Task HandleAsync(HttpContext context)
         {
             var cloudEvent = await context.Request.ReadCloudEventAsync();
