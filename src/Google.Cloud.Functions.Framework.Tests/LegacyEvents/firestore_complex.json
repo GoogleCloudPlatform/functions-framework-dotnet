@@ -1,0 +1,81 @@
+{
+  "data": {
+    "oldValue": {},
+    "updateMask": {},
+    "value": {
+      "createTime": "2020-04-23T14:25:05.349632Z",
+      "fields": {
+        "arrayValue": {
+          "arrayValue": {
+            "values": [
+              {
+                "integerValue": "1"
+              },
+              {
+                "integerValue": "2"
+              }
+            ]
+          }
+        },
+        "booleanValue": {
+          "booleanValue": true
+        },
+        "doubleValue": {
+          "doubleValue": 5.5
+        },
+        "geoPointValue": {
+          "geoPointValue": {
+            "latitude": 51.4543,
+            "longitude": -0.9781
+          }
+        },
+        "intValue": {
+          "integerValue": "50"
+        },
+        "mapValue": {
+          "mapValue": {
+            "fields": {
+              "field1": {
+                "stringValue": "x"
+              },
+              "field2": {
+                "arrayValue": {
+                  "values": [
+                    {
+                      "stringValue": "x"
+                    },
+                    {
+                      "integerValue": "1"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "nullValue": {
+          "nullValue": null
+        },
+        "referenceValue": {
+          "referenceValue": "projects/project-id/databases/(default)/documents/foo/bar/baz/qux"
+        },
+        "stringValue": {
+          "stringValue": "text"
+        },
+        "timestampValue": {
+          "timestampValue": "2020-04-23T14:23:53.241Z"
+        }
+      },
+      "name": "projects/project-id/databases/(default)/documents/gcf-test/IH75dRdeYJKd4uuQiqch",
+      "updateTime": "2020-04-23T14:25:05.349632Z"
+    }
+  },
+  "eventId": "9babded5-e5f2-41af-a46a-06ba6bd84739-0",
+  "eventType": "providers/cloud.firestore/eventTypes/document.write",
+  "notSupported": {},
+  "params": {
+    "doc": "IH75dRdeYJKd4uuQiqch"
+  },
+  "resource": "projects/project-id/databases/(default)/documents/gcf-test/IH75dRdeYJKd4uuQiqch",
+  "timestamp": "2020-04-23T14:25:05.349632Z"
+}

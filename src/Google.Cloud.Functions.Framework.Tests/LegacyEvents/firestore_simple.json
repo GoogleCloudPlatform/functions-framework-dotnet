@@ -1,0 +1,51 @@
+﻿{
+   "data":{
+      "oldValue":{
+         "createTime":"2020-04-23T09:58:53.211035Z",
+         "fields":{
+            "another test":{
+               "stringValue":"asd"
+            },
+            "count":{
+               "integerValue":"3"
+            },
+            "foo":{
+               "stringValue":"bar"
+            }
+         },
+         "name":"projects/project-id/databases/(default)/documents/gcf-test/2Vm2mI1d0wIaK2Waj5to",
+         "updateTime":"2020-04-23T12:00:27.247187Z"
+      },
+      "updateMask":{
+         "fieldPaths":[
+            "count"
+         ]
+      },
+      "value":{
+         "createTime":"2020-04-23T09:58:53.211035Z",
+         "fields":{
+            "another test":{
+               "stringValue":"asd"
+            },
+            "count":{
+               "integerValue":"4"
+            },
+            "foo":{
+               "stringValue":"bar"
+            }
+         },
+         "name":"projects/project-id/databases/(default)/documents/gcf-test/2Vm2mI1d0wIaK2Waj5to",
+         "updateTime":"2020-04-23T12:00:27.247187Z"
+      }
+   },
+   "eventId":"7b8f1804-d38b-4b68-b37d-e2fb5d12d5a0-0",
+   "eventType":"providers/cloud.firestore/eventTypes/document.write",
+   "notSupported":{
+
+   },
+   "params":{
+      "doc":"2Vm2mI1d0wIaK2Waj5to"
+   },
+   "resource":"projects/project-id/databases/(default)/documents/gcf-test/2Vm2mI1d0wIaK2Waj5to",
+   "timestamp":"2020-04-23T12:00:27.247187Z"
+}
