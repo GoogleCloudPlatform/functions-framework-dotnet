@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using Google.Cloud.Functions.Framework;
+using Google.Cloud.Functions.Framework.LegacyEvents;
 using Google.Cloud.Functions.Invoker.DependencyInjection;
 using Google.Cloud.Functions.Invoker.Logging;
 using Microsoft.AspNetCore.Builder;
@@ -25,6 +26,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Net;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -149,8 +151,28 @@ namespace Google.Cloud.Functions.Invoker
             };
 
             bool IsFunctionClass(Type t) =>
-                t.IsClass && !t.IsAbstract &&
-                (typeof(IHttpFunction).IsAssignableFrom(t) || typeof(ICloudEventFunction).IsAssignableFrom(t));
+                t.IsClass && !t.IsAbstract && !t.IsGenericType &&
+                (typeof(IHttpFunction).IsAssignableFrom(t) ||
+                typeof(ICloudEventFunction).IsAssignableFrom(t) ||
+                GetGenericInterfaceImplementationTypeArgument(t, typeof(ILegacyEventFunction<>)) is object);
+        }
+
+        /// <summary>
+        /// Checks whether a given type implements a generic interface (assumed to have a single type parameter),
+        /// and returns the type argument if so. For example, if we have "class MyFunction : ILegacyEventFunction{PubSubMessage}"
+        /// then a call to GetGenericInterfaceImplementationTypeArgument(typeof(MyFunction), typeof(ILegacyEventFunction&lt;&gt;))
+        /// will return typeof(PubSubMessage).
+        /// </summary>
+        /// <param name="target">The target type to check.</param>
+        /// <param name="genericInterface">The generic interface</param>
+        /// <returns></returns>
+        private static Type? GetGenericInterfaceImplementationTypeArgument(Type target, Type genericInterface)
+        {
+            var matches = target.GetInterfaces()
+                .Where(iface => iface.IsGenericType && iface.GetGenericTypeDefinition() == genericInterface);
+            // We only want to return an unambiguous match. Note that this will evaluate the list twice in the "got one" case,
+            // but that's okay.
+            return matches.Count() == 1 ? matches.Single().GetGenericArguments()[0] : null;
         }
 
         private class Builder
@@ -203,6 +225,7 @@ namespace Google.Cloud.Functions.Invoker
             {
                 var functionFactory = ActivatorUtilities.CreateFactory(type, argumentTypes: Type.EmptyTypes);
                 return
+                    MaybeCreateGenericHandler(typeof(ILegacyEventFunction<>), typeof(LegacyEventAdapter<>)) ??
                     MaybeCreateHandler<IHttpFunction>(function => function) ??
                     MaybeCreateHandler<ICloudEventFunction>(function => new CloudEventAdapter(function)) ??
                     throw new Exception("Function doesn't support known interfaces");
@@ -217,6 +240,50 @@ namespace Google.Cloud.Functions.Invoker
                         // to the adapter.
                         ? context => functionAdapter((TInterface) functionFactory(context.RequestServices, null)).HandleAsync(context)
                         : (RequestDelegate?) null;
+
+                RequestDelegate? MaybeCreateGenericHandler(Type genericInterface, Type genericAdapter)
+                {
+                    var typeArgument = GetGenericInterfaceImplementationTypeArgument(type, genericInterface);
+                    if (typeArgument is null)
+                    {
+                        return null;
+                    }
+
+                    var adapterType = genericAdapter.MakeGenericType(typeArgument);
+
+                    // Build an expression tree for the request delegate. We want
+                    // context => new FooAdapterType<TWhatever>((IFoo<TWhatever>) functionFactory(context.RequestServices, null)).HandleAsync(context)
+
+                    var contextParameter = Expression.Parameter(typeof(HttpContext), "context");
+
+                    // Expression for context.RequestServices
+                    var requestServices = Expression.Property(contextParameter, nameof(HttpContext.RequestServices));
+
+                    // Expression for functionFactory(context.RequestServices, null)
+                    var function = Expression.Call(
+                        instance: Expression.Constant(functionFactory, typeof(ObjectFactory)),
+                        methodName: nameof(ObjectFactory.Invoke),
+                        typeArguments: Type.EmptyTypes,
+                        arguments: new Expression[] { requestServices, Expression.Constant(null, typeof(object[])) });
+
+                    // Expression for (IFoo<TWhatever>) functionFactory(...)
+                    var castFunction = Expression.Convert(function, genericInterface.MakeGenericType(typeArgument));
+
+                    // Expression for new FooAdapterType<TWhatever>(...)
+                    // Assume that our adapter only has a single constructor, and that's what we want to call.
+                    var ctor = adapterType.GetConstructors().Single();
+                    var adapterConstruction = Expression.New(ctor, castFunction);
+
+                    // Expression for (...).HandleAsync(context)
+                    var handleAsync = Expression.Call(
+                        instance: adapterConstruction,
+                        methodName: nameof(IHttpFunction.HandleAsync),
+                        typeArguments: Type.EmptyTypes,
+                        arguments: contextParameter);
+
+                    Expression<RequestDelegate> requestDelegate = Expression.Lambda<RequestDelegate>(handleAsync, contextParameter);
+                    return requestDelegate.Compile();
+                }
             }
 
             private int DeterminePort()
