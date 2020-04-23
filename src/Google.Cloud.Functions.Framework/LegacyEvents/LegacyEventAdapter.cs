@@ -14,8 +14,6 @@
 
 using Microsoft.AspNetCore.Http;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
@@ -26,7 +24,7 @@ namespace Google.Cloud.Functions.Framework.LegacyEvents
     /// An adapter to implement an HTTP Function based on a Legacy Event Function.
     /// </summary>
     /// <typeparam name="T">The payload type.</typeparam>
-    public class LegacyEventAdapter<T> : IHttpFunction where T : class
+    public sealed class LegacyEventAdapter<T> : IHttpFunction where T : class
     {
         private readonly ILegacyEventFunction<T> _function;
 
