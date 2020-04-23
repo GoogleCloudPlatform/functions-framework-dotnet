@@ -1,6 +1,6 @@
 {
   "$schema": "http://json.schemastore.org/template",
-  "author": "Google Inc.",
+  "author": "Google LLC",
   "classifications": [ "Google", "Cloud", "Functions", "Http" ],
   "identity": "Google.Cloud.Functions.Templates.HttpFunction.CSharp",
   "groupIdentity": "Google.Cloud.Functions.HttpFunction",
