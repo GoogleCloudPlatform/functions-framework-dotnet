@@ -44,6 +44,12 @@ namespace Google.Cloud.Functions.Invoker.Logging
             };
 
             Console.WriteLine($"{DateTime.UtcNow:yyyy-MM-dd'T'HH:mm:ss.fff'Z'} [{Category}] [{briefLevel}] {message}");
+            // Note: it's not ideal to break out of the "one line per log entry" approach here, but there's no particularly
+            // nice way of getting all the relevant information otherwise.
+            if (exception is object)
+            {
+                Console.WriteLine(exception);
+            }
         }
     }
 }
