@@ -23,6 +23,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -280,7 +281,7 @@ namespace Google.Cloud.Functions.Invoker.Tests
             /// </summary>
             public static string LastEventId { get; private set; }
 
-            public Task HandleAsync(CloudEvent cloudEvent)
+            public Task HandleAsync(CloudEvent cloudEvent, CancellationToken cancellationToken)
             {
                 LastEventId = cloudEvent.Id;
                 return Task.CompletedTask;
@@ -291,7 +292,7 @@ namespace Google.Cloud.Functions.Invoker.Tests
         {
             public static string LastEventId { get; set; }
 
-            public Task HandleAsync(object payload, Context context)
+            public Task HandleAsync(object payload, Context context, CancellationToken cancellationToken)
             {
                 LastEventId = context.Id;
                 return Task.CompletedTask;
@@ -317,8 +318,10 @@ namespace Google.Cloud.Functions.Invoker.Tests
 
         public class MultipleLegacyEventTypes : ILegacyEventFunction<string>, ILegacyEventFunction<object>
         {
-            public Task HandleAsync(string payload, Context context) => Task.CompletedTask;
-            public Task HandleAsync(object payload, Context context) => Task.CompletedTask;
+            public Task HandleAsync(string payload, Context context, CancellationToken cancellationToken)
+                => Task.CompletedTask;
+            public Task HandleAsync(object payload, Context context, CancellationToken cancellationToken)
+                => Task.CompletedTask;
         }
 
         /// <summary>

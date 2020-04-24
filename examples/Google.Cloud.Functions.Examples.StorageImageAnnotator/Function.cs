@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using static Google.Cloud.Vision.V1.Feature.Types.Type;
 
@@ -55,7 +56,7 @@ namespace Google.Cloud.Functions.Examples.StorageImageAnnotator
         /// </summary>
         /// <param name="payload">The storage object that's been uploaded.</param>
         /// <param name="context">Event context (event ID etc)</param>
-        public async Task HandleAsync(StorageObject payload, Context context)
+        public async Task HandleAsync(StorageObject payload, Context context, CancellationToken cancellationToken)
         {
             // Only handle JPEG images. (This prevents us from trying to perform image recognition on
             // the files we upload.)
@@ -66,7 +67,7 @@ namespace Google.Cloud.Functions.Examples.StorageImageAnnotator
                 return;
             }
 
-            var annotations = await AnnotateImageAsync(payload);
+            var annotations = await AnnotateImageAsync(payload, cancellationToken);
             var text = DescribeAnnotations(annotations);
             string newObjectName = await CreateDescriptionFileAsync(payload, text);
             _logger.LogInformation("Created object {object} with image annotations", newObjectName);
@@ -77,7 +78,7 @@ namespace Google.Cloud.Functions.Examples.StorageImageAnnotator
         /// objects directly based on their name, so we don't need to download the object and then upload it
         /// to the Vision API.
         /// </summary>
-        private Task<AnnotateImageResponse> AnnotateImageAsync(StorageObject payload)
+        private Task<AnnotateImageResponse> AnnotateImageAsync(StorageObject payload, CancellationToken cancellationToken)
         {
             var features = new[] { FaceDetection, LandmarkDetection, TextDetection, LogoDetection, LabelDetection }
                 .Select(type => new Feature { Type = type, MaxResults = 20 });
@@ -86,7 +87,7 @@ namespace Google.Cloud.Functions.Examples.StorageImageAnnotator
                 Image = Image.FromUri($"gs://{payload.Bucket}/{payload.Name}"),
                 Features = { features }
             };
-            return _visionClient.AnnotateAsync(request);
+            return _visionClient.AnnotateAsync(request, cancellationToken);
         }
 
         /// <summary>

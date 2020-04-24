@@ -56,7 +56,7 @@ namespace Google.Cloud.Functions.Framework
                 _logger.LogError("Request did not contain a valid cloud event");
                 return;
             }
-            await _function.HandleAsync(cloudEvent);
+            await _function.HandleAsync(cloudEvent, context.RequestAborted);
         }
 
         private static bool IsValidEvent([NotNullWhen(true)] CloudEvent? cloudEvent) =>

@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Google.Cloud.Functions.Framework.LegacyEvents
@@ -30,8 +31,9 @@ namespace Google.Cloud.Functions.Framework.LegacyEvents
         /// </summary>
         /// <param name="payload">The payload of the event.</param>
         /// <param name="context">The context of the event.</param>
+        /// <param name="cancellationToken">A cancellation token which indicates if the request is aborted.</param>
         /// <returns>A task representing the potentially-asynchronous handling of the event.
         /// If the task completes, the function is deemed to be successful.</returns>
-        Task HandleAsync(T payload, Context context);
+        Task HandleAsync(T payload, Context context, CancellationToken cancellationToken);
     }
 }
