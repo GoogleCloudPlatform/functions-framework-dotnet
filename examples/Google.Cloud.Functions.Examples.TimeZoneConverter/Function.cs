@@ -34,7 +34,7 @@ namespace Google.Cloud.Functions.Examples.TimeZoneConverter
     ///   Format: extended ISO yyyy-MM-ddTHH:mm:ss with optional subsecond digits.</item>
     /// </list>
     /// </summary>
-    public sealed class TimeZoneConverter : IHttpFunction
+    public sealed class Function : IHttpFunction
     {
         private static readonly JsonSerializerOptions s_serializerOptions = new JsonSerializerOptions
         { 
@@ -50,7 +50,7 @@ namespace Google.Cloud.Functions.Examples.TimeZoneConverter
         /// Constructs a converter using the given time zone provider and source.
         /// </summary>
         /// <param name="provider">The time zone provider to use.</param>
-        public TimeZoneConverter(IDateTimeZoneProvider provider) =>
+        public Function(IDateTimeZoneProvider provider) =>
             _timeZoneProvider = provider;
 
         /// <summary>
