@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
 using CloudNative.CloudEvents;
 using System.Diagnostics.CodeAnalysis;
+using Microsoft.Extensions.Logging;
 
 namespace Google.Cloud.Functions.Framework
 {
@@ -25,13 +26,18 @@ namespace Google.Cloud.Functions.Framework
     public sealed class CloudEventAdapter : IHttpFunction
     {
         private readonly ICloudEventFunction _function;
+        private readonly ILogger _logger;
 
         /// <summary>
         /// Constructs a new instance based on the given Cloud Event Function.
         /// </summary>
         /// <param name="function">The Cloud Event Function to invoke.</param>
-        public CloudEventAdapter(ICloudEventFunction function) =>
+        /// <param name="logger">The logger to use to report errors.</param>
+        public CloudEventAdapter(ICloudEventFunction function, ILogger<CloudEventAdapter> logger)
+        {
             _function = Preconditions.CheckNotNull(function, nameof(function));
+            _logger = Preconditions.CheckNotNull(logger, nameof(logger));
+        }
 
         /// <summary>
         /// Handles an HTTP request by extracting the Cloud Event from it and passing it to the
@@ -47,7 +53,7 @@ namespace Google.Cloud.Functions.Framework
             if (!IsValidEvent(cloudEvent))
             {
                 context.Response.StatusCode = 400;
-                await context.Response.WriteAsync("Request is expected to contain a Cloud Event.", context.RequestAborted);
+                _logger.LogError("Request did not contain a valid cloud event");
                 return;
             }
             await _function.HandleAsync(cloudEvent);

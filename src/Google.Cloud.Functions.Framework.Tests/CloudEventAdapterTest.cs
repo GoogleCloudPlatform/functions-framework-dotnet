@@ -14,6 +14,7 @@
 
 using CloudNative.CloudEvents;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging.Abstractions;
 using System;
 using System.Threading.Tasks;
 using Xunit;
@@ -26,7 +27,7 @@ namespace Google.Cloud.Functions.Framework.Tests
         public async Task InvalidRequest_FunctionNotCalled()
         {
             var function = new TestCloudEventFunction();
-            var adapter = new CloudEventAdapter(function);
+            var adapter = new CloudEventAdapter(function, new NullLogger<CloudEventAdapter>());
             var context = new DefaultHttpContext();
             await adapter.HandleAsync(context);
             Assert.Equal(400, context.Response.StatusCode);
@@ -37,7 +38,7 @@ namespace Google.Cloud.Functions.Framework.Tests
         public async Task ValidRequest_FunctionCalled()
         {
             var function = new TestCloudEventFunction();
-            var adapter = new CloudEventAdapter(function);
+            var adapter = new CloudEventAdapter(function, new NullLogger<CloudEventAdapter>());
             string eventId = Guid.NewGuid().ToString();
             var context = new DefaultHttpContext
             {
