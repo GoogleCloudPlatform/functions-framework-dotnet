@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -27,13 +28,15 @@ namespace Google.Cloud.Functions.Framework.LegacyEvents
     public sealed class LegacyEventAdapter<T> : IHttpFunction where T : class
     {
         private readonly ILegacyEventFunction<T> _function;
+        private readonly ILogger _logger;
 
         /// <summary>
         /// Constructs a new instance based on the given Legacy Event Function.
         /// </summary>
         /// <param name="function">The Legacy Event Function to invoke.</param>
-        public LegacyEventAdapter(ILegacyEventFunction<T> function) =>
-            _function = function;
+        /// <param name="logger">The logger to use for reporting errors.</param>
+        public LegacyEventAdapter(ILegacyEventFunction<T> function, ILogger<LegacyEventAdapter<T>> logger) =>
+            (_function, _logger) = (function, logger);
 
         /// <summary>
         /// Handles an HTTP request by extracting the Cloud Event from it and passing it to the
@@ -49,14 +52,16 @@ namespace Google.Cloud.Functions.Framework.LegacyEvents
             {
                 parsedRequest = await JsonSerializer.DeserializeAsync<Request>(context.Request.Body);
             }
-            catch (JsonException)
+            catch (JsonException e)
             {
+                _logger.LogError(e, "Error parsing legacy event");
                 context.Response.StatusCode = 400;
                 return;
             }
             parsedRequest.NormalizeContext();
             if (parsedRequest.Data is null || parsedRequest.Context?.Id is null)
             {
+                _logger.LogError("Event is malformed; does not contain a payload, or the event ID is missing.");
                 context.Response.StatusCode = 400;
                 return;
             }
