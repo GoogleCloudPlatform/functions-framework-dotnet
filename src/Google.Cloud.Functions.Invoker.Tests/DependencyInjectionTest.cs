@@ -70,7 +70,7 @@ namespace Google.Cloud.Functions.Invoker.Tests
                 using (var scope = provider.CreateScope())
                 {
                     var context = new DefaultHttpContext { RequestServices = scope.ServiceProvider };
-                    await environment.RequestHandler(context);
+                    await environment.Execute(context);
                     return (context.Items[Dependency1Key], context.Items[Dependency2Key]);
                 }
             }
