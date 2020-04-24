@@ -102,6 +102,17 @@ on the [IANA time zone database](https://www.iana.org/time-zones).
 See the [README.md file](../examples/Google.Cloud.Functions.Examples.TimeZoneConverter/README.md)
 for more details.
 
+## StorageImageAnnotator
+
+The [StorageImageAnnotator](../examples/Google.Cloud.Functions.Examples.StorageImageAnnotator)
+example is an event function that's triggered when a file is
+uploaded into a Google Cloud Storage bucket. It uses the Google
+Cloud Vision API to perform various aspects of image recognition,
+then writes the results as a new Storage object.
+
+See the [README.md file](../examples/Google.Cloud.Functions.Examples.StorageImageAnnotator/README.md)
+for more details.
+
 ## Integration Tests
 
 The [IntegrationTests](../examples/Google.Cloud.Functions.Examples.IntegrationTests)
