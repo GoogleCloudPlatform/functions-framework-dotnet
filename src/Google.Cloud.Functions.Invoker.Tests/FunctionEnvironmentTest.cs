@@ -16,6 +16,8 @@ using CloudNative.CloudEvents;
 using Google.Cloud.Functions.Framework;
 using Google.Cloud.Functions.Framework.LegacyEvents;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System;
 using System.IO;
 using System.Linq;
@@ -117,8 +119,12 @@ namespace Google.Cloud.Functions.Invoker.Tests
             AssertBadEnvironment(new[] { typeof(NonFunction).FullName }, Empty);
 
         [Fact]
-        public void TargetFunction_NonInstantiableFunctionType() =>
-            AssertBadEnvironment(new[] { typeof(NonInstantiableFunction).FullName }, Empty);
+        public async Task TargetFunction_NonInstantiableFunctionType()
+        {
+            var environment = CreateEnvironment(new[] { typeof(NonInstantiableFunction).FullName }, Empty);
+            // We only find out when we try to execute a request that we can't actually instantiate the function.
+            await Assert.ThrowsAsync<InvalidOperationException>(async () => await ExecuteRequest(environment, new DefaultHttpContext()));
+        }
 
         [Fact]
         public void TargetFunction_MultipleLegacyEventTypes() =>
@@ -146,7 +152,7 @@ namespace Google.Cloud.Functions.Invoker.Tests
                 }
             };
 
-            await environment.RequestHandler.Invoke(context);
+            await ExecuteRequest(environment, context);
             Assert.Equal(eventId, EventIdRememberingFunction.LastEventId);
         }
 
@@ -168,7 +174,7 @@ namespace Google.Cloud.Functions.Invoker.Tests
             {
                 Request = { Body = bodyStream }
             };
-            await environment.RequestHandler.Invoke(httpContext);
+            await ExecuteRequest(environment, httpContext);
             Assert.Equal(eventId, LegacyEventFunction.LastEventId);
         }
 
@@ -240,11 +246,11 @@ namespace Google.Cloud.Functions.Invoker.Tests
         private static Exception AssertBadEnvironment(string[] commandLine, string[] variables) =>
             Assert.ThrowsAny<Exception>(() => CreateEnvironment(commandLine, variables));
 
-        private static async Task AssertHttpFunctionType<T>(FunctionEnvironment environment) where T : IHttpFunction
+        private async Task AssertHttpFunctionType<T>(FunctionEnvironment environment) where T : IHttpFunction
         {
             Assert.Equal(typeof(T), environment.FunctionType);
             var context = new DefaultHttpContext();
-            await environment.RequestHandler(context);
+            await ExecuteRequest(environment, context);
             Assert.Equal(typeof(T), context.Items[TestHttpFunctionBase.TypeKey]);
         }
 
@@ -313,6 +319,28 @@ namespace Google.Cloud.Functions.Invoker.Tests
         {
             public Task HandleAsync(string payload, Context context) => Task.CompletedTask;
             public Task HandleAsync(object payload, Context context) => Task.CompletedTask;
+        }
+
+        /// <summary>
+        /// Executes the given request in a function environment. The context will be populated
+        /// with a default service provider.
+        /// </summary>
+        private async Task ExecuteRequest(FunctionEnvironment environment, HttpContext context)
+        {
+            var services = new ServiceCollection();
+            // Normally ASP.NET Core provides logging for everything, so it's natural to depend on it.
+            // Our adapters may need logging, so let's make sure it's available.
+            services.AddSingleton<ILoggerFactory>(new LoggerFactory());
+            services.AddLogging();
+            environment.ConfigureServices(services);
+            var providerFactory = new DefaultServiceProviderFactory();
+
+            var provider = providerFactory.CreateServiceProvider(services);
+            using (var scope = provider.CreateScope())
+            {
+                context.RequestServices = scope.ServiceProvider;
+                await environment.Execute(context);
+            }
         }
     }
 }

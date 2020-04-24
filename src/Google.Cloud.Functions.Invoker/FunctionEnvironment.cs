@@ -26,7 +26,6 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Net;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -42,14 +41,15 @@ namespace Google.Cloud.Functions.Invoker
     internal sealed class FunctionEnvironment
     {
         /// <summary>
+        /// The service configuration to apply to the IServiceCollection during
+        /// configuration. This is expected to provide an implementation for IHttpFunction.
+        /// </summary>
+        private readonly Action<IServiceCollection> _serviceConfiguration;
+
+        /// <summary>
         /// The target function type.
         /// </summary>
         public Type FunctionType { get; }
-
-        /// <summary>
-        /// The delegate to execute for HTTP requests.
-        /// </summary>
-        public RequestDelegate RequestHandler { get; }
 
         /// <summary>
         /// The IP Address to listen on.
@@ -73,24 +73,27 @@ namespace Google.Cloud.Functions.Invoker
         /// </summary>
         private IReadOnlyList<FunctionsStartup> Startups { get; }
 
-        private FunctionEnvironment(Type functionType, RequestDelegate handler, IPAddress address, int port, ILoggerProvider loggerProvider, IReadOnlyList<FunctionsStartup> startups) =>
-            (FunctionType, RequestHandler, Address, Port, LoggerProvider, Startups) =
-            (functionType, handler, address, port, loggerProvider, startups);
+        private FunctionEnvironment(Type functionType, Action<IServiceCollection> serviceConfiguration, IPAddress address, int port, ILoggerProvider loggerProvider, IReadOnlyList<FunctionsStartup> startups) =>
+            (FunctionType, _serviceConfiguration, Address, Port, LoggerProvider, Startups) =
+            (functionType, serviceConfiguration, address, port, loggerProvider, startups);
 
         internal static FunctionEnvironment Create(Assembly functionAssembly, string[] commandLine, ConfigurationVariableProvider variableProvider) =>
             new Builder(functionAssembly, commandLine, variableProvider).Build();
 
         /// <summary>
         /// Configures the services for the application by asking each <see cref="FunctionsStartup"/>
-        /// that's been detected to contribute services.
+        /// that's been detected to contribute services, along with any we need in order to run the function.
         /// </summary>
         internal void ConfigureServices(IServiceCollection services)
         {
+            // Perform any user-specified configuration.
             var builder = new FunctionsHostBuilder(services);
             foreach (var startup in Startups)
             {
                 startup.Configure(builder);
             }
+            // Then perform the configuration to make sure that IHttpFunction is provided.
+            _serviceConfiguration(services);
         }
 
         /// <summary>
@@ -113,13 +116,23 @@ namespace Google.Cloud.Functions.Invoker
                     {
                         app.Map("/robots.txt", ReturnNotFound);
                         app.Map("/favicon.ico", ReturnNotFound);
-                        app.Run(RequestHandler);
+                        app.Run(Execute);
                         // Note: we can't use ILogger<EntryPoint> as EntryPoint is static. This is an equivalent.
                         app.ApplicationServices
                             .GetRequiredService<ILoggerFactory>()
                             .CreateLogger(typeof(EntryPoint).FullName)
                             .LogInformation($"Serving function {FunctionType.FullName}");
                     }));
+
+        /// <summary>
+        /// Executes a request by asking the dependency injection context for an IHttpFunction, then
+        /// executing it. Any additional "root" handling (e.g. extra logging, or exception handling).
+        /// </summary>
+        internal async Task Execute(HttpContext context)
+        {
+            var function = context.RequestServices.GetRequiredService<IHttpFunction>();
+            await function.HandleAsync(context);
+        }
 
         private static void ReturnNotFound(IApplicationBuilder app) =>
             app.Run(context =>
@@ -205,12 +218,12 @@ namespace Google.Cloud.Functions.Invoker
             internal FunctionEnvironment Build()
             {
                 Type functionType = DetermineFunctionType();
-                RequestDelegate handler = BuildHandler(functionType);
+                var serviceConfiguration = BuildServiceConfiguration(functionType);
                 int port = DeterminePort();
                 IPAddress address = DetermineAddress();
                 ILoggerProvider loggerProvider = DetermineLoggerProvider();
                 IReadOnlyList<FunctionsStartup> startups = CreateStartups();
-                return new FunctionEnvironment(functionType, handler, address, port, loggerProvider, startups);
+                return new FunctionEnvironment(functionType, serviceConfiguration, address, port, loggerProvider, startups);
             }
 
             private Type DetermineFunctionType()
@@ -221,69 +234,23 @@ namespace Google.Cloud.Functions.Invoker
                     : _functionAssembly.GetType(target) ?? throw new Exception($"Can't load specified function type '{target}'");
             }
 
-            private RequestDelegate BuildHandler(Type type)
+            private Action<IServiceCollection> BuildServiceConfiguration(Type type)
             {
-                var functionFactory = ActivatorUtilities.CreateFactory(type, argumentTypes: Type.EmptyTypes);
-                return
-                    MaybeCreateGenericHandler(typeof(ILegacyEventFunction<>), typeof(LegacyEventAdapter<>)) ??
-                    MaybeCreateHandler<IHttpFunction>(function => function) ??
-                    MaybeCreateHandler<ICloudEventFunction>(function => new CloudEventAdapter(function)) ??
-                    throw new Exception("Function doesn't support known interfaces");
-
-                // If the function type implements the given interface, create a request handler that converts
-                // the interface to the common IHttpFunction, then invokes HandleAsync. (This relies on all
-                // function interfaces having some way of adapting to IHttpFunction.)
-                // If the function type doesn't implement the interface, return null so we can try the next interface.
-                RequestDelegate? MaybeCreateHandler<TInterface>(Func<TInterface, IHttpFunction> functionAdapter) =>
-                    typeof(TInterface).IsAssignableFrom(type)
-                        // Create the function from the context, create the adapter from the function, then provide the context
-                        // to the adapter.
-                        ? context => functionAdapter((TInterface) functionFactory(context.RequestServices, null)).HandleAsync(context)
-                        : (RequestDelegate?) null;
-
-                RequestDelegate? MaybeCreateGenericHandler(Type genericInterface, Type genericAdapter)
+                if (typeof(IHttpFunction).IsAssignableFrom(type))
                 {
-                    var typeArgument = GetGenericInterfaceImplementationTypeArgument(type, genericInterface);
-                    if (typeArgument is null)
-                    {
-                        return null;
-                    }
-
-                    var adapterType = genericAdapter.MakeGenericType(typeArgument);
-
-                    // Build an expression tree for the request delegate. We want
-                    // context => new FooAdapterType<TWhatever>((IFoo<TWhatever>) functionFactory(context.RequestServices, null)).HandleAsync(context)
-
-                    var contextParameter = Expression.Parameter(typeof(HttpContext), "context");
-
-                    // Expression for context.RequestServices
-                    var requestServices = Expression.Property(contextParameter, nameof(HttpContext.RequestServices));
-
-                    // Expression for functionFactory(context.RequestServices, null)
-                    var function = Expression.Call(
-                        instance: Expression.Constant(functionFactory, typeof(ObjectFactory)),
-                        methodName: nameof(ObjectFactory.Invoke),
-                        typeArguments: Type.EmptyTypes,
-                        arguments: new Expression[] { requestServices, Expression.Constant(null, typeof(object[])) });
-
-                    // Expression for (IFoo<TWhatever>) functionFactory(...)
-                    var castFunction = Expression.Convert(function, genericInterface.MakeGenericType(typeArgument));
-
-                    // Expression for new FooAdapterType<TWhatever>(...)
-                    // Assume that our adapter only has a single constructor, and that's what we want to call.
-                    var ctor = adapterType.GetConstructors().Single();
-                    var adapterConstruction = Expression.New(ctor, castFunction);
-
-                    // Expression for (...).HandleAsync(context)
-                    var handleAsync = Expression.Call(
-                        instance: adapterConstruction,
-                        methodName: nameof(IHttpFunction.HandleAsync),
-                        typeArguments: Type.EmptyTypes,
-                        arguments: contextParameter);
-
-                    Expression<RequestDelegate> requestDelegate = Expression.Lambda<RequestDelegate>(handleAsync, contextParameter);
-                    return requestDelegate.Compile();
+                    return services => services.AddScoped(typeof(IHttpFunction), type);
                 }
+                else if (typeof(ICloudEventFunction).IsAssignableFrom(type))
+                {
+                    return services => services.AddScoped<IHttpFunction, CloudEventAdapter>().AddScoped(typeof(ICloudEventFunction), type);
+                }
+                else if (GetGenericInterfaceImplementationTypeArgument(type, typeof(ILegacyEventFunction<>)) is Type legacyEventPayloadType)
+                {
+                    return services => services
+                        .AddScoped(typeof(IHttpFunction), typeof(LegacyEventAdapter<>).MakeGenericType(legacyEventPayloadType))
+                        .AddScoped(typeof(ILegacyEventFunction<>).MakeGenericType(legacyEventPayloadType), type);
+                }
+                throw new Exception("Function doesn't support known interfaces");
             }
 
             private int DeterminePort()
