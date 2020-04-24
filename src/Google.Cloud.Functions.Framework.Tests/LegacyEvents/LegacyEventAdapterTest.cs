@@ -14,6 +14,7 @@
 
 using Google.Cloud.Functions.Framework.LegacyEvents;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -45,7 +46,7 @@ namespace Google.Cloud.Functions.Framework.Tests.LegacyEvents
                 executed = true;
                 return Task.CompletedTask;
             });
-            var adapter = new LegacyEventAdapter<StorageObject>(function);
+            var adapter = CreateAdapter(function);
 
             var httpContext = CreateHttpContext("storage.json");
             await adapter.HandleAsync(httpContext);
@@ -70,7 +71,7 @@ namespace Google.Cloud.Functions.Framework.Tests.LegacyEvents
                 executed = true;
                 return Task.CompletedTask;
             });
-            var adapter = new LegacyEventAdapter<FirestoreEvent>(function);
+            var adapter = CreateAdapter(function);
 
             var httpContext = CreateHttpContext("firestore_simple.json");
             await adapter.HandleAsync(httpContext);
@@ -167,7 +168,7 @@ namespace Google.Cloud.Functions.Framework.Tests.LegacyEvents
                 ret = data;
                 return Task.CompletedTask;
             });
-            var adapter = new LegacyEventAdapter<T>(function);
+            var adapter = CreateAdapter(function);
 
             var httpContext = CreateHttpContext(resource);
             await adapter.HandleAsync(httpContext);
@@ -193,7 +194,7 @@ namespace Google.Cloud.Functions.Framework.Tests.LegacyEvents
             {
                 throw new Exception("Function should not be called");
             });
-            var adapter = new LegacyEventAdapter<StorageObject>(function);
+            var adapter = CreateAdapter(function);
             var httpContext = new DefaultHttpContext
             {
                 Request =
@@ -218,6 +219,9 @@ namespace Google.Cloud.Functions.Framework.Tests.LegacyEvents
 
             public Task HandleAsync(T payload, Context context) => _func(payload, context);
         }
+
+        private static LegacyEventAdapter<T> CreateAdapter<T>(ILegacyEventFunction<T> function) where T : class =>
+            new LegacyEventAdapter<T>(function, new NullLogger<LegacyEventAdapter<T>>());
 
         private static HttpContext CreateHttpContext(string resourceName) =>
             new DefaultHttpContext
