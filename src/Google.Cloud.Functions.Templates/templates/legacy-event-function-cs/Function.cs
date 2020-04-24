@@ -1,5 +1,6 @@
 using Google.Cloud.Functions.Framework.LegacyEvents;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MyFunction
@@ -19,8 +20,9 @@ namespace MyFunction
         /// </summary>
         /// <param name="data">The Cloud Event your function should respond to.</param>
         /// <param name="context">The Cloud Event your function should respond to.</param>
+        /// <param name="cancellationToken">A cancellation token that is notified if the request is aborted.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public Task HandleAsync(StorageObject data, Context context)
+        public Task HandleAsync(StorageObject data, Context context, CancellationToken cancellationToken)
         {
             Console.WriteLine("Context:");
             Console.WriteLine($"  ID: {context.Id}");

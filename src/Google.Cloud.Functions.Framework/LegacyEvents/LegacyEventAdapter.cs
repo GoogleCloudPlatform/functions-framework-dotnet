@@ -66,7 +66,7 @@ namespace Google.Cloud.Functions.Framework.LegacyEvents
                 return;
             }
 
-            await _function.HandleAsync(parsedRequest.Data!, parsedRequest.Context!);
+            await _function.HandleAsync(parsedRequest.Data, parsedRequest.Context, context.RequestAborted);
         }
 
         private class Request

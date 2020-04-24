@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -217,7 +218,8 @@ namespace Google.Cloud.Functions.Framework.Tests.LegacyEvents
             public DelegateAdapter(Func<T, Context, Task> func) =>
                 _func = func;
 
-            public Task HandleAsync(T payload, Context context) => _func(payload, context);
+            public Task HandleAsync(T payload, Context context, CancellationToken cancellationToken) =>
+                _func(payload, context);
         }
 
         private static LegacyEventAdapter<T> CreateAdapter<T>(ILegacyEventFunction<T> function) where T : class =>

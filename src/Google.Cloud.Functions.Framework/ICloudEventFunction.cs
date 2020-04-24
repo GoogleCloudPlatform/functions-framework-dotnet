@@ -14,6 +14,7 @@
 
 using CloudNative.CloudEvents;
 using Microsoft.AspNetCore.Http;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Google.Cloud.Functions.Framework
@@ -27,8 +28,9 @@ namespace Google.Cloud.Functions.Framework
         /// Asynchronously handles the specified Cloud Event.
         /// </summary>
         /// <param name="cloudEvent">The Cloud Event extracted from the request.</param>
+        /// <param name="cancellationToken">A cancellation token which indicates if the request is aborted.</param>
         /// <returns>A task representing the potentially-asynchronous handling of the event.
         /// If the task completes, the function is deemed to be successful.</returns>
-        Task HandleAsync(CloudEvent cloudEvent);
+        Task HandleAsync(CloudEvent cloudEvent, CancellationToken cancellationToken);
     }
 }

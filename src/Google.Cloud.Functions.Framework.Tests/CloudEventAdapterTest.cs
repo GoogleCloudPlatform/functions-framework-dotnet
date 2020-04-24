@@ -16,6 +16,7 @@ using CloudNative.CloudEvents;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging.Abstractions;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -64,7 +65,7 @@ namespace Google.Cloud.Functions.Framework.Tests
         {
             public CloudEvent? LastEvent { get; private set; }
 
-            public Task HandleAsync(CloudEvent cloudEvent)
+            public Task HandleAsync(CloudEvent cloudEvent, CancellationToken cancellationToken)
             {
                 LastEvent = cloudEvent;
                 return Task.CompletedTask;

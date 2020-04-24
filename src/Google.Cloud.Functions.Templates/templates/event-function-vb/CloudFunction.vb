@@ -1,5 +1,6 @@
 Imports CloudNative.CloudEvents
 Imports Google.Cloud.Functions.Framework
+Imports System.Threading
 
 Public Class CloudFunction
     Implements ICloudEventFunction
@@ -9,8 +10,10 @@ Public Class CloudFunction
     ''' it doesn't provide any response.
     ''' </summary>
     ''' <param name="cloudEvent">The Cloud Event your function should respond to.</param>
+    ''' <param name="cancellationToken">A cancellation token that is notified if the request is aborted.</param>
     ''' <returns>A task representing the asynchronous operation.</returns>
-    Public Function HandleAsync(cloudEvent As CloudEvent) As Task Implements ICloudEventFunction.HandleAsync
+    Public Function HandleAsync(cloudEvent As CloudEvent, cancellationToken As CancellationToken) As Task _
+        Implements ICloudEventFunction.HandleAsync
         Console.WriteLine("Cloud event information:")
         Console.WriteLine($"ID: {cloudEvent.Id}")
         Console.WriteLine($"Source: {cloudEvent.Source}")
