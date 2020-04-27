@@ -2,6 +2,7 @@
 
 set -e
 
+export ContinuousIntegrationBuild=true
 export Configuration=Release
 
 echo Building...
