@@ -28,7 +28,7 @@
   <ItemGroup Condition="'$(LocalFunctionsFramework)' != ''">
     <!-- Even if some projects don't actually need these, it doesn't hurt to have them. -->
     <ProjectReference Include="..\..\src\Google.Cloud.Functions.Invoker\Google.Cloud.Functions.Invoker.csproj" />
-    <ProjectReference Include="..\..\src\Google.Cloud.Functions.Invoker\Google.Cloud.Functions.Invoker.Testing.csproj" />
+    <ProjectReference Include="..\..\src\Google.Cloud.Functions.Invoker.Testing\Google.Cloud.Functions.Invoker.Testing.csproj" />
     <PackageReference Remove="Google.Cloud.Functions.Framework" />
     <PackageReference Remove="Google.Cloud.Functions.Testing" />
     <PackageReference Remove="Google.Cloud.Functions.Invoker" />
