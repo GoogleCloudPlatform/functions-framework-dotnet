@@ -14,4 +14,23 @@
   <ItemGroup>
     <EmbeddedFiles Include="$(GeneratedAssemblyInfoFile)"/>
   </ItemGroup>
+
+  <!-- 
+    - Use the LocalFunctionsFramework property (usually specified via an
+    - environment variable) to enable local development, targeting the
+    - local projects instead of the NuGet packages.
+    -->
+  <Import Condition="'$(LocalFunctionsFramework)' != ''"
+          Project="../src/Google.Cloud.Functions.Invoker/targets/Google.Cloud.Functions.Invoker.targets" />
+  <Import Condition="'$(LocalFunctionsFramework)' != ''"
+          Project="../src/Google.Cloud.Functions.Invoker/targets/Google.Cloud.Functions.Invoker.props" />
+
+  <ItemGroup Condition="'$(LocalFunctionsFramework)' != ''">
+    <!-- Even if some projects don't actually need these, it doesn't hurt to have them. -->
+    <ProjectReference Include="..\..\src\Google.Cloud.Functions.Invoker\Google.Cloud.Functions.Invoker.csproj" />
+    <ProjectReference Include="..\..\src\Google.Cloud.Functions.Invoker\Google.Cloud.Functions.Invoker.Testing.csproj" />
+    <PackageReference Remove="Google.Cloud.Functions.Framework" />
+    <PackageReference Remove="Google.Cloud.Functions.Testing" />
+    <PackageReference Remove="Google.Cloud.Functions.Invoker" />
+  </ItemGroup>
 </Project>

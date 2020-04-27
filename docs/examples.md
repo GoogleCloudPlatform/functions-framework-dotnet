@@ -4,12 +4,20 @@ The [examples](../examples) directory contains source code to
 demonstrate various features of the Functions Framework. This page
 provides commentary and explanation of those examples.
 
-The examples are configured to refer to the projects in the
-[src](../src) directory rather than the NuGet packages for simple
-experimentation when building new features, but any function using
-released functionality can be made standalone simply by converting
-the project reference into a package reference and removing the
-imports for MSBuild files from the Invoker project.
+The examples all use the NuGet packages by default, to make them
+easier to deploy and more representative of the normal developer
+experience. However, if you wish to experiment with changes to the
+Functions Framework - whether that's developing new features or
+fixing a bug - you can do so by setting the MSBuild property
+`LocalFunctionsFramework` to any non-empty value. Typically it's
+most convenient to do this by setting an environment variable of the
+same name before running `dotnet` or launching Visual Studio.
+
+> **Tip**  
+> If you start Visual Studio from the command line, it uses the
+> environment variables from that command line session. This is a
+> simple way of developing against the local framework just for a
+> single session.
 
 Some examples include multiple classes in a single source file. This
 is purely to make the examples easier to follow when browsing on
@@ -33,6 +41,16 @@ template using the following command line:
 
 ```sh
 dotnet new gcf-event
+```
+
+## SimpleLegacyEventFunction
+
+The [SimpleLegacyEventFunction](../examples/Google.Cloud.Functions.Examples.SimpleLegacyEventFunction)
+function is the result of creating a new Legacy Event function via the
+template using the following command line:
+
+```sh
+dotnet new gcf-legacy-event
 ```
 
 ## VbHttpFunction
