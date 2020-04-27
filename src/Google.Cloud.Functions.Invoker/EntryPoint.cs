@@ -49,7 +49,6 @@ namespace Google.Cloud.Functions.Invoker
         /// </returns>
         public static async Task<int> StartAsync(Assembly functionAssembly, string[] args)
         {
-            Console.WriteLine("Running locally");
             // Clear out the ASPNETCORE_URLS environment variable in order to avoid a warning when we start the server.
             // An alternative would be to *use* the environment variable, but as it's populated (with a non-ideal value) by
             // default, I suspect that would be tricky.
