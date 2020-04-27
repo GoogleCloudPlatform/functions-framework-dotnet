@@ -15,14 +15,6 @@ generate() {
   
   # Create the project and source files
   dotnet new $TEMPLATE_NAME -lang $LANG > /dev/null
-
-  # Change the package reference to a project reference
-  dotnet remove package Google.Cloud.Functions.Invoker > /dev/null
-  dotnet add reference ../../src/Google.Cloud.Functions.Invoker > /dev/null
-
-  # Explicitly import the MSBuild targets (not necessary for NuGet packages)
-  sed -i '2 i \ \ <Import Project="../../src/Google.Cloud.Functions.Invoker/targets/Google.Cloud.Functions.Invoker.targets"/>' *.*proj
-  sed -i '3 i \ \ <Import Project="../../src/Google.Cloud.Functions.Invoker/targets/Google.Cloud.Functions.Invoker.props"/>' *.*proj
   
   # Add copyright notices
   for source in *.??

@@ -3,17 +3,22 @@ the templates:
 
 - Google.Cloud.Functions.Examples.SimpleHttpFunction
 - Google.Cloud.Functions.Examples.SimpleEventFunction
+- Google.Cloud.Functions.Examples.SimpleLegacyEventFunction
 - Google.Cloud.Functions.Examples.FSharpHttpFunction
 - Google.Cloud.Functions.Examples.FSharpEventFunction
 - Google.Cloud.Functions.Examples.VbHttpFunction
 - Google.Cloud.Functions.Examples.VbEventFunction
 
-In each case, after creating the project, the following changes are
-applied:
+In each case, after creating the project, a copyright notice is
+added to the code.
 
-- Change the package reference for Google.Cloud.Functions.Invoker
-  into a local project reference
-- Import the MSBuild files from the Invoker project (these are
-  imported automatically when the library is used as a package
-  reference)
-- Add a copyright notice to the source code
+When built as they are, the example projects refer to packages on
+nuget.org, which makes deployment to Google Cloud Functions simpler,
+and is closer to the regular developer experience.
+
+To build against the local version of the Functions Framework (in
+the `src` directory), set an MSBuild property of
+`LocalFunctionsFramework` to any non-empty value. This is often most
+simply done from the command line. You can then either run the
+example with `dotnet run`, or start Visual Studio with the
+environment variable set.

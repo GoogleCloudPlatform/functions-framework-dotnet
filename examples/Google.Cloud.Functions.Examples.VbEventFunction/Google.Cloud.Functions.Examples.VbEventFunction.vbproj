@@ -1,12 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="../../src/Google.Cloud.Functions.Invoker/targets/Google.Cloud.Functions.Invoker.targets"/>
-  <Import Project="../../src/Google.Cloud.Functions.Invoker/targets/Google.Cloud.Functions.Invoker.props"/>
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\Google.Cloud.Functions.Invoker\Google.Cloud.Functions.Invoker.csproj" />
-  </ItemGroup>
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <RootNamespace>Google.Cloud.Functions.Examples.VbEventFunction</RootNamespace>
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Google.Cloud.Functions.Invoker" Version="1.0.0-alpha04" />
+  </ItemGroup>
 </Project>
