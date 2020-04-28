@@ -18,11 +18,11 @@ namespace MyFunction
         /// Logic for your function goes here. Note that a Legacy Event function just consumes an event;
         /// it doesn't provide any response.
         /// </summary>
-        /// <param name="data">The Cloud Event your function should respond to.</param>
+        /// <param name="payload">The Cloud Event your function should respond to.</param>
         /// <param name="context">The Cloud Event your function should respond to.</param>
         /// <param name="cancellationToken">A cancellation token that is notified if the request is aborted.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public Task HandleAsync(StorageObject data, Context context, CancellationToken cancellationToken)
+        public Task HandleAsync(StorageObject payload, Context context, CancellationToken cancellationToken)
         {
             Console.WriteLine("Context:");
             Console.WriteLine($"  ID: {context.Id}");
@@ -32,10 +32,10 @@ namespace MyFunction
             Console.WriteLine($"  Resource service: {context.Resource.Service}");
             Console.WriteLine($"  Resource type: {context.Resource.Type}");
             Console.WriteLine("Storage object:");
-            Console.WriteLine($"  Name: {data.Name}");
-            Console.WriteLine($"  Bucket: {data.Bucket}");
-            Console.WriteLine($"  Size: {data.Size}");
-            Console.WriteLine($"  Content type: {data.ContentType}");
+            Console.WriteLine($"  Name: {payload.Name}");
+            Console.WriteLine($"  Bucket: {payload.Bucket}");
+            Console.WriteLine($"  Size: {payload.Size}");
+            Console.WriteLine($"  Content type: {payload.ContentType}");
 
             // In this example, we don't need to perform any asynchronous operations, so the
             // method doesn't need to be declared async.
