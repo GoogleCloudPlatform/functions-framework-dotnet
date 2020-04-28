@@ -73,6 +73,17 @@ template using the following command line:
 dotnet new gcf-event -lang vb
 ```
 
+
+## VbEventFunction
+
+The [VbLegacyEventFunction](../examples/Google.Cloud.Functions.Examples.VbLegacyEventFunction)
+function is the result of creating a new Cloud Event function via the
+template using the following command line:
+
+```sh
+dotnet new gcf-legacy-event -lang vb
+```
+
 ## FSharpHttpFunction
 
 The [FSharpHttpFunction](../examples/Google.Cloud.Functions.Examples.FSharpHttpFunction)
@@ -91,6 +102,16 @@ template using the following command line:
 
 ```sh
 dotnet new gcf-event -lang f#
+```
+
+## FSharpEventFunction
+
+The [FSharpLegacyEventFunction](../examples/Google.Cloud.Functions.Examples.FSharpLegacyEventFunction)
+function is the result of creating a new Cloud Event function via the
+template using the following command line:
+
+```sh
+dotnet new gcf-legacy-event -lang f#
 ```
 
 ## SimpleDependencyInjection

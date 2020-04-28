@@ -31,7 +31,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Google.Cloud.Functions.Exam
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Google.Cloud.Functions.Examples.SimpleLegacyEventFunction", "Google.Cloud.Functions.Examples.SimpleLegacyEventFunction\Google.Cloud.Functions.Examples.SimpleLegacyEventFunction.csproj", "{030BE7A1-8957-4384-B606-409D6F696338}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Google.Cloud.Functions.Examples.StorageImageAnnotator", "Google.Cloud.Functions.Examples.StorageImageAnnotator\Google.Cloud.Functions.Examples.StorageImageAnnotator.csproj", "{145F7CB3-C097-4996-BB04-A10441BAC99D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Google.Cloud.Functions.Examples.StorageImageAnnotator", "Google.Cloud.Functions.Examples.StorageImageAnnotator\Google.Cloud.Functions.Examples.StorageImageAnnotator.csproj", "{145F7CB3-C097-4996-BB04-A10441BAC99D}"
+EndProject
+Project("{778DAE3C-4631-46EA-AA77-85C1314464D9}") = "Google.Cloud.Functions.Examples.VbLegacyEventFunction", "Google.Cloud.Functions.Examples.VbLegacyEventFunction\Google.Cloud.Functions.Examples.VbLegacyEventFunction.vbproj", "{65953EAE-D76A-41FB-9BB1-7807E5B28557}"
+EndProject
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Google.Cloud.Functions.Examples.FSharpLegacyEventFunction", "Google.Cloud.Functions.Examples.FSharpLegacyEventFunction\Google.Cloud.Functions.Examples.FSharpLegacyEventFunction.fsproj", "{0296D423-BB22-4297-8478-D17EB89EE4F7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -223,6 +227,30 @@ Global
 		{145F7CB3-C097-4996-BB04-A10441BAC99D}.Release|x64.Build.0 = Release|Any CPU
 		{145F7CB3-C097-4996-BB04-A10441BAC99D}.Release|x86.ActiveCfg = Release|Any CPU
 		{145F7CB3-C097-4996-BB04-A10441BAC99D}.Release|x86.Build.0 = Release|Any CPU
+		{65953EAE-D76A-41FB-9BB1-7807E5B28557}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{65953EAE-D76A-41FB-9BB1-7807E5B28557}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{65953EAE-D76A-41FB-9BB1-7807E5B28557}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{65953EAE-D76A-41FB-9BB1-7807E5B28557}.Debug|x64.Build.0 = Debug|Any CPU
+		{65953EAE-D76A-41FB-9BB1-7807E5B28557}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{65953EAE-D76A-41FB-9BB1-7807E5B28557}.Debug|x86.Build.0 = Debug|Any CPU
+		{65953EAE-D76A-41FB-9BB1-7807E5B28557}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{65953EAE-D76A-41FB-9BB1-7807E5B28557}.Release|Any CPU.Build.0 = Release|Any CPU
+		{65953EAE-D76A-41FB-9BB1-7807E5B28557}.Release|x64.ActiveCfg = Release|Any CPU
+		{65953EAE-D76A-41FB-9BB1-7807E5B28557}.Release|x64.Build.0 = Release|Any CPU
+		{65953EAE-D76A-41FB-9BB1-7807E5B28557}.Release|x86.ActiveCfg = Release|Any CPU
+		{65953EAE-D76A-41FB-9BB1-7807E5B28557}.Release|x86.Build.0 = Release|Any CPU
+		{0296D423-BB22-4297-8478-D17EB89EE4F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0296D423-BB22-4297-8478-D17EB89EE4F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0296D423-BB22-4297-8478-D17EB89EE4F7}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{0296D423-BB22-4297-8478-D17EB89EE4F7}.Debug|x64.Build.0 = Debug|Any CPU
+		{0296D423-BB22-4297-8478-D17EB89EE4F7}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{0296D423-BB22-4297-8478-D17EB89EE4F7}.Debug|x86.Build.0 = Debug|Any CPU
+		{0296D423-BB22-4297-8478-D17EB89EE4F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0296D423-BB22-4297-8478-D17EB89EE4F7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0296D423-BB22-4297-8478-D17EB89EE4F7}.Release|x64.ActiveCfg = Release|Any CPU
+		{0296D423-BB22-4297-8478-D17EB89EE4F7}.Release|x64.Build.0 = Release|Any CPU
+		{0296D423-BB22-4297-8478-D17EB89EE4F7}.Release|x86.ActiveCfg = Release|Any CPU
+		{0296D423-BB22-4297-8478-D17EB89EE4F7}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
