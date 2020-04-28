@@ -18,8 +18,8 @@ namespace MyFunction
         /// Logic for your function goes here. Note that a Legacy Event function just consumes an event;
         /// it doesn't provide any response.
         /// </summary>
-        /// <param name="payload">The Cloud Event your function should respond to.</param>
-        /// <param name="context">The Cloud Event your function should respond to.</param>
+        /// <param name="payload">The payload of the legacy event.</param>
+        /// <param name="context">The metadata of the event (timestamp etc).</param>
         /// <param name="cancellationToken">A cancellation token that is notified if the request is aborted.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
         public Task HandleAsync(StorageObject payload, Context context, CancellationToken cancellationToken)
