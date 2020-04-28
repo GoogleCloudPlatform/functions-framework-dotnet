@@ -1,0 +1,15 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "author": "Google LLC",
+  "classifications": [ "Google", "Cloud", "Functions", "Events" ],
+  "identity": "Google.Cloud.Functions.Templates.LegacyEventFunction.FSharp",
+  "groupIdentity": "Google.Cloud.Functions.LegacyEventFunction",
+  "name": "Google Cloud Functions LegacyEventFunction",
+  "shortName": "gcf-legacy-event",
+  "sourceName": "MyFunction",
+  "tags": {
+    "language": "F#",
+    "type": "project"
+  },
+  "preferNameDirectory": true
+}
