@@ -60,9 +60,42 @@ dotnet new gcf-event
 
 That will create the same set of files as before, but the `Function`
 class now implements `ICloudEventFunction`. This is a function that
-responds to [Cloud Events](https://cloudevents.io/). The procedure
+responds to [CNCF Cloud Events](https://cloudevents.io/). The procedure
 for running a Cloud Event Function is exactly the same as for an
 HTTP Function.
+
+## Legacy Event Functions
+
+Google Cloud Functions support for events predates the CNCF Cloud
+Events initiative. "Legacy" event functions handle these events via
+the `ILegacyEventFunction<T>` type. The type parameter `T`
+represents the payload type of the event. Any class type that can be
+deserialized via `System.Text.Json` can be used, but the Functions
+Framework for .NET comes with the following payload types built-in,
+all within the `Google.Cloud.Functions.LegacyEvents` namespace:
+
+- `StorageObject` for Google Cloud Storage events
+- `FirestoreEvent` for Cloud Firestore events
+- `PubSubMessage` for Cloud Pub/Sub messages
+
+See the Google Cloud Functions ["Events and Triggers"
+documentation](https://cloud.google.com/functions/docs/concepts/events-triggers)
+for more information about the triggers available.
+
+After installing the template package described earlier, use the
+`gcf-legacy-event` template:
+
+```sh
+mkdir HelloLegacyEvents
+cd HelloLegacyEvents
+dotnet new gcf-legacy-event
+```
+
+This will create a legacy event function consuming Google Cloud
+Storage events. If you deploy the function with a trigger of
+`google.storage.object.finalize` and then upload a new object to
+Google Cloud Storage, the sample event will log the details of the
+new event, including some properties of the storage object.
 
 ## VB and F# support
 
