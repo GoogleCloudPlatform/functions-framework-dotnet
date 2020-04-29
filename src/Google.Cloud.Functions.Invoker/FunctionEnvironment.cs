@@ -126,12 +126,25 @@ namespace Google.Cloud.Functions.Invoker
 
         /// <summary>
         /// Executes a request by asking the dependency injection context for an IHttpFunction, then
-        /// executing it. Any additional "root" handling (e.g. extra logging, or exception handling).
+        /// executing it. Any additional "root" handling (e.g. extra logging, or exception handling) goes here.
         /// </summary>
         internal async Task Execute(HttpContext context)
         {
-            var function = context.RequestServices.GetRequiredService<IHttpFunction>();
-            await function.HandleAsync(context);
+            try
+            {
+                var function = context.RequestServices.GetRequiredService<IHttpFunction>();
+                await function.HandleAsync(context);
+            }
+            catch (FunctionException ex)
+            {
+                context.Response.StatusCode = (int) ex.StatusCode;
+                // TODO: *Maybe* construct the logger type ahead of time? Seems unlikely to be required.
+                var logger = (ILogger) context.RequestServices.GetRequiredService(typeof(ILogger<>).MakeGenericType(FunctionType));
+                if (ex.Message != null)
+                {
+                    logger.LogError(ex.InnerException, ex.Message);
+                }
+            }
         }
 
         private static void ReturnNotFound(IApplicationBuilder app) =>

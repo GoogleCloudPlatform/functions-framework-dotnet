@@ -59,12 +59,35 @@ namespace Google.Cloud.Functions.Invoker.Tests
             }
         }
 
+        // Really in FunctionEnvironment, but feels more appropriate to test here.
+        [Fact]
+        public async Task FunctionException_CaughtAndStatusSet()
+        {
+            var builder = EntryPoint
+                .CreateHostBuilder<FunctionThrowingFunctionException>()
+                .ConfigureWebHost(builder => builder.UseTestServer());
+            using (var server = await builder.StartAsync())
+            {
+                var client = server.GetTestServer().CreateClient();
+                var response = await client.GetAsync("");
+                Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+                var content = await response.Content.ReadAsStringAsync();
+                Assert.Empty(content);
+            }
+        }
+
         public class SimpleFunction : IHttpFunction
         {
             public async Task HandleAsync(HttpContext context)
             {
                 await context.Response.WriteAsync("Test message");
             }
+        }
+
+        public class FunctionThrowingFunctionException : IHttpFunction
+        {
+            public Task HandleAsync(HttpContext context) =>
+                throw new FunctionException(HttpStatusCode.BadRequest, "The request was bad");
         }
     }
 }
