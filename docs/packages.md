@@ -92,9 +92,11 @@ The main roles of the invoker are:
 
 ## Creating a function server without the invoker package
 
-Nothing ties Google Cloud Functions (or Cloud Run) to the invoker
+Nothing ties Cloud Run (or Cloud Functions) to the invoker
 package. It's entirely possible to deploy a regular ASP.NET Core
-application to Google Cloud Functions, with some changes.
+application to Google Cloud Functions, with some changes. This
+approach is better suited to Cloud Run than Cloud Functions, but
+will work on both platforms.
 
 At a minimum, you would need to configure the server to listen on
 the port specified by the `PORT` environment variable. Additionally,
