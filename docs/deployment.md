@@ -42,8 +42,9 @@ ENV FUNCTION_TARGET HelloFunctions.Function
 
 Deployment to Google Cloud Functions is easy with the `gcloud`
 command line. See the [general deployment
-documentation](https://cloud.google.com/functions/docs/deploying)
-for more detailed information. In general, deploying a .NET
+documentation](https://cloud.google.com/functions/docs/deploying/filesystem)
+for more detailed information; this page is only intended to give simple
+"getting started" instructions. In general, deploying a .NET
 Functions Framework function follows the same procedure as deploying
 a function written in every language. The .NET-specific aspects are:
 
@@ -62,9 +63,6 @@ HTTP functions are deployed using `--trigger-http`. For example:
 gcloud functions deploy hello-functions --runtime dotnet3 --trigger-http --entry-point HelloFunctions.Function
 ```
 
-This will prompt you for whether you wish to allow unauthenticated
-invocations.
-
 On successful deployment, details of the deployed function will be
 displayed, including the URL. Visit the URL in a browser to invoke
 your function.
@@ -72,8 +70,8 @@ your function.
 ### Legacy event functions
 
 When you deploy a function listening for a particular event, you
-have to specify the *event trigger* as part of the deployment. This
-replaces the `--trigger-http` part of the command line above.
+have to specify the *event trigger* as part of the deployment
+(instead of `--trigger-http` as above).
 
 **Sample triggers**
 
