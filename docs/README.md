@@ -7,7 +7,7 @@ be readable in GitHub.
 
 ## Packages
 
-This repository contains the source code for four NuGet packages:
+This repository contains the source code for the following NuGet packages:
 
 - [Google.Cloud.Functions.Framework](https://www.nuget.org/packages/Google.Cloud.Functions.Framework)
   is a very small package, primarily containing interfaces for Cloud

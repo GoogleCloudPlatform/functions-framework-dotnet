@@ -18,9 +18,9 @@ ASP.NET Core application as far as infrastructure is concerned. This
 means you can run functions on Cloud Run with ease.
 
 There are detailed instructions for C# available as part of the
-the Cloud Run documentation:
+Cloud Run documentation:
 
-- [Quick start for C#](https://cloud.google.com/run/docs/quickstarts/build-and-deploy#c)
+- [Quickstart for C#](https://cloud.google.com/run/docs/quickstarts/build-and-deploy#c)
 - [Codelab for C#](https://codelabs.developers.google.com/codelabs/cloud-run-hello-csharp/index.html)
 
 The instructions apply to functions in exactly the same way as
@@ -50,7 +50,7 @@ a function written in every language. The .NET-specific aspects are:
 
 - The runtime should be specified as `dotnet3`
 - The entry point should be specified as the name of the function
-  type, including namespace (e.g. HelloFunctions.Function)
+  type, including namespace (e.g. `HelloFunctions.Function`)
 
 The command line options are used to specify how the function is
 triggered.
