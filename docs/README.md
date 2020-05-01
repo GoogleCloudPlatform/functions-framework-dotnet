@@ -7,7 +7,7 @@ be readable in GitHub.
 
 ## Packages
 
-This repository contains the source code for three NuGet packages:
+This repository contains the source code for the following NuGet packages:
 
 - [Google.Cloud.Functions.Framework](https://www.nuget.org/packages/Google.Cloud.Functions.Framework)
   is a very small package, primarily containing interfaces for Cloud
@@ -21,8 +21,8 @@ This repository contains the source code for three NuGet packages:
   contains templates for the `dotnet` command line to create a very
   simple getting-started experience.
 
-(More advice on when each package should be used will be provided
-when they can be deployed directly on Google Cloud Functions itself.)
+See [the packages guide](packages.md) for more details about each
+package.
 
 ## Repository layout
 
@@ -42,6 +42,7 @@ references, additional MSBuild imports removed, and the example should still wor
 
 ## Additional documentation in this directory:
 
+- [Package Details](packages.md)
 - [Testing Functions](testing.md)
 - [Examples](examples.md)
 - [Dependency Injection](dependency-injection.md)
