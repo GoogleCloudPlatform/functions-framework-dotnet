@@ -43,6 +43,7 @@ references, additional MSBuild imports removed, and the example should still wor
 ## Additional documentation in this directory:
 
 - [Package Details](packages.md)
+- [Deployment](deployment.md)
 - [Testing Functions](testing.md)
 - [Examples](examples.md)
 - [Dependency Injection](dependency-injection.md)
