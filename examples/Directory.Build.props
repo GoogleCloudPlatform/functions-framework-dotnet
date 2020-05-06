@@ -1,0 +1,11 @@
+<Project>
+  <!-- 
+    - Use the LocalFunctionsFramework property (usually specified via an
+    - environment variable) to enable local development, targeting the
+    - local projects instead of the NuGet packages.
+    -->
+  <Import Condition="'$(LocalFunctionsFramework)' != ''"
+          Project="../src/Google.Cloud.Functions.Invoker/targets/Google.Cloud.Functions.Invoker.props" />
+  <Import Condition="'$(LocalFunctionsFramework)' != ''"
+          Project="../src/Google.Cloud.Functions.Invoker/targets/Google.Cloud.Functions.Invoker.targets" />          
+</Project>

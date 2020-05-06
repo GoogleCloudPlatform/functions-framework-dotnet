@@ -3,6 +3,9 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <IsPackable>false</IsPackable>
+    <!-- When using the local framework, the imported targets would create an entry
+       - point by default. We don't want that for this project. -->
+    <AutoGenerateEntryPoint>false</AutoGenerateEntryPoint>
   </PropertyGroup>
 
   <ItemGroup>
