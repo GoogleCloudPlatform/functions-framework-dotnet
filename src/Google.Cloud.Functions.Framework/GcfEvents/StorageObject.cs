@@ -16,13 +16,17 @@ using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-namespace Google.Cloud.Functions.Framework.LegacyEvents
+namespace Google.Cloud.Functions.Framework.GcfEvents
 {
     /// <summary>
-    /// Storage object as documented at https://cloud.google.com/storage/docs/json_api/v1/objects#resource.
+    /// The CloudEvent representation of a storage message as translated from a GCF event.
     /// </summary>
     public sealed class StorageObject
     {
+        internal const string FinalizeEventType = "com.google.cloud.storage.object.finalize.v0";
+        internal const string DeleteEventType = "com.google.cloud.storage.delete.v0";
+        internal const string ArchiveEventType = "com.google.cloud.storage.archive.v0";
+        internal const string MetadataUpdateEventType = "com.google.cloud.storage.metadataUpdate.v0";
         /// <summary>
         /// The kind of item this is. For objects, this is always storage#object.	
         /// </summary>
@@ -362,4 +366,5 @@ namespace Google.Cloud.Functions.Framework.LegacyEvents
         [JsonPropertyName("keySha256")]
         public string? KeySha256 { get; set; }
     }
+
 }

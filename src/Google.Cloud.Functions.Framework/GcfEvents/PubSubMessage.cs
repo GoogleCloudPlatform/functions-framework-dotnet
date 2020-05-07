@@ -16,13 +16,15 @@ using System.Collections.Generic;
 using System.Text;
 using System.Text.Json.Serialization;
 
-namespace Google.Cloud.Functions.Framework.LegacyEvents
+namespace Google.Cloud.Functions.Framework.GcfEvents
 {
     /// <summary>
-    /// The data for a PubSub message in a legacy event.
+    /// The CloudEvent representation of a PubSub message as translated from a GCF event.
     /// </summary>
     public sealed class PubSubMessage
     {
+        internal const string PublishEventType = "com.google.cloud.pubsub.topic.publish.v0";
+
         /// <summary>
         /// The message type, e.g. "type.googleapis.com/google.pubsub.v1.PubsubMessage".
         /// </summary>

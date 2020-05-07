@@ -14,7 +14,6 @@
 
 using CloudNative.CloudEvents;
 using Google.Cloud.Functions.Framework;
-using Google.Cloud.Functions.Framework.LegacyEvents;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -22,7 +21,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Text.Json;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
@@ -128,11 +127,11 @@ namespace Google.Cloud.Functions.Invoker.Tests
         }
 
         [Fact]
-        public void TargetFunction_MultipleLegacyEventTypes() =>
-            AssertBadEnvironment(new[] { typeof(MultipleLegacyEventTypes).FullName }, Empty);
+        public void TargetFunction_MultipleCloudEventTypes() =>
+            AssertBadEnvironment(new[] { typeof(MultipleCloudEventTypes).FullName }, Empty);
 
         [Fact]
-        public async Task TargetFunction_EventFunction()
+        public async Task TargetFunction_EventFunction_NonGeneric()
         {
             var environment = CreateEnvironment(new[] { typeof(EventIdRememberingFunction).FullName }, Empty);
             Assert.Equal(typeof(EventIdRememberingFunction), environment.FunctionType);
@@ -158,25 +157,29 @@ namespace Google.Cloud.Functions.Invoker.Tests
         }
 
         [Fact]
-        public async Task TargetFunction_LegacyEventFunction()
+        public async Task TargetFunction_EventFunction_Generic()
         {
-            var environment = CreateEnvironment(new[] { typeof(LegacyEventFunction).FullName }, Empty);
-            Assert.Equal(typeof(LegacyEventFunction), environment.FunctionType);
-            var bodyStream = new MemoryStream();
+            var environment = CreateEnvironment(new[] { typeof(StringCloudEventFunction).FullName }, Empty);
+            Assert.Equal(typeof(StringCloudEventFunction), environment.FunctionType);
             var eventId = Guid.NewGuid().ToString();
-            await JsonSerializer.SerializeAsync(bodyStream, new
-            {
-                context = new Context { Id = eventId },
-                data = new object()
-            });
-            bodyStream.Position = 0;
-
             var httpContext = new DefaultHttpContext
             {
-                Request = { Body = bodyStream }
+                Request =
+                {
+                    ContentType = "application/json",
+                    Body = new MemoryStream(Encoding.UTF8.GetBytes("\"testdata\"")),
+                    Headers =
+                    {
+                        { "ce-specversion", "1.0" },
+                        { "ce-source", "test" },
+                        { "ce-type", "test" },
+                        { "ce-id", eventId }
+                    }
+                },
             };
             await ExecuteRequest(environment, httpContext);
-            Assert.Equal(eventId, LegacyEventFunction.LastEventId);
+            Assert.Equal(eventId, StringCloudEventFunction.LastEventId);
+            Assert.Equal("testdata", StringCloudEventFunction.LastData);
         }
 
         [Fact]
@@ -208,17 +211,17 @@ namespace Google.Cloud.Functions.Invoker.Tests
         }
 
         [Fact]
-        public void FindDefaultFunctionType_LegacyEventFunction()
+        public void FindDefaultFunctionType_TypedCloudEventFunction()
         {
-            var expected = typeof(LegacyEventFunction);
-            var actual = FunctionEnvironment.FindDefaultFunctionType(typeof(LegacyEventFunction));
+            var expected = typeof(StringCloudEventFunction);
+            var actual = FunctionEnvironment.FindDefaultFunctionType(typeof(StringCloudEventFunction));
             Assert.Equal(expected, actual);
         }
 
         [Fact]
-        public void FindDefaultFunctionType_MultipleLegacyEventTypesFunction() =>
+        public void FindDefaultFunctionType_MultipleCloudEventTypesFunction() =>
             Assert.Throws<ArgumentException>(() => FunctionEnvironment.FindDefaultFunctionType(
-                typeof(MultipleLegacyEventTypes)));
+                typeof(MultipleCloudEventTypes)));
 
         [Fact]
         public void Address_NoEnvironmentVariable()
@@ -288,13 +291,15 @@ namespace Google.Cloud.Functions.Invoker.Tests
             }
         }
 
-        public class LegacyEventFunction : ILegacyEventFunction<object>
+        public class StringCloudEventFunction : ICloudEventFunction<string>
         {
             public static string LastEventId { get; set; }
+            public static string LastData { get; set; }
 
-            public Task HandleAsync(object payload, Context context, CancellationToken cancellationToken)
+            public Task HandleAsync(CloudEvent cloudEvent, string data, CancellationToken cancellationToken)
             {
-                LastEventId = context.Id;
+                LastEventId = cloudEvent.Id;
+                LastData = data;
                 return Task.CompletedTask;
             }
         }
@@ -316,11 +321,11 @@ namespace Google.Cloud.Functions.Invoker.Tests
             public string Name { get; }
         }
 
-        public class MultipleLegacyEventTypes : ILegacyEventFunction<string>, ILegacyEventFunction<object>
+        public class MultipleCloudEventTypes : ICloudEventFunction<string>, ICloudEventFunction<object>
         {
-            public Task HandleAsync(string payload, Context context, CancellationToken cancellationToken)
+            public Task HandleAsync(CloudEvent cloudEvent, string data, CancellationToken cancellationToken)
                 => Task.CompletedTask;
-            public Task HandleAsync(object payload, Context context, CancellationToken cancellationToken)
+            public Task HandleAsync(CloudEvent cloudEvent, object data, CancellationToken cancellationToken)
                 => Task.CompletedTask;
         }
 

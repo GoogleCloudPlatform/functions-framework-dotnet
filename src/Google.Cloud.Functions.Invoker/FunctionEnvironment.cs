@@ -13,7 +13,6 @@
 // limitations under the License.
 
 using Google.Cloud.Functions.Framework;
-using Google.Cloud.Functions.Framework.LegacyEvents;
 using Google.Cloud.Functions.Invoker.DependencyInjection;
 using Google.Cloud.Functions.Invoker.Logging;
 using Microsoft.AspNetCore.Builder;
@@ -167,13 +166,13 @@ namespace Google.Cloud.Functions.Invoker
                 t.IsClass && !t.IsAbstract && !t.IsGenericType &&
                 (typeof(IHttpFunction).IsAssignableFrom(t) ||
                 typeof(ICloudEventFunction).IsAssignableFrom(t) ||
-                GetGenericInterfaceImplementationTypeArgument(t, typeof(ILegacyEventFunction<>)) is object);
+                GetGenericInterfaceImplementationTypeArgument(t, typeof(ICloudEventFunction<>)) is object);
         }
 
         /// <summary>
         /// Checks whether a given type implements a generic interface (assumed to have a single type parameter),
-        /// and returns the type argument if so. For example, if we have "class MyFunction : ILegacyEventFunction{PubSubMessage}"
-        /// then a call to GetGenericInterfaceImplementationTypeArgument(typeof(MyFunction), typeof(ILegacyEventFunction&lt;&gt;))
+        /// and returns the type argument if so. For example, if we have "class MyFunction : ICloudEventFunction{PubSubMessage}"
+        /// then a call to GetGenericInterfaceImplementationTypeArgument(typeof(MyFunction), typeof(ICloudEventFunction&lt;&gt;))
         /// will return typeof(PubSubMessage).
         /// </summary>
         /// <param name="target">The target type to check.</param>
@@ -244,11 +243,11 @@ namespace Google.Cloud.Functions.Invoker
                 {
                     return services => services.AddScoped<IHttpFunction, CloudEventAdapter>().AddScoped(typeof(ICloudEventFunction), type);
                 }
-                else if (GetGenericInterfaceImplementationTypeArgument(type, typeof(ILegacyEventFunction<>)) is Type legacyEventPayloadType)
+                else if (GetGenericInterfaceImplementationTypeArgument(type, typeof(ICloudEventFunction<>)) is Type legacyEventPayloadType)
                 {
                     return services => services
-                        .AddScoped(typeof(IHttpFunction), typeof(LegacyEventAdapter<>).MakeGenericType(legacyEventPayloadType))
-                        .AddScoped(typeof(ILegacyEventFunction<>).MakeGenericType(legacyEventPayloadType), type);
+                        .AddScoped(typeof(IHttpFunction), typeof(CloudEventAdapter<>).MakeGenericType(legacyEventPayloadType))
+                        .AddScoped(typeof(ICloudEventFunction<>).MakeGenericType(legacyEventPayloadType), type);
                 }
                 throw new Exception("Function doesn't support known interfaces");
             }
