@@ -4,6 +4,10 @@ set -e
 
 export ContinuousIntegrationBuild=true
 export Configuration=Release
+# When building examples, build against the version in this
+# repo rather than against NuGet; this allows us to make breaking
+# changes.
+export LocalFunctionsFramework=true
 
 echo Building...
 dotnet build -nologo -clp:NoSummary -v quiet src
