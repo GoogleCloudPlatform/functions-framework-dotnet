@@ -34,10 +34,10 @@ generate() {
 
 generate Google.Cloud.Functions.Examples.SimpleHttpFunction gcf-http 'c#'
 generate Google.Cloud.Functions.Examples.SimpleEventFunction gcf-event 'c#'
-generate Google.Cloud.Functions.Examples.SimpleLegacyEventFunction gcf-legacy-event 'c#'
+generate Google.Cloud.Functions.Examples.SimpleUntypedEventFunction gcf-untyped-event 'c#'
 generate Google.Cloud.Functions.Examples.FSharpHttpFunction gcf-http 'f#'
 generate Google.Cloud.Functions.Examples.FSharpEventFunction gcf-event 'f#'
-generate Google.Cloud.Functions.Examples.FSharpLegacyEventFunction gcf-legacy-event 'f#'
+generate Google.Cloud.Functions.Examples.FSharpUntypedEventFunction gcf-untyped-event 'f#'
 generate Google.Cloud.Functions.Examples.VbHttpFunction gcf-http 'vb'
 generate Google.Cloud.Functions.Examples.VbEventFunction gcf-event 'vb'
-generate Google.Cloud.Functions.Examples.VbLegacyEventFunction gcf-legacy-event 'vb'
+generate Google.Cloud.Functions.Examples.VbUntypedEventFunction gcf-untyped-event 'vb'
