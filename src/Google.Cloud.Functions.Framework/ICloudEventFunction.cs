@@ -13,14 +13,13 @@
 // limitations under the License.
 
 using CloudNative.CloudEvents;
-using Microsoft.AspNetCore.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Google.Cloud.Functions.Framework
 {
     /// <summary>
-    /// Function accepting a Cloud Event.
+    /// Function accepting a Cloud Event without performing any kind of data deserialization.
     /// </summary>
     public interface ICloudEventFunction
     {
@@ -32,5 +31,23 @@ namespace Google.Cloud.Functions.Framework
         /// <returns>A task representing the potentially-asynchronous handling of the event.
         /// If the task completes, the function is deemed to be successful.</returns>
         Task HandleAsync(CloudEvent cloudEvent, CancellationToken cancellationToken);
+    }
+
+    /// <summary>
+    /// Function accepting a Cloud Event expecting a particular data type, which is automatically deserialized
+    /// before function invocation.
+    /// </summary>
+    /// <typeparam name="TData"></typeparam>
+    public interface ICloudEventFunction<TData> where TData : class
+    {
+        /// <summary>
+        /// Asynchronously handles the specified Cloud Event.
+        /// </summary>
+        /// <param name="cloudEvent">The original Cloud Event extracted from the request.</param>
+        /// <param name="data">The deserialized object constructed from the data.</param>
+        /// <param name="cancellationToken">A cancellation token which indicates if the request is aborted.</param>
+        /// <returns>A task representing the potentially-asynchronous handling of the event.
+        /// If the task completes, the function is deemed to be successful.</returns>
+        Task HandleAsync(CloudEvent cloudEvent, TData data, CancellationToken cancellationToken);
     }
 }

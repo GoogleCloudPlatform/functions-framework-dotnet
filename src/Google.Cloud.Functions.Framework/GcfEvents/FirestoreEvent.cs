@@ -18,10 +18,10 @@ using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Google.Cloud.Functions.Framework.LegacyEvents
+namespace Google.Cloud.Functions.Framework.GcfEvents
 {
     /// <summary>
-    /// The data associated with a Firestore event.
+    /// The CloudEvent representation of a Firestore event as translated from a GCF event.
     /// </summary>
     public sealed class FirestoreEvent
     {
@@ -43,6 +43,14 @@ namespace Google.Cloud.Functions.Framework.LegacyEvents
         /// </summary>
         [JsonPropertyName("updateMask")]
         public FirestoreDocumentMask? UpdateMask { get; set; }
+
+        /// <summary>
+        /// The wildcards matched within the trigger resource name. For example, with a trigger resource name
+        /// ending in "documents/players/{player}/levels/{level}", matching a document with a resource name ending in
+        /// "documents/players/player1/levels/level1", the mapping would be from "player" to "player1" and "level" to "level1".
+        /// </summary>
+        [JsonPropertyName("wildcards")]
+        public IDictionary<string, string> Wildcards { get; set; } = new Dictionary<string, string>();
     }
 
     /// <summary>

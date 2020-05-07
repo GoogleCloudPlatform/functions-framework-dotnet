@@ -12,77 +12,30 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Cloud.Functions.Framework.LegacyEvents;
+using Google.Cloud.Functions.Framework.GcfEvents;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Net;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Google.Cloud.Functions.Framework.Tests.LegacyEvents
+namespace Google.Cloud.Functions.Framework.Tests.GcfEvents
 {
-    public class LegacyEventAdapterTest
+    public class ConvertersTest
     {
-        /// <summary>
-        /// Test the overall flow, including context and data deserialization, and function execution.
-        /// Most other tests focus on one aspect, e.g. data deserialization.
-        /// </summary>
-        [Fact]
-        public async Task SmokeTest()
-        {
-            bool executed = false;
-            var function = FunctionForDelegate((StorageObject data, Context context) =>
-            {
-                Assert.Equal("1147091835525187", context.Id);
-                Assert.Equal(new DateTimeOffset(2020, 4, 23, 7, 38, 57, 772, TimeSpan.Zero), context.Timestamp);
-                Assert.NotNull(context.Resource);
-                Assert.Equal("projects/_/buckets/some-bucket/objects/Test.cs", context.Resource!.Name);
-                Assert.Equal("some-bucket", data.Bucket);
-
-                executed = true;
-                return Task.CompletedTask;
-            });
-            var adapter = CreateAdapter(function);
-
-            var httpContext = CreateHttpContext("storage.json");
-            await adapter.HandleAsync(httpContext);
-            Assert.True(executed);
-        }
-
-        [Fact]
-        public async Task ContextMerging()
-        {
-            // The Firestore events have context data at the root of the request.
-            bool executed = false;
-            var function = FunctionForDelegate((FirestoreEvent data, Context context) =>
-            {
-                Assert.Equal("projects/project-id/databases/(default)/documents/gcf-test/2Vm2mI1d0wIaK2Waj5to", context.Resource.Name);
-                Assert.Null(context.Resource.Service);
-                Assert.Null(context.Resource.Type);
-
-                Assert.Equal("7b8f1804-d38b-4b68-b37d-e2fb5d12d5a0-0", context.Id);
-                Assert.Equal(new DateTimeOffset(2020, 4, 23, 12, 0, 27, 247, TimeSpan.Zero).AddTicks(1870), context.Timestamp);
-                Assert.Equal("providers/cloud.firestore/eventTypes/document.write", context.Type);
-
-                executed = true;
-                return Task.CompletedTask;
-            });
-            var adapter = CreateAdapter(function);
-
-            var httpContext = CreateHttpContext("firestore_simple.json");
-            await adapter.HandleAsync(httpContext);
-            Assert.True(executed);
-        }
-
         [Fact]
         public async Task StorageDeserialization()
         {
-            var data = await DeserializeViaFunction<StorageObject>("storage.json");
+            var request = CreateHttpContext("storage.json").Request;
+            var cloudEvent = await GcfConverters.ConvertStorageObject(request);
+            var data = CloudEventAdapter<StorageObject>.ConvertData(cloudEvent);
+            Assert.Equal("1147091835525187", cloudEvent.Id);
+            Assert.Equal("com.google.cloud.storage.object.finalize.v0", cloudEvent.Type);
+            Assert.Equal(new DateTime(2020, 4, 23, 7, 38, 57, 772), cloudEvent.Time);
+            Assert.Equal(new Uri("//storage.googleapis.com/projects/_/buckets/some-bucket/objects/Test.cs"), cloudEvent.Source);
+
             Assert.Equal("some-bucket", data.Bucket);
             Assert.Equal(new DateTimeOffset(2020, 4, 23, 7, 38, 57, 230, TimeSpan.Zero), data.TimeCreated);
             Assert.Equal(1587627537231057L, data.Generation);
@@ -91,16 +44,37 @@ namespace Google.Cloud.Functions.Framework.Tests.LegacyEvents
         }
 
         [Fact]
+        public async Task ContextMerging()
+        {
+            // The Firestore events have context data at the root of the request, along with "params" that we merge into the data.
+            var request = CreateHttpContext("firestore_simple.json").Request;
+            var cloudEvent = await GcfConverters.ConvertFirestoreEvent(request);
+            var data = CloudEventAdapter<FirestoreEvent>.ConvertData(cloudEvent);
+
+            Assert.Equal(new Uri("//firestore.googleapis.com/projects/project-id/databases/(default)/documents/gcf-test/2Vm2mI1d0wIaK2Waj5to"), cloudEvent.Source);
+            Assert.Equal("7b8f1804-d38b-4b68-b37d-e2fb5d12d5a0-0", cloudEvent.Id);
+            Assert.Equal(new DateTime(2020, 4, 23, 12, 0, 27, 247).AddTicks(1870), cloudEvent.Time);
+            Assert.Equal("com.google.firestore.document.write.v0", cloudEvent.Type);
+
+            Assert.Equal("2Vm2mI1d0wIaK2Waj5to", data.Wildcards["doc"]);
+        }
+
+        [Fact]
         public async Task PubSubDeserialization_Text()
         {
-            var data = await DeserializeViaFunction<PubSubMessage>("pubsub_text.json");
+            var request = CreateHttpContext("pubsub_text.json").Request;
+            var cloudEvent = await GcfConverters.ConvertPubSubMessage(request);
+            Assert.Equal("com.google.cloud.pubsub.topic.publish.v0", cloudEvent.Type);
+            var data = CloudEventAdapter<PubSubMessage>.ConvertData(cloudEvent);
             Assert.Equal("test message 3", data.TextData);
         }
 
         [Fact]
         public async Task PubSubDeserialization_Binary()
         {
-            var data = await DeserializeViaFunction<PubSubMessage>("pubsub_binary.json");
+            var request = CreateHttpContext("pubsub_binary.json").Request;
+            var cloudEvent = await GcfConverters.ConvertPubSubMessage(request);
+            var data = CloudEventAdapter<PubSubMessage>.ConvertData(cloudEvent);
             Assert.Equal(new byte[] { 1, 2, 3, 4 }, data.Data);
         }
 
@@ -108,18 +82,24 @@ namespace Google.Cloud.Functions.Framework.Tests.LegacyEvents
         public async Task PubSubDeserialization_Attributes()
         {
             // The text message has an attribute; the binary message doesn't.
-            var data = await DeserializeViaFunction<PubSubMessage>("pubsub_text.json");
+            var request = CreateHttpContext("pubsub_text.json").Request;
+            var cloudEvent = await GcfConverters.ConvertPubSubMessage(request);
+            var data = CloudEventAdapter<PubSubMessage>.ConvertData(cloudEvent);
             Assert.Equal(1, data.Attributes.Count);
             Assert.Equal("attr1-value", data.Attributes["attr1"]);
 
-            data = await DeserializeViaFunction<PubSubMessage>("pubsub_binary.json");
+            request = CreateHttpContext("pubsub_binary.json").Request;
+            cloudEvent = await GcfConverters.ConvertPubSubMessage(request);
+            data = CloudEventAdapter<PubSubMessage>.ConvertData(cloudEvent);
             Assert.Equal(0, data.Attributes.Count);
         }
 
         [Fact]
         public async Task Firestore_Simple()
         {
-            var data = await DeserializeViaFunction<FirestoreEvent>("firestore_simple.json");
+            var request = CreateHttpContext("firestore_simple.json").Request;
+            var cloudEvent = await GcfConverters.ConvertFirestoreEvent(request);
+            var data = CloudEventAdapter<FirestoreEvent>.ConvertData(cloudEvent);
 
             Assert.Equal("projects/project-id/databases/(default)/documents/gcf-test/2Vm2mI1d0wIaK2Waj5to", data.Value!.Name);
             Assert.Equal(new DateTimeOffset(2020, 4, 23, 9, 58, 53, 211, TimeSpan.Zero).AddTicks(350), data.Value.CreateTime);
@@ -140,7 +120,9 @@ namespace Google.Cloud.Functions.Framework.Tests.LegacyEvents
         public async Task Firestore_Complex()
         {
             // This is really all about how values are deserialized.
-            var data = await DeserializeViaFunction<FirestoreEvent>("firestore_complex.json");
+            var request = CreateHttpContext("firestore_complex.json").Request;
+            var cloudEvent = await GcfConverters.ConvertFirestoreEvent(request);
+            var data = CloudEventAdapter<FirestoreEvent>.ConvertData(cloudEvent);
             IDictionary<string, object?> fields = data.Value!.Fields!;
 
             Assert.Equal(10, fields.Count);
@@ -161,22 +143,6 @@ namespace Google.Cloud.Functions.Framework.Tests.LegacyEvents
             Assert.Equal(new object[] { "x", 1L }, map["field2"]);
         }
 
-        private static async Task<T> DeserializeViaFunction<T>(string resource) where T : class
-        {
-            T? ret = null;
-            var function = FunctionForDelegate((T data, Context context) => 
-            {
-                ret = data;
-                return Task.CompletedTask;
-            });
-            var adapter = CreateAdapter(function);
-
-            var httpContext = CreateHttpContext(resource);
-            await adapter.HandleAsync(httpContext);
-            Assert.NotNull(ret);
-            return ret!;
-        }
-
         [Fact]
         public Task InvalidRequest_UnableToDeserialize() =>
             AssertInvalidRequest("{\"context\": {}, \"data\": { invalidjson }}");
@@ -191,11 +157,6 @@ namespace Google.Cloud.Functions.Framework.Tests.LegacyEvents
 
         private static async Task AssertInvalidRequest(string json)
         {
-            var function = FunctionForDelegate((StorageObject data, Context context) =>
-            {
-                throw new Exception("Function should not be called");
-            });
-            var adapter = CreateAdapter(function);
             var httpContext = new DefaultHttpContext
             {
                 Request =
@@ -204,33 +165,15 @@ namespace Google.Cloud.Functions.Framework.Tests.LegacyEvents
                     ContentType = "application/json"
                 }
             };
-            await adapter.HandleAsync(httpContext);
-            Assert.Equal((int) HttpStatusCode.BadRequest, httpContext.Response.StatusCode);
+            await Assert.ThrowsAsync<CloudEventConversionException>(() => GcfConverters.ConvertStorageObject(httpContext.Request).AsTask());
         }
 
-        private static ILegacyEventFunction<T> FunctionForDelegate<T>(Func<T, Context, Task> func) where T : class =>
-            new DelegateAdapter<T>(func);
-
-        private class DelegateAdapter<T> : ILegacyEventFunction<T> where T : class
-        {
-            private readonly Func<T, Context, Task> _func;
-
-            public DelegateAdapter(Func<T, Context, Task> func) =>
-                _func = func;
-
-            public Task HandleAsync(T payload, Context context, CancellationToken cancellationToken) =>
-                _func(payload, context);
-        }
-
-        private static LegacyEventAdapter<T> CreateAdapter<T>(ILegacyEventFunction<T> function) where T : class =>
-            new LegacyEventAdapter<T>(function, new NullLogger<LegacyEventAdapter<T>>());
-
-        private static HttpContext CreateHttpContext(string resourceName) =>
+        internal static HttpContext CreateHttpContext(string resourceName) =>
             new DefaultHttpContext
             {
                 Request =
                 {
-                    Body = TestResourceHelper.LoadResource<LegacyEventAdapterTest>(resourceName),
+                    Body = TestResourceHelper.LoadResource<ConvertersTest>(resourceName),
                     ContentType = "application/json"
                 }
             };
