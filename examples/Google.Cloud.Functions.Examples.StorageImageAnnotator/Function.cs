@@ -12,7 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Cloud.Functions.Framework.LegacyEvents;
+using CloudNative.CloudEvents;
+using Google.Cloud.Functions.Framework;
+using Google.Cloud.Functions.Framework.GcfEvents;
 using Google.Cloud.Storage.V1;
 using Google.Cloud.Vision.V1;
 using Microsoft.Extensions.Logging;
@@ -32,7 +34,7 @@ namespace Google.Cloud.Functions.Examples.StorageImageAnnotator
     /// use the Google Cloud Vision API to annotate them, then write a text file
     /// back into the bucket with the information from the Vision API.
     /// </summary>
-    public class Function : ILegacyEventFunction<StorageObject>
+    public class Function : ICloudEventFunction<StorageObject>
     {
         private const string JpegContentType = "image/jpeg";
         private const string TextContentType = "text/plain";
@@ -56,20 +58,20 @@ namespace Google.Cloud.Functions.Examples.StorageImageAnnotator
         /// </summary>
         /// <param name="payload">The storage object that's been uploaded.</param>
         /// <param name="context">Event context (event ID etc)</param>
-        public async Task HandleAsync(StorageObject payload, Context context, CancellationToken cancellationToken)
+        public async Task HandleAsync(CloudEvent cloudEvent, StorageObject data, CancellationToken cancellationToken)
         {
             // Only handle JPEG images. (This prevents us from trying to perform image recognition on
             // the files we upload.)
-            if (payload.ContentType != JpegContentType || Path.GetExtension(payload.Name) != JpegExtension)
+            if (data.ContentType != JpegContentType || Path.GetExtension(data.Name) != JpegExtension)
             {
                 _logger.LogInformation("Ignoring file {name} with content type {contentType}",
-                    payload.Name, payload.ContentType);
+                    data.Name, data.ContentType);
                 return;
             }
 
-            var annotations = await AnnotateImageAsync(payload, cancellationToken);
+            var annotations = await AnnotateImageAsync(data, cancellationToken);
             var text = DescribeAnnotations(annotations);
-            string newObjectName = await CreateDescriptionFileAsync(payload, text);
+            string newObjectName = await CreateDescriptionFileAsync(data, text);
             _logger.LogInformation("Created object {object} with image annotations", newObjectName);
         }
 
