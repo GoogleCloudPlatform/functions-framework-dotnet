@@ -12,38 +12,34 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
-using System.Text.Json;
+using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace Google.Cloud.Functions.Framework.GcfEvents
 {
-    // TODO: Use System.Text.Json instead of Json.NET here.
-    // We already have an implicit Json.NET dependency due to the CloudEvents SDK, but it would be
-    // nice not to use it. But JObject is really convenient...
     internal sealed class Request
     {
-        [JsonProperty("context")]
+        [JsonPropertyName("context")]
         public Context Context { get; set; } = new Context();
 
-        [JsonProperty("data")]
-        public JObject Data { get; set; }
+        [JsonPropertyName("data")]
+        public Dictionary<string, object> Data { get; set; }
 
-        [JsonProperty("resource")]
+        [JsonPropertyName("resource")]
         public string? Resource { get; set; }
 
-        [JsonProperty("timestamp")]
+        [JsonPropertyName("timestamp")]
         public DateTimeOffset? Timestamp { get; set; }
 
-        [JsonProperty("eventType")]
+        [JsonPropertyName("eventType")]
         public string? EventType { get; set; }
 
-        [JsonProperty("eventId")]
+        [JsonPropertyName("eventId")]
         public string? EventId { get; set; }
 
-        [JsonProperty("params")]
-        public JObject? Params { get; set; }
+        [JsonPropertyName("params")]
+        public dynamic? Params { get; set; }
 
         public Request()
         {

@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Newtonsoft.Json;
 using System.Text.Json.Serialization;
 
 namespace Google.Cloud.Functions.Framework.GcfEvents
@@ -25,19 +24,19 @@ namespace Google.Cloud.Functions.Framework.GcfEvents
         /// <summary>
         /// The service that triggered the event.
         /// </summary>
-        [JsonProperty("service")]
+        [JsonPropertyName("service")]
         public string? Service { get; set; }
 
         /// <summary>
         /// The name associated with the event.
         /// </summary>
-        [JsonProperty("name")]
+        [JsonPropertyName("name")]
         public string? Name { get; set; }
 
         /// <summary>
         /// The type of the resource.
         /// </summary>
-        [JsonProperty("type")]
+        [JsonPropertyName("type")]
         public string? Type { get; set; }
 
         // TODO: Do we want raw path? It looks like it's deprecated.
