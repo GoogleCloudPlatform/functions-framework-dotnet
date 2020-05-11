@@ -94,7 +94,7 @@ namespace Google.Cloud.Functions.Framework.Tests
                 return Task.CompletedTask;
             });
             var adapter = CreateAdapter(function);
-            var httpContext = CreateHttpContext(resource);
+            var httpContext = GcfEventResources.CreateHttpContext(resource);
             await adapter.HandleAsync(httpContext);
             Assert.True(function.Executed);
             Assert.NotNull(ret);
@@ -121,16 +121,6 @@ namespace Google.Cloud.Functions.Framework.Tests
 
         private static CloudEventAdapter<TData> CreateAdapter<TData>(ICloudEventFunction<TData> function) where TData : class =>
             new CloudEventAdapter<TData>(function, new NullLogger<CloudEventAdapter<TData>>());
-
-        private static HttpContext CreateHttpContext(string resourceName) =>
-            new DefaultHttpContext
-            {
-                Request =
-                {
-                    Body = TestResourceHelper.LoadResource<ConvertersTest>(resourceName),
-                    ContentType = "application/json"
-                }
-            };
 
         public class SimpleData
         {
