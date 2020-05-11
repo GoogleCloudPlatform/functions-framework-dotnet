@@ -73,7 +73,7 @@ as for an HTTP Function.
 
 The type argument to the generic `ICloudEventFunction<TData>` interface
 expresses the type of data your function expects within the
-CloudEvent. This is deserialized using System.Text.Json
+Cloud Event. This is deserialized using System.Text.Json
 deserialization: you can specify any type, so long as
 it can be deserialized appropriately from the Cloud Event data
 attribute.
@@ -90,7 +90,7 @@ attribute.
 
 If you are experimenting with Cloud Events and don't yet have a
 payload data model you wish to commit to, or you want your function
-to be able to handle *any* CloudEvent, you can implement the
+to be able to handle *any* Cloud Event, you can implement the
 non-generic `ICloudEventFunction` interface. Your function's method
 will then just be passed a `CloudEvent`, with no separate data object.
 
@@ -105,12 +105,6 @@ dotnet new gcf-untyped-event
 
 This will create a function that simply logs the information about
 any Cloud Event it receives.
-
-> **Note:**  
-> The automatic conversion of Google Cloud Functions events to
-> Cloud Events only happens for typed Cloud Event functions. Untyped
-> Cloud Event functions only succeed when the underlying HTTP request
-> contains a Cloud Event.
 
 ## VB and F# support
 

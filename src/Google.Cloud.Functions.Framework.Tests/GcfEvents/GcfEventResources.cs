@@ -12,18 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
+using Microsoft.AspNetCore.Http;
 
-namespace Google.Cloud.Functions.Framework
+namespace Google.Cloud.Functions.Framework.Tests.GcfEvents
 {
     /// <summary>
-    /// Exception thrown to indicate that the conversion of an HTTP request
-    /// into a CloudEvent has failed. This is handled within <see cref="CloudEventAdapter{TData}"/>.
+    /// Helpers for resources accessed cross multiple tests.
     /// </summary>
-    internal sealed class CloudEventConversionException : Exception
+    internal static class GcfEventResources
     {
-        internal CloudEventConversionException(string message) : base(message)
-        {
-        }
+        internal static HttpContext CreateHttpContext(string resourceName) =>
+            new DefaultHttpContext
+            {
+                Request =
+                {
+                    Body = TestResourceHelper.LoadResource(typeof(GcfEventResources), resourceName),
+                    ContentType = "application/json"
+                }
+            };
     }
 }

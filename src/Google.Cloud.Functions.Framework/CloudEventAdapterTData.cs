@@ -12,12 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 using CloudNative.CloudEvents;
-using Google.Cloud.Functions.Framework.GcfEvents;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -28,22 +24,6 @@ namespace Google.Cloud.Functions.Framework
     /// </summary>
     public sealed class CloudEventAdapter<TData> : IHttpFunction where TData : class
     {
-        private static Dictionary<Type, Func<HttpRequest, ValueTask<CloudEvent>>> s_gcfConverters =
-            new Dictionary<Type, Func<HttpRequest, ValueTask<CloudEvent>>>
-            {
-                { typeof(PubSubMessage), GcfConverters.ConvertPubSubMessage },
-                { typeof(StorageObject), GcfConverters.ConvertStorageObject },
-                { typeof(FirestoreEvent), GcfConverters.ConvertFirestoreEvent }
-            };
-        private static Func<HttpRequest, ValueTask<CloudEvent>> s_defaultConverter = ReadAndValidateCloudEvent;
-
-        private static Func<HttpRequest, ValueTask<CloudEvent>> s_requestConverter;
-
-        static CloudEventAdapter()
-        {
-            s_requestConverter = s_gcfConverters.GetValueOrDefault(typeof(TData)) ?? s_defaultConverter;
-        }
-
         private readonly ICloudEventFunction<TData> _function;
         private readonly ILogger _logger;
 
@@ -71,10 +51,10 @@ namespace Google.Cloud.Functions.Framework
             TData data;
             try
             {
-                cloudEvent = await s_requestConverter(context.Request);
+                cloudEvent = await CloudEventConverter.ConvertRequest(context.Request);
                 data = ConvertData(cloudEvent);
             }
-            catch (CloudEventConversionException e)
+            catch (CloudEventConverter.ConversionException e)
             {
                 _logger.LogError(e.Message);
                 context.Response.StatusCode = 400;
@@ -93,31 +73,8 @@ namespace Google.Cloud.Functions.Framework
         internal static TData ConvertData(CloudEvent cloudEvent)
         {
             string text = cloudEvent.Data as string
-                ?? throw new CloudEventConversionException($"Unable to handle events with a Data property type of '{cloudEvent.Data?.GetType()}'");
+                ?? throw new CloudEventConverter.ConversionException($"Unable to handle events with a Data property type of '{cloudEvent.Data?.GetType()}'");
             return JsonSerializer.Deserialize<TData>(text);
         }
-
-        private static async ValueTask<CloudEvent> ReadAndValidateCloudEvent(HttpRequest request)
-        {
-            var cloudEvent = await request.ReadCloudEventAsync();
-            // Note: ReadCloudEventAsync appears never to actually return null as it's documented to.
-            // Instead, we use the presence of properties required by the spec to determine validity.
-            if (!IsValidEvent(cloudEvent))
-            {
-                throw new CloudEventConversionException("Request did not contain a valid cloud event");
-            }
-            // This deems "no event types are specified" as "allow any".
-            if (cloudEvent.DataContentType.MediaType != "application/json")
-            {
-                throw new CloudEventConversionException($"Cannot currently deserialize events with a data content type of '{cloudEvent.DataContentType}'");
-            }
-            return cloudEvent;
-        }
-
-        private static bool IsValidEvent([NotNullWhen(true)] CloudEvent? cloudEvent) =>
-            cloudEvent is object &&
-            !string.IsNullOrEmpty(cloudEvent.Id) &&
-            cloudEvent.Source is object &&
-            !string.IsNullOrEmpty(cloudEvent.Type);
     }
 }

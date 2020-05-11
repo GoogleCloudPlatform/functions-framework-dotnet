@@ -16,7 +16,6 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace Google.Cloud.Functions.Framework.GcfEvents
 {

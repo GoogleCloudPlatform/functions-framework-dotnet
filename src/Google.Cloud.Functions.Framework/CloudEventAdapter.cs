@@ -12,11 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Microsoft.AspNetCore.Http;
-using System.Threading.Tasks;
 using CloudNative.CloudEvents;
-using System.Diagnostics.CodeAnalysis;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using System.Threading.Tasks;
 
 namespace Google.Cloud.Functions.Framework
 {
@@ -47,22 +46,19 @@ namespace Google.Cloud.Functions.Framework
         /// <returns>A task representing the asynchronous operation.</returns>
         public async Task HandleAsync(HttpContext context)
         {
-            var cloudEvent = await context.Request.ReadCloudEventAsync();
-            // Note: ReadCloudEventAsync appears never to actually return null as it's documented to.
-            // Instead, we use the presence of properties required by the spec to determine validity.
-            if (!IsValidEvent(cloudEvent))
+            CloudEvent cloudEvent;
+
+            try
+            {
+                cloudEvent = await CloudEventConverter.ConvertRequest(context.Request);
+            }
+            catch (CloudEventConverter.ConversionException e)
             {
                 context.Response.StatusCode = 400;
-                _logger.LogError("Request did not contain a valid cloud event");
+                _logger.LogError(e.Message);
                 return;
             }
             await _function.HandleAsync(cloudEvent, context.RequestAborted);
         }
-
-        private static bool IsValidEvent([NotNullWhen(true)] CloudEvent? cloudEvent) =>
-            cloudEvent is object &&
-            !string.IsNullOrEmpty(cloudEvent.Id) &&
-            cloudEvent.Source is object &&
-            !string.IsNullOrEmpty(cloudEvent.Type);
     }
 }
