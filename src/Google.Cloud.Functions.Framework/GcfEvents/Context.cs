@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Newtonsoft.Json;
 using System;
+using System.Text.Json.Serialization;
 
 namespace Google.Cloud.Functions.Framework.GcfEvents
 {
@@ -26,28 +26,28 @@ namespace Google.Cloud.Functions.Framework.GcfEvents
         /// <summary>
         /// A unique ID for the event.
         /// </summary>
-        [JsonProperty("eventId")]
+        [JsonPropertyName("eventId")]
         public string? Id { get; set; }
 
         // Note: maps to CloudEvents time (optional)
         /// <summary>
         /// The date/time this event was created.
         /// </summary>
-        [JsonProperty("timestamp")]
+        [JsonPropertyName("timestamp")]
         public DateTimeOffset? Timestamp { get; set; }
 
         // Note: maps to CloudEvents type (possibly via additional mapping)
         /// <summary>
         /// The type of the event. For example: "google.pubsub.topic.publish".
         /// </summary>
-        [JsonProperty("eventType")]
+        [JsonPropertyName("eventType")]
         public string? Type { get; set; }
 
         // Maps somewhat to the CloudEvents subject (optional) and subject (required)
         /// <summary>
         /// The resource associated with the event.
         /// </summary>
-        [JsonProperty("resource")]
+        [JsonPropertyName("resource")]
         public Resource Resource { get; set; } = new Resource();
     }
 }

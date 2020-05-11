@@ -14,11 +14,11 @@
 
 using CloudNative.CloudEvents;
 using Microsoft.AspNetCore.Http;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Mime;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Google.Cloud.Functions.Framework.GcfEvents
@@ -65,7 +65,7 @@ namespace Google.Cloud.Functions.Framework.GcfEvents
             var source = new Uri($"//{service}/{name}");
             return new CloudEvent(cloudEventType, source, context.Id, context.Timestamp?.UtcDateTime)
             {
-                Data = jsonRequest.Data.ToString(Formatting.None),
+                Data = JsonSerializer.Serialize(jsonRequest.Data),
                 DataContentType = JsonContentType
             };
         }
@@ -90,7 +90,7 @@ namespace Google.Cloud.Functions.Framework.GcfEvents
             try
             {
                 var json = await new StreamReader(request.Body).ReadToEndAsync();
-                parsedRequest = JsonConvert.DeserializeObject<Request>(json);
+                parsedRequest = JsonSerializer.Deserialize<Request>(json);
             }
             catch (JsonException e)
             {
