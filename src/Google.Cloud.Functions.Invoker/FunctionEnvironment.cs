@@ -241,13 +241,15 @@ namespace Google.Cloud.Functions.Invoker
                 }
                 else if (typeof(ICloudEventFunction).IsAssignableFrom(type))
                 {
-                    return services => services.AddScoped<IHttpFunction, CloudEventAdapter>().AddScoped(typeof(ICloudEventFunction), type);
+                    return services => services
+                        .AddScoped<IHttpFunction, CloudEventAdapter>()
+                        .AddScoped(typeof(ICloudEventFunction), type);
                 }
-                else if (GetGenericInterfaceImplementationTypeArgument(type, typeof(ICloudEventFunction<>)) is Type legacyEventPayloadType)
+                else if (GetGenericInterfaceImplementationTypeArgument(type, typeof(ICloudEventFunction<>)) is Type payloadType)
                 {
                     return services => services
-                        .AddScoped(typeof(IHttpFunction), typeof(CloudEventAdapter<>).MakeGenericType(legacyEventPayloadType))
-                        .AddScoped(typeof(ICloudEventFunction<>).MakeGenericType(legacyEventPayloadType), type);
+                        .AddScoped(typeof(IHttpFunction), typeof(CloudEventAdapter<>).MakeGenericType(payloadType))
+                        .AddScoped(typeof(ICloudEventFunction<>).MakeGenericType(payloadType), type);
                 }
                 throw new Exception("Function doesn't support known interfaces");
             }
