@@ -38,10 +38,10 @@ namespace Google.Cloud.Functions.Framework.GcfEvents
             { "google.storage.object.delete", "com.google.cloud.storage.object.delete.v0" },
             { "google.storage.object.archive", "com.google.cloud.storage.object.archive.v0" },
             { "google.storage.object.metadataUpdate", "com.google.cloud.storage.object.metadataUpdate.v0" },
-            { "providers/cloud.firestore/eventTypes/document.write", "com.google.firestore.document.write.v0" },
-            { "providers/cloud.firestore/eventTypes/document.create", "com.google.firestore.document.create.v0" },
-            { "providers/cloud.firestore/eventTypes/document.update", "com.google.firestore.document.update.v0" },
-            { "providers/cloud.firestore/eventTypes/document.delete", "com.google.firestore.document.delete.v0" },
+            { "providers/cloud.firestore/eventTypes/document.write", "com.google.cloud.firestore.document.write.v0" },
+            { "providers/cloud.firestore/eventTypes/document.create", "com.google.cloud.firestore.document.create.v0" },
+            { "providers/cloud.firestore/eventTypes/document.update", "com.google.cloud.firestore.document.update.v0" },
+            { "providers/cloud.firestore/eventTypes/document.delete", "com.google.cloud.firestore.document.delete.v0" },
         };
 
         internal static async ValueTask<CloudEvent> ConvertGcfEventToCloudEvent(HttpRequest request)
