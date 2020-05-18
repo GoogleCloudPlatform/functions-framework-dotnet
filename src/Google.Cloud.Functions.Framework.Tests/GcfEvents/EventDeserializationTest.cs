@@ -107,6 +107,16 @@ namespace Google.Cloud.Functions.Framework.Tests.GcfEvents
             Assert.Equal(0, data.Attributes.Count);
         }
 
+        [Fact]
+        public async Task LegacyEvents()
+        {
+            // Just a quick validation that the legacy events are in the same format.
+            var pubSubMessage = await ConvertAndDeserialize<PubSubMessage>("legacy_pubsub.json");
+            Assert.Equal("This is a sample message", pubSubMessage.TextData);
+            var storageEvent = await ConvertAndDeserialize<StorageObject>("legacy_storage_change.json");
+            Assert.Equal("sample-bucket", storageEvent.Bucket);
+        }
+
         private static async Task<T> ConvertAndDeserialize<T>(string resourceName) where T : class
         {
             var context = GcfEventResources.CreateHttpContext(resourceName);

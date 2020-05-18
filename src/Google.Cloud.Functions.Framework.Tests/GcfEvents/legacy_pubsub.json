@@ -1,0 +1,13 @@
+{
+  "eventId": "1215011316659232",
+  "timestamp": "2020-05-18T12:13:19.209Z",
+  "eventType": "providers/cloud.pubsub/eventTypes/topic.publish",
+  "resource": "projects/sample-project/topics/gcf-test",
+  "data": {
+    "@type": "type.googleapis.com/google.pubsub.v1.PubsubMessage",
+    "attributes": {
+      "attribute1": "value1"
+    },
+    "data": "VGhpcyBpcyBhIHNhbXBsZSBtZXNzYWdl"
+  }
+}
