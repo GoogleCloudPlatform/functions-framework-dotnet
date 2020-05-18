@@ -28,8 +28,10 @@ namespace Google.Cloud.Functions.Framework.Tests.GcfEvents
         // Checks a basic mapping for each event source
         [Theory]
         [InlineData("storage.json", "com.google.cloud.storage.object.finalize.v0", "//storage.googleapis.com/projects/_/buckets/some-bucket/objects/Test.cs")]
+        [InlineData("legacy_storage_change.json", "com.google.cloud.storage.object.change.v0", "//storage.googleapis.com/projects/_/buckets/sample-bucket/objects/MyFile#1588778055917163")]
         [InlineData("firestore_simple.json", "com.google.cloud.firestore.document.write.v0", "//firestore.googleapis.com/projects/project-id/databases/(default)/documents/gcf-test/2Vm2mI1d0wIaK2Waj5to")]
         [InlineData("pubsub_text.json", "com.google.cloud.pubsub.topic.publish.v0", "//pubsub.googleapis.com/projects/sample-project/topics/gcf-test")]
+        [InlineData("legacy_pubsub.json", "com.google.cloud.pubsub.topic.publish.v0", "//pubsub.googleapis.com/projects/sample-project/topics/gcf-test")]
         public async Task ConvertGcfEvent(string resourceName, string expectedType, string expectedSource)
         {
             var context = GcfEventResources.CreateHttpContext(resourceName);

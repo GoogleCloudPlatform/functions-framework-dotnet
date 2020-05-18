@@ -42,6 +42,21 @@ namespace Google.Cloud.Functions.Framework.GcfEvents
             { "providers/cloud.firestore/eventTypes/document.create", "com.google.cloud.firestore.document.create.v0" },
             { "providers/cloud.firestore/eventTypes/document.update", "com.google.cloud.firestore.document.update.v0" },
             { "providers/cloud.firestore/eventTypes/document.delete", "com.google.cloud.firestore.document.delete.v0" },
+            { "providers/cloud.pubsub/eventTypes/topic.publish", "com.google.cloud.pubsub.topic.publish.v0" },
+            { "providers/cloud.storage/eventTypes/object.change", "com.google.cloud.storage.object.change.v0" },
+        };
+
+        /// <summary>
+        /// Mappings from GCF event types to services, for event types which don't include the service in the context.
+        /// </summary>
+        private static readonly Dictionary<string, string> s_serviceMapping = new Dictionary<string, string>
+        {
+            { "providers/cloud.firestore/eventTypes/document.write", "firestore.googleapis.com" },
+            { "providers/cloud.firestore/eventTypes/document.create", "firestore.googleapis.com" },
+            { "providers/cloud.firestore/eventTypes/document.update", "firestore.googleapis.com" },
+            { "providers/cloud.firestore/eventTypes/document.delete", "firestore.googleapis.com" },
+            { "providers/cloud.pubsub/eventTypes/topic.publish", "pubsub.googleapis.com" },
+            { "providers/cloud.storage/eventTypes/object.change", "storage.googleapis.com" },
         };
 
         internal static async ValueTask<CloudEvent> ConvertGcfEventToCloudEvent(HttpRequest request)
@@ -60,7 +75,7 @@ namespace Google.Cloud.Functions.Framework.GcfEvents
 
             var context = jsonRequest.Context;
             var resource = context.Resource;
-            var service = ValidateNotNullOrEmpty(resource.Service, "service");
+            var service = ValidateNotNullOrEmpty(resource.Service ?? s_serviceMapping.GetValueOrDefault(gcfType), "service");
             var name = ValidateNotNullOrEmpty(resource.Name, "resource name");
             var source = new Uri($"//{service}/{name}");
             return new CloudEvent(cloudEventType, source, context.Id, context.Timestamp?.UtcDateTime)
@@ -77,7 +92,6 @@ namespace Google.Cloud.Functions.Framework.GcfEvents
             {
                 jsonRequest.Data["wildcards"] = jsonRequest.Params;
             }
-            jsonRequest.Context.Resource.Service = "firestore.googleapis.com";
         }
 
         private static async ValueTask<Request> ParseRequest(HttpRequest request)

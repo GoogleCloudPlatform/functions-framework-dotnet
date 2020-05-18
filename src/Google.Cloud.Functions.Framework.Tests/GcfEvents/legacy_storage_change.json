@@ -1,0 +1,26 @@
+{
+  "data": {
+    "bucket": "sample-bucket",
+    "crc32c": "AAAAAA==",
+    "etag": "COu8mb3Dn+kCEAE=",
+    "generation": "1588778055917163",
+    "id": "sample-bucket/MyFile/1588778055917163",
+    "kind": "storage#object",
+    "md5Hash": "ZDQxZDhjZDk4ZjAwYjIwNGU5ODAwOTk4ZWNmODQyN2U=",
+    "mediaLink": "https://www.googleapis.com/download/storage/v1/b/projectid-sample-bucket/o/MyFile?generation=1588778055917163\u0026alt=media",
+    "metageneration": "1",
+    "name": "MyFile",
+    "resourceState": "not_exists",
+    "selfLink": "https://www.googleapis.com/storage/v1/b/projectid-sample-bucket/o/MyFile",
+    "size": "0",
+    "storageClass": "MULTI_REGIONAL",
+    "timeCreated": "2020-05-06T15:14:15.917Z",
+    "timeDeleted": "2020-05-18T09:07:51.799Z",
+    "timeStorageClassUpdated": "2020-05-06T15:14:15.917Z",
+    "updated": "2020-05-06T15:14:15.917Z"
+  },
+  "eventId": "1200401551653202",
+  "eventType": "providers/cloud.storage/eventTypes/object.change",
+  "resource": "projects/_/buckets/sample-bucket/objects/MyFile#1588778055917163",
+  "timestamp": "2020-05-18T09:07:51.799Z"
+}
