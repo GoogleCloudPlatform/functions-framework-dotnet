@@ -3,11 +3,13 @@ the templates:
 
 - Google.Cloud.Functions.Examples.SimpleHttpFunction
 - Google.Cloud.Functions.Examples.SimpleEventFunction
-- Google.Cloud.Functions.Examples.SimpleLegacyEventFunction
+- Google.Cloud.Functions.Examples.SimpleUntypedEventFunction
 - Google.Cloud.Functions.Examples.FSharpHttpFunction
 - Google.Cloud.Functions.Examples.FSharpEventFunction
+- Google.Cloud.Functions.Examples.FSharpUntypedEventFunction
 - Google.Cloud.Functions.Examples.VbHttpFunction
 - Google.Cloud.Functions.Examples.VbEventFunction
+- Google.Cloud.Functions.Examples.VbUntypedEventFunction
 
 In each case, after creating the project, a copyright notice is
 added to the code.

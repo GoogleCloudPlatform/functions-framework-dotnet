@@ -43,14 +43,14 @@ template using the following command line:
 dotnet new gcf-event
 ```
 
-## SimpleLegacyEventFunction
+## SimpleUntypedEventFunction
 
-The [SimpleLegacyEventFunction](../examples/Google.Cloud.Functions.Examples.SimpleLegacyEventFunction)
-function is the result of creating a new Legacy Event function via the
+The [SimpleUntypedEventFunction](../examples/Google.Cloud.Functions.Examples.SimpleLegacyEventFunction)
+function is the result of creating a new untyped Cloud Event function via the
 template using the following command line:
 
 ```sh
-dotnet new gcf-legacy-event
+dotnet new gcf-untyped-event
 ```
 
 ## VbHttpFunction
@@ -74,14 +74,15 @@ dotnet new gcf-event -lang vb
 ```
 
 
-## VbEventFunction
+## VbUntypedEventFunction
 
-The [VbLegacyEventFunction](../examples/Google.Cloud.Functions.Examples.VbLegacyEventFunction)
-function is the result of creating a new Cloud Event function via the
+The
+[VbUntypedEventFunction](../examples/Google.Cloud.Functions.Examples.VbUntypedEventFunction)
+function is the result of creating a new untyped Cloud Event function via the
 template using the following command line:
 
 ```sh
-dotnet new gcf-legacy-event -lang vb
+dotnet new gcf-untyped-event -lang vb
 ```
 
 ## FSharpHttpFunction
@@ -106,12 +107,12 @@ dotnet new gcf-event -lang f#
 
 ## FSharpEventFunction
 
-The [FSharpLegacyEventFunction](../examples/Google.Cloud.Functions.Examples.FSharpLegacyEventFunction)
-function is the result of creating a new Cloud Event function via the
+The [FSharpUntypedEventFunction](../examples/Google.Cloud.Functions.Examples.FSharpUntypedEventFunction)
+function is the result of creating a new untyped Cloud Event function via the
 template using the following command line:
 
 ```sh
-dotnet new gcf-legacy-event -lang f#
+dotnet new gcf-untyped-event -lang f#
 ```
 
 ## SimpleDependencyInjection
