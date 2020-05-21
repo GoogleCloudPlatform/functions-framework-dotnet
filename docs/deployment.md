@@ -99,6 +99,7 @@ Firestore event          | FirestoreEvent | --trigger-event providers/cloud.fire
 > - The `{document}` part at the end intentionally has braces. You can change the `document` part if you wish;
 >   it's just the wildcard name.
 > - At the time of writing, the wildcards extracted into `event.params` [as described in the
->   documentation](https://cloud.google.com/functions/docs/calling/cloud-firestore) are not available in the
->   .NET Functions Framework.
+>   documentation](https://cloud.google.com/functions/docs/calling/cloud-firestore) are currently
+>   available in the `FirestoreEvent` class via the `Wildcards` property. This is subject to change,
+>   as it's inconsitent with other Functions Frameworks.
 
