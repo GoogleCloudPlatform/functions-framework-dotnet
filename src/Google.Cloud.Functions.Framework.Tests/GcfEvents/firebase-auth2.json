@@ -1,0 +1,22 @@
+{
+  "data": {
+    "email": "test@nowhere.com",
+    "metadata": {
+      "createdAt": "2020-05-26T10:42:27Z"
+    },
+    "providerData": [
+      {
+        "email": "test@nowhere.com",
+        "providerId": "password",
+        "uid": "test@nowhere.com"
+      }
+    ],
+    "uid": "UUpby3s4spZre6kHsgVSPetzQ8l2"
+  },
+  "eventId": "5fd71bdc-4955-421f-9fc3-552ac3abead8",
+  "eventType": "providers/firebase.auth/eventTypes/user.delete",
+  "notSupported": {
+  },
+  "resource": "projects/my-project-id",
+  "timestamp": "2020-05-26T10:47:14.205Z"
+}

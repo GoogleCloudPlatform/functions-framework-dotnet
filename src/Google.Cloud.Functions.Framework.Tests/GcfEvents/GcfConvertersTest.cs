@@ -33,6 +33,8 @@ namespace Google.Cloud.Functions.Framework.Tests.GcfEvents
         [InlineData("pubsub_text.json", "com.google.cloud.pubsub.topic.publish.v0", "//pubsub.googleapis.com/projects/sample-project/topics/gcf-test")]
         [InlineData("legacy_pubsub.json", "com.google.cloud.pubsub.topic.publish.v0", "//pubsub.googleapis.com/projects/sample-project/topics/gcf-test")]
         [InlineData("firebase-db1.json", "com.google.cloud.firebase.database.write.v0", "//firebase.googleapis.com/projects/_/instances/my-project-id/refs/gcf-test/xyz")]
+        [InlineData("firebase-auth1.json", "com.google.cloud.firebase.auth.user.create.v0", "//firebase.googleapis.com/projects/my-project-id")]
+        [InlineData("firebase-auth2.json", "com.google.cloud.firebase.auth.user.delete.v0", "//firebase.googleapis.com/projects/my-project-id")]
         public async Task ConvertGcfEvent(string resourceName, string expectedType, string expectedSource)
         {
             var context = GcfEventResources.CreateHttpContext(resourceName);
