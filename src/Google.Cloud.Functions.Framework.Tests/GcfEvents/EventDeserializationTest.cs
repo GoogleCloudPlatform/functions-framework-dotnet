@@ -15,6 +15,7 @@
 using Google.Cloud.Functions.Framework.GcfEvents;
 using System;
 using System.Collections.Generic;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -115,6 +116,59 @@ namespace Google.Cloud.Functions.Framework.Tests.GcfEvents
             Assert.Equal("This is a sample message", pubSubMessage.TextData);
             var storageEvent = await ConvertAndDeserialize<StorageObject>("legacy_storage_change.json");
             Assert.Equal("sample-bucket", storageEvent.Bucket);
+        }
+        
+        [Theory]
+        [InlineData("firebase-db1.json")]
+        [InlineData("firebase-db2.json")]
+        [InlineData("firebase-db3.json")]
+        [InlineData("firebase-db4.json")]
+        [InlineData("firebase-db5.json")]
+        [InlineData("firebase-db6.json")]
+        [InlineData("firebase-db7.json")]
+        [InlineData("firebase-db8.json")]
+        [InlineData("firebase-dbdelete1.json")]
+        [InlineData("firebase-dbdelete2.json")]
+        public Task FirebaseDatabaseEvent_ParseWithoutError(string resource) =>
+            ConvertAndDeserialize<FirebaseDatabaseEvent>(resource);
+
+        [Fact]
+        public async Task FirebaseDatabaseEvent_NullData()
+        {
+            var firebaseEvent = await ConvertAndDeserialize<FirebaseDatabaseEvent>("firebase-db1.json");
+            Assert.Null(firebaseEvent.Data);
+        }
+
+        [Fact]
+        public async Task FirebaseDatabaseEvent_Wildcards()
+        {
+            var firebaseEvent = await ConvertAndDeserialize<FirebaseDatabaseEvent>("firebase-db1.json");
+            Assert.Equal("xyz", firebaseEvent.Wildcards["child"]);
+        }
+
+        [Fact]
+        public async Task FirebaseDatabaseEvent_ObjectData()
+        {
+            var firebaseEvent = await ConvertAndDeserialize<FirebaseDatabaseEvent>("firebase-db2.json");
+            Assert.NotNull(firebaseEvent.Data);
+            var dataElement = firebaseEvent.Data!.Value;
+            Assert.Equal(JsonValueKind.Object, dataElement.ValueKind);
+            Assert.Equal("other", dataElement.GetProperty("grandchild").GetString());
+
+            Assert.NotNull(firebaseEvent.Delta);
+            var deltaElement = firebaseEvent.Delta!.Value;
+            Assert.Equal(JsonValueKind.Object, deltaElement.ValueKind);
+            Assert.Equal("other changed", deltaElement.GetProperty("grandchild").GetString());
+        }
+
+        [Fact]
+        public async Task FirebaseDatabaseEvent_NumericData()
+        {
+            var firebaseEvent = await ConvertAndDeserialize<FirebaseDatabaseEvent>("firebase-dbdelete2.json");
+            Assert.NotNull(firebaseEvent.Data);
+            var element = firebaseEvent.Data!.Value;
+            Assert.Equal(JsonValueKind.Number, element.ValueKind);
+            Assert.Equal(10, element.GetInt32());
         }
 
         private static async Task<T> ConvertAndDeserialize<T>(string resourceName) where T : class

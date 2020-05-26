@@ -1,0 +1,16 @@
+{
+  "eventType": "providers/google.firebase.database/eventTypes/ref.write",
+  "params": {
+    "child": "abc"
+  },
+  "auth": {
+    "admin": true
+  },
+  "data": {
+    "data": null,
+    "delta": 10
+  },
+  "resource": "projects/_/instances/my-project-id/refs/gcf-test/abc",
+  "timestamp": "2020-05-21T11:17:17.809Z",
+  "eventId": "kbAmkXNSQhmARA0JB5lcCt1Zpsg="
+}

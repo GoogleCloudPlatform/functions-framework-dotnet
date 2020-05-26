@@ -1,0 +1,25 @@
+{
+  "eventType": "providers/google.firebase.database/eventTypes/ref.write",
+  "params": {
+    "child": "xyz"
+  },
+  "auth": {
+    "admin": true
+  },
+  "data": {
+    "data": {
+      "deeply": {
+        "abc": "def"
+      },
+      "grandchild": "other changed"
+    },
+    "delta": {
+      "deeply": {
+        "abc": 10
+      }
+    }
+  },
+  "resource": "projects/_/instances/my-project-id/refs/gcf-test/xyz",
+  "timestamp": "2020-05-21T11:23:46.225Z",
+  "eventId": "fvnCmPWm8q4PPEKFRfrjuNxbQ00="
+}

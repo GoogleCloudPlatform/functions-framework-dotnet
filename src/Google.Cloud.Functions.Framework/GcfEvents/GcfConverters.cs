@@ -42,6 +42,10 @@ namespace Google.Cloud.Functions.Framework.GcfEvents
             { "providers/cloud.firestore/eventTypes/document.create", "com.google.cloud.firestore.document.create.v0" },
             { "providers/cloud.firestore/eventTypes/document.update", "com.google.cloud.firestore.document.update.v0" },
             { "providers/cloud.firestore/eventTypes/document.delete", "com.google.cloud.firestore.document.delete.v0" },
+            { "providers/google.firebase.database/eventTypes/ref.create", "com.google.cloud.firebase.database.create.v0" },
+            { "providers/google.firebase.database/eventTypes/ref.write", "com.google.cloud.firebase.database.write.v0" },
+            { "providers/google.firebase.database/eventTypes/ref.update", "com.google.cloud.firebase.database.update.v0" },
+            { "providers/google.firebase.database/eventTypes/ref.delete", "com.google.cloud.firebase.database.delete.v0" },
             { "providers/cloud.pubsub/eventTypes/topic.publish", "com.google.cloud.pubsub.topic.publish.v0" },
             { "providers/cloud.storage/eventTypes/object.change", "com.google.cloud.storage.object.change.v0" },
         };
@@ -55,6 +59,10 @@ namespace Google.Cloud.Functions.Framework.GcfEvents
             { "providers/cloud.firestore/eventTypes/document.create", "firestore.googleapis.com" },
             { "providers/cloud.firestore/eventTypes/document.update", "firestore.googleapis.com" },
             { "providers/cloud.firestore/eventTypes/document.delete", "firestore.googleapis.com" },
+            { "providers/google.firebase.database/eventTypes/ref.create", "firebase.googleapis.com" },
+            { "providers/google.firebase.database/eventTypes/ref.write", "firebase.googleapis.com" },
+            { "providers/google.firebase.database/eventTypes/ref.update", "firebase.googleapis.com" },
+            { "providers/google.firebase.database/eventTypes/ref.delete", "firebase.googleapis.com" },
             { "providers/cloud.pubsub/eventTypes/topic.publish", "pubsub.googleapis.com" },
             { "providers/cloud.storage/eventTypes/object.change", "storage.googleapis.com" },
         };
@@ -68,9 +76,16 @@ namespace Google.Cloud.Functions.Framework.GcfEvents
             {
                 throw new CloudEventConverter.ConversionException($"Unexpected event type for function: '{gcfType}'");
             }
-            if (gcfType.StartsWith("providers/cloud.firestore/eventTypes/", StringComparison.Ordinal))
+
+            // Firestore and Firebase database GCF requests include a "params" element that maps wilcards in the resource
+            // template to their value in the changed document.
+            if (gcfType.StartsWith("providers/cloud.firestore/", StringComparison.Ordinal) ||
+                gcfType.StartsWith("providers/google.firebase.database/", StringComparison.Ordinal))
             {
-                ModifyFirestoreRequest(jsonRequest);
+                if (jsonRequest.Params is object)
+                {
+                    jsonRequest.Data["wildcards"] = jsonRequest.Params;
+                }
             }
 
             var context = jsonRequest.Context;
@@ -83,15 +98,6 @@ namespace Google.Cloud.Functions.Framework.GcfEvents
                 Data = JsonSerializer.Serialize(jsonRequest.Data),
                 DataContentType = JsonContentType
             };
-        }
-
-        // Apply Firestore-specific tweaks to the in-memory representation of the GCF event request.
-        private static void ModifyFirestoreRequest(Request jsonRequest)
-        {
-            if (jsonRequest.Params is object)
-            {
-                jsonRequest.Data["wildcards"] = jsonRequest.Params;
-            }
         }
 
         private static async ValueTask<Request> ParseRequest(HttpRequest request)

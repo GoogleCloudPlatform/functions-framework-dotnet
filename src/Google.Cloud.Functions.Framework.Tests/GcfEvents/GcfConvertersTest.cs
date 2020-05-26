@@ -32,6 +32,7 @@ namespace Google.Cloud.Functions.Framework.Tests.GcfEvents
         [InlineData("firestore_simple.json", "com.google.cloud.firestore.document.write.v0", "//firestore.googleapis.com/projects/project-id/databases/(default)/documents/gcf-test/2Vm2mI1d0wIaK2Waj5to")]
         [InlineData("pubsub_text.json", "com.google.cloud.pubsub.topic.publish.v0", "//pubsub.googleapis.com/projects/sample-project/topics/gcf-test")]
         [InlineData("legacy_pubsub.json", "com.google.cloud.pubsub.topic.publish.v0", "//pubsub.googleapis.com/projects/sample-project/topics/gcf-test")]
+        [InlineData("firebase-db1.json", "com.google.cloud.firebase.database.write.v0", "//firebase.googleapis.com/projects/_/instances/my-project-id/refs/gcf-test/xyz")]
         public async Task ConvertGcfEvent(string resourceName, string expectedType, string expectedSource)
         {
             var context = GcfEventResources.CreateHttpContext(resourceName);

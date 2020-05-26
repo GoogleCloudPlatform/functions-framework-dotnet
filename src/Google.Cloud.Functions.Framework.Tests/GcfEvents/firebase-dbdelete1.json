@@ -1,0 +1,18 @@
+{
+  "eventType": "providers/google.firebase.database/eventTypes/ref.delete",
+  "params": {
+    "child": "xyz"
+  },
+  "auth": {
+    "admin": true
+  },
+  "data": {
+    "data": {
+      "grandchild": "other changed"
+    },
+    "delta": null
+  },
+  "resource": "projects/_/instances/my-project-id/refs/gcf-test/xyz",
+  "timestamp": "2020-05-21T11:53:45.337Z",
+  "eventId": "oIcVXHEMZfhQMNs/yD4nwpuKE0s="
+}
