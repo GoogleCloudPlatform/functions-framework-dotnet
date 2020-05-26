@@ -1,0 +1,25 @@
+{
+  "eventType": "providers/google.firebase.database/eventTypes/ref.write",
+  "params": {
+    "child": "xyz"
+  },
+  "auth": {
+    "admin": true
+  },
+  "data": {
+    "data": {
+      "grandchild": "other changed"
+    },
+    "delta": {
+      "deeply": {
+        "nested": {
+          "text": "This is deeply nested",
+          "text2": "Second value"
+        }
+      }
+    }
+  },
+  "resource": "projects/_/instances/my-project-id/refs/gcf-test/xyz",
+  "timestamp": "2020-05-21T11:19:22.677Z",
+  "eventId": "AlEKy6dsGnn48ubD7Y5QOoROj4U="
+}
