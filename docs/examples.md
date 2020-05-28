@@ -45,7 +45,7 @@ dotnet new gcf-event
 
 ## SimpleUntypedEventFunction
 
-The [SimpleUntypedEventFunction](../examples/Google.Cloud.Functions.Examples.SimpleLegacyEventFunction)
+The [SimpleUntypedEventFunction](../examples/Google.Cloud.Functions.Examples.SimpleUntypedEventFunction)
 function is the result of creating a new untyped Cloud Event function via the
 template using the following command line:
 
