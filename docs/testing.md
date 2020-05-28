@@ -11,7 +11,7 @@ invoking it with an appropriately-configured `HttpClient`.
 
 ## Creating an IHostBuilder with EntryPoint.CreateHostBuilder
 
-The invoker [EntryPoint](../src/Google.Cloud.Functions.Invoker.EntryPoint) class
+The invoker [EntryPoint](../src/Google.Cloud.Functions.Invoker/EntryPoint.cs) class
 not only contains the `Main` method used automatically to start the
 server, but an overloaded `CreateHostBuilder` method. The generic,
 parameterless overload expects the type argument to be a function
@@ -40,7 +40,7 @@ Using `TestHost` directly can be slightly verbose - it's not too bad
 for an occasional test, but not something you'd want to use in a
 large number of tests. The
 [Google.Cloud.Functions.Invoker.Testing](../src/Google.Cloud.Functions.Invoker.Testing)
-package provides a [FunctionTestServer](../src/Google.Cloud.Functions.Invoker.Testing/FunctionTestServer)
+package provides a [FunctionTestServer](../src/Google.Cloud.Functions.Invoker.Testing/FunctionTestServer.cs)
 class to simplify this. The generic `FunctionTestServer<TFunction>`
 class is a derived class allowing you to use the function type as a
 type argument, avoiding the need for any other configuration.
