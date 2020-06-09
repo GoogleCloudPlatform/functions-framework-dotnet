@@ -1,0 +1,32 @@
+<Project>
+  <!--
+    - Common properties for all projects. Some are unnecessary,
+    - e.g. because they're for packages and the project is a test
+    - project. But they do no harm, and it keeps the project files
+    - simpler.
+    -
+    - The properties here are in a .props file instead of a .targets
+    - file so they can be overridden if necessary. See
+    - https://docs.microsoft.com/en-us/visualstudio/msbuild/customize-your-build
+    - for more details, although it's unlikely to matter.
+    -->
+  <PropertyGroup>
+    <!-- Make the repository root available for other properties -->
+    <RepoRoot>$([System.IO.Path]::GetDirectoryName($([MSBuild]::GetPathOfFileAbove('.gitignore', '$(MSBuildThisFileDirectory)'))))</RepoRoot>
+
+    <!-- Build properties -->
+    <LangVersion>latest</LangVersion>
+    <Deterministic>True</Deterministic>
+    <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+    
+    <!-- Package properties -->
+    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+
+    <Authors>Google LLC</Authors>
+    <!-- TODO: PackageIcon, PackageIconUrl, PackageProjectUrl, RepositoryUrl when we have appropriate ones -->
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <RepositoryType>git</RepositoryType>
+  </PropertyGroup>
+</Project>
