@@ -1,0 +1,32 @@
+{
+  "status": {},
+  "authenticationInfo": {
+    "principalEmail": "user@example.com"
+  },
+  "serviceName": "appengine.googleapis.com",
+  "methodName": "SetIamPolicy",
+  "serviceData": {
+    "@type": "type.googleapis.com/google.appengine.legacy.AuditData",
+    "policyDelta": {
+      "bindingDeltas": [
+        {
+          "action": "ADD",
+          "role": "roles/logging.privateLogViewer",
+          "member": "user:user@example.com"
+        }
+      ]
+    }
+  },
+  "request": {
+    "resource": "my-gcp-project-id",
+    "policy": { "bindings": [] }
+  },
+  "response": {
+    "bindings": [
+      {
+        "role": "roles/logging.privateLogViewer",
+        "members": [ "user:user@example.com" ]
+      }
+    ]
+  }
+}
