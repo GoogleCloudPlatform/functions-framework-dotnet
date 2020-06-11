@@ -29,6 +29,8 @@ namespace Google.Events.Protobuf
     {
         private static readonly char[] s_slashSplit = { '/' };
 
+        // TODO: Support lists-of-lists, e.g. bar[3][1].
+
         /// <summary>
         /// Returns the value of a field within the given struct, traversing the given path.
         /// </summary>
