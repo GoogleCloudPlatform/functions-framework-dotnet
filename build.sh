@@ -11,11 +11,13 @@ export LocalFunctionsFramework=true
 
 echo Building...
 dotnet build -nologo -clp:NoSummary -v quiet src
-dotnet build -nologo -clp:NoSummary -v quiet examples
+# Disabled for now; re-enable when Google.Events is published
+# dotnet build -nologo -clp:NoSummary -v quiet examples
 
 echo Testing...
 dotnet test -nologo --no-build -v quiet src
-dotnet test -nologo --no-build -v quiet examples
+# Disabled for now; re-enable when Google.Events is published
+# dotnet test -nologo --no-build -v quiet examples
 
 echo Packing...
 rm -rf nupkg
