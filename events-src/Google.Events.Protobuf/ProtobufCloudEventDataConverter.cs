@@ -30,15 +30,12 @@ namespace Google.Events.Protobuf
         // TODO: Check this is the one we want to use.
         private static readonly ContentType s_protobufContentType = new ContentType("application/protobuf");
         private static readonly JsonParser s_jsonParser = new JsonParser(JsonParser.Settings.Default.WithIgnoreUnknownFields(true));
-        private readonly MessageParser<T> _parser;
         
         /// <summary>
         /// Constructs an event data converter for the Protobuf message <typeparamref name="T"/>.
         /// </summary>
         public ProtobufCloudEventDataConverter()
         {
-            var parserProperty = typeof(T).GetProperty("Parser", BindingFlags.Static | BindingFlags.Public);
-            _parser = (MessageParser<T>) parserProperty.GetValue(null);
         }
 
         /// <inheritdoc />
@@ -49,11 +46,19 @@ namespace Google.Events.Protobuf
             // TODO: Check the DataContentType matches the data?
             return cloudEvent.Data switch
             {
-                byte[] bytes => _parser.ParseFrom(bytes),
+                byte[] bytes => ParseBinary(bytes),
                 string json => s_jsonParser.Parse<T>(json),
                 null => throw new ArgumentException($"CloudEvent contained no data"),
                 var data => throw new ArgumentException($"CloudEvent data type was {data.GetType()}")
             };
+
+            // Annoyingly, we can't inline this in the switch expression because MergeFrom doesn't return T.
+            T ParseBinary(byte[] bytes)
+            {
+                var message = new T();
+                message.MergeFrom(bytes);
+                return message;
+            }
         }
 
         /// <inheritdoc />

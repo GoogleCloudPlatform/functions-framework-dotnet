@@ -28,8 +28,7 @@ namespace Google.Events
     public interface ICloudEventDataConverter<T> where T : class
     {
         /// <summary>
-        /// Converts the data in <paramref name="cloudEvent"/> to the type specified at construction
-        /// time.
+        /// Converts the data in <paramref name="cloudEvent"/> to <typeparamref name="T"/>.
         /// </summary>
         /// <param name="cloudEvent">The CloudEvent to obtain data from. This may be used to check
         /// the data content type as well. It should not be mutated by this method.</param>
@@ -48,7 +47,8 @@ namespace Google.Events
         /// <param name="cloudEvent">The CloudEvent to populate. Must not be null. When
         /// the method completes, the <see cref="CloudEvent.Data"/> and <see cref="CloudEvent.DataContentType"/>
         /// properties should be set.</param>
-        /// <param name="data">The data to populate within the CloudEvent.</param>
+        /// <param name="data">The data to populate within the CloudEvent. Whether or not this is allowed to
+        /// be null is up to the converter.</param>
         /// <exception cref="ArgumentException">The content type specified within <paramref name="cloudEvent"/> cannot be provided
         /// by this converter.</exception>
         void PopulateCloudEvent(CloudEvent cloudEvent, T data);

@@ -86,10 +86,10 @@ namespace Google.Events
         /// Populates <paramref name="cloudEvent"/> with the data in <paramref name="data"/> by
         /// using the <see cref="ICloudEventDataConverter{T}"/> associated with <typeparamref name="T"/> via
         /// <see cref="CloudEventDataConverterAttribute"/>. See
-        /// <see cref="ICloudEventDataConverter{T}.PopulateCloudEvent(CloudEvent, T)"/> for details what gets populated.
+        /// <see cref="ICloudEventDataConverter{T}.PopulateCloudEvent(CloudEvent, T)"/> for details of what gets populated.
         /// </summary>
-        /// <param name="cloudEvent"></param>
-        /// <param name="data"></param>
+        /// <param name="cloudEvent">The event to populate with data. Must not be null.</param>
+        /// <param name="data">The data to populate within the event. May be null if the converter supports that.</param>
         public static void PopulateCloudEvent<T>(CloudEvent cloudEvent, T data) where T : class
         {
             EventsPreconditions.CheckNotNull(cloudEvent, nameof(cloudEvent));
