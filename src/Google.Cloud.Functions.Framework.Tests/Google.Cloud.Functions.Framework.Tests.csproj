@@ -10,6 +10,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Google.Cloud.Functions.Framework\Google.Cloud.Functions.Framework.csproj" />
+    <ProjectReference Include="..\..\events-src\Google.Events.Protobuf\Google.Events.Protobuf.csproj" />
+    <ProjectReference Include="..\..\events-src\Google.Events.SystemTextJson\Google.Events.SystemTextJson.csproj" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
     <PackageReference Include="xunit" Version="2.4.0" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.0" />

@@ -22,7 +22,7 @@ namespace Google.Cloud.Functions.Framework.Tests
     /// </summary>
     internal class TestResourceHelper
     {
-        public static Stream LoadResource(Type type, string relativeResourceName)
+        public static Stream LoadResource(System.Type type, string relativeResourceName)
         {
             // In order to make diagnostics simpler, we load the whole resource into a MemoryStream
             // and return that.
