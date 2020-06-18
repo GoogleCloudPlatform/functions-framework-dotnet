@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net.Mime;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Google.Cloud.Functions.Framework.GcfEvents
@@ -30,6 +31,12 @@ namespace Google.Cloud.Functions.Framework.GcfEvents
     {
         private static readonly string JsonContentTypeText = "application/json";
         private static readonly ContentType JsonContentType = new ContentType(JsonContentTypeText);
+
+        // Regex to split a storage resource name into bucket and object names.
+        // Note the removal of "#" followed by trailing digits at the end of the object name;
+        // this represents the object generation and should not be included in the CloudEvent subject.
+        private static readonly Regex StorageResourcePattern =
+            new Regex(@"^(projects/_/buckets/[^/]+)/(objects/.*?)(?:#\d+)?$", RegexOptions.Compiled);
 
         private static readonly Dictionary<string, string> s_eventTypeMapping = new Dictionary<string, string>
         {
@@ -98,12 +105,28 @@ namespace Google.Cloud.Functions.Framework.GcfEvents
             var resource = context.Resource;
             var service = ValidateNotNullOrEmpty(resource.Service ?? s_serviceMapping.GetValueOrDefault(gcfType), "service");
             var name = ValidateNotNullOrEmpty(resource.Name, "resource name");
+            string? subject = null;
+            if (service == "storage.googleapis.com" && StorageResourcePattern.Match(name) is { Success: true } match)
+            {
+                // Resource name up to the bucket
+                name = match.Groups[1].Value;
+                // Resource name from "objects" onwards, but without the generation
+                subject = match.Groups[2].Value;
+            }
             var source = new Uri($"//{service}/{name}");
-            return new CloudEvent(cloudEventType, source, context.Id, context.Timestamp?.UtcDateTime)
+
+            var evt = new CloudEvent(cloudEventType, source, context.Id, context.Timestamp?.UtcDateTime)
             {
                 Data = JsonSerializer.Serialize(jsonRequest.Data),
                 DataContentType = JsonContentType
             };
+            // CloudEvent.Subject is null by default, but doesn't allow null to be set.
+            // See https://github.com/cloudevents/sdk-csharp/issues/58
+            if (subject is string)
+            {
+                evt.Subject = subject;
+            }
+            return evt;
         }
 
         private static async ValueTask<Request> ParseRequest(HttpRequest request)

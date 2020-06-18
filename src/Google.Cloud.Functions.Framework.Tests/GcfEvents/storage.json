@@ -5,7 +5,7 @@
       "eventType": "google.storage.object.finalize",
       "resource": {
          "service": "storage.googleapis.com",
-         "name": "projects/_/buckets/some-bucket/objects/Test.cs",
+         "name": "projects/_/buckets/some-bucket/objects/folder/Test.cs",
          "type": "storage#object"
       }
    },
@@ -15,13 +15,13 @@
       "crc32c": "rTVTeQ==",
       "etag": "CNHZkbuF/ugCEAE=",
       "generation": "1587627537231057",
-      "id": "some-bucket/Test.cs/1587627537231057",
+      "id": "some-bucket/folder/Test.cs/1587627537231057",
       "kind": "storage#object",
       "md5Hash": "kF8MuJ5+CTJxvyhHS1xzRg==",
-      "mediaLink": "https://www.googleapis.com/download/storage/v1/b/some-bucket/o/Test.cs?generation=1587627537231057\u0026alt=media",
+      "mediaLink": "https://www.googleapis.com/download/storage/v1/b/some-bucket/o/folder%2FTest.cs?generation=1587627537231057\u0026alt=media",
       "metageneration": "1",
-      "name": "Test.cs",
-      "selfLink": "https://www.googleapis.com/storage/v1/b/some-bucket/o/Test.cs",
+      "name": "folder/Test.cs",
+      "selfLink": "https://www.googleapis.com/storage/v1/b/some-bucket/o/folder/Test.cs",
       "size": "352",
       "storageClass": "MULTI_REGIONAL",
       "timeCreated": "2020-04-23T07:38:57.230Z",
