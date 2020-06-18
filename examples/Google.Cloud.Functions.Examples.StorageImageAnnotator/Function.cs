@@ -134,7 +134,7 @@ namespace Google.Cloud.Functions.Examples.StorageImageAnnotator
         /// </summary>
         private async Task<string> CreateDescriptionFileAsync(StorageObject payload, string text)
         {
-            var name = Path.GetFileNameWithoutExtension(payload.Name) + TextExtension;
+            var name = Path.ChangeExtension(payload.Name, TextExtension);
             using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(text)))
             {
                 await _storageClient.UploadObjectAsync(payload.Bucket, name, TextContentType, stream);
