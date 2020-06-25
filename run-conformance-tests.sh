@@ -37,8 +37,6 @@ run_test() {
 }
 
 run_test http HttpFunction
-# TODO: use "cloudevent" instead of "ce" once the framework has been fixed
-# (It assumes fall-through in case statements right now.)
-run_test ce UntypedCloudEventFunction
+run_test cloudevent UntypedCloudEventFunction
 
 echo "Tests complete"
