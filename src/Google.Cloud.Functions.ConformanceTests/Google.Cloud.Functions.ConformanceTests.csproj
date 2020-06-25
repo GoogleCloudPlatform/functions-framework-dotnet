@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Make sure we get the same MSBuild experience as if we were depending on the NuGet package. -->
+  <Import Project="../Google.Cloud.Functions.Invoker/targets/Google.Cloud.Functions.Invoker.props" />
+  <Import Project="../Google.Cloud.Functions.Invoker/targets/Google.Cloud.Functions.Invoker.targets" />
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Google.Cloud.Functions.Invoker\Google.Cloud.Functions.Invoker.csproj" />
+  </ItemGroup>
+</Project>
