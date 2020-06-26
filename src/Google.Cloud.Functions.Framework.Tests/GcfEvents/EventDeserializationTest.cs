@@ -83,37 +83,45 @@ namespace Google.Cloud.Functions.Framework.Tests.GcfEvents
         [Fact]
         public async Task PubSub_Text()
         {
-            var data = await ConvertAndDeserialize<PubSubMessage>("pubsub_text.json");
-            Assert.Equal("test message 3", data.TextData);
-            Assert.Equal(1, data.Attributes.Count);
-            Assert.Equal("attr1-value", data.Attributes["attr1"]);
+            var data = await ConvertAndDeserialize<MessagePublishedData>("pubsub_text.json");
+            var message = data.Message!;
+            Assert.NotNull(message);
+            Assert.Equal("test message 3", message.TextData);
+            Assert.Equal(1, message.Attributes.Count);
+            Assert.Equal("attr1-value", message.Attributes["attr1"]);
         }
 
         [Fact]
         public async Task PubSub_Binary()
         {
-            var data = await ConvertAndDeserialize<PubSubMessage>("pubsub_binary.json");
-            Assert.Equal(new byte[] { 1, 2, 3, 4 }, data.Data);
-            Assert.Equal(0, data.Attributes.Count);
+            var data = await ConvertAndDeserialize<MessagePublishedData>("pubsub_binary.json");
+            var message = data.Message!;
+            Assert.NotNull(message);
+            Assert.Equal(new byte[] { 1, 2, 3, 4 }, message.Data);
+            Assert.Equal(0, message.Attributes.Count);
         }
 
         [Fact]
         public async Task PubSub_Attributes()
         {
-            var data = await ConvertAndDeserialize<PubSubMessage>("pubsub_text.json");
-            Assert.Equal(1, data.Attributes.Count);
-            Assert.Equal("attr1-value", data.Attributes["attr1"]);
+            var data = await ConvertAndDeserialize<MessagePublishedData>("pubsub_text.json");
+            var message = data.Message!;
+            Assert.NotNull(message);
+            Assert.Equal(1, message.Attributes.Count);
+            Assert.Equal("attr1-value", message.Attributes["attr1"]);
 
-            data = await ConvertAndDeserialize<PubSubMessage>("pubsub_binary.json");
-            Assert.Equal(0, data.Attributes.Count);
+            data = await ConvertAndDeserialize<MessagePublishedData>("pubsub_binary.json");
+            message = data.Message!;
+            Assert.Equal(0, message.Attributes.Count);
         }
 
         [Fact]
         public async Task LegacyEvents()
         {
             // Just a quick validation that the legacy events are in the same format.
-            var pubSubMessage = await ConvertAndDeserialize<PubSubMessage>("legacy_pubsub.json");
-            Assert.Equal("This is a sample message", pubSubMessage.TextData);
+            var data = await ConvertAndDeserialize<MessagePublishedData>("legacy_pubsub.json");
+            var message = data.Message!;
+            Assert.Equal("This is a sample message", message.TextData);
             var storageEvent = await ConvertAndDeserialize<StorageObject>("legacy_storage_change.json");
             Assert.Equal("sample-bucket", storageEvent.Bucket);
         }
