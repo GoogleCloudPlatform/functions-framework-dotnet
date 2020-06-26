@@ -88,10 +88,6 @@ namespace Google.Cloud.Functions.Framework.Tests.GcfEvents
             AssertInvalidRequest("{'data':{}, 'context':{'eventId':'xyz', 'resource':{'service': 'svc', 'name': 'resname'}}}");
 
         [Fact]
-        public Task InvalidRequest_NoService() =>
-            AssertInvalidRequest("{'data':{}, 'context':{'eventId':'xyz', 'eventType': 'google.pubsub.topic.publish', 'resource':{'name': 'resname'}}}");
-
-        [Fact]
         public Task InvalidRequest_NoResourceName() =>
             AssertInvalidRequest("{'data':{}, 'context':{'eventId':'xyz', 'eventType': 'google.pubsub.topic.publish', 'resource':{'service': 'svc'}}}");
 
