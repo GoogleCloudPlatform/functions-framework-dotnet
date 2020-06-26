@@ -101,6 +101,12 @@ namespace Google.Cloud.Functions.Framework.GcfEvents
                 }
             }
 
+            if (cloudEventType == "com.google.cloud.pubsub.topic.publish.v0")
+            {
+                // Wrap the PubSub message in a wrapper for consistency with Cloud Run.
+                jsonRequest.Data = new Dictionary<string, object> { { "message", jsonRequest.Data } };
+            }
+
             var context = jsonRequest.Context;
             var resource = context.Resource;
             var service = ValidateNotNullOrEmpty(resource.Service ?? s_serviceMapping.GetValueOrDefault(gcfType), "service");

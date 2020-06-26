@@ -21,10 +21,27 @@ namespace Google.Cloud.Functions.Framework.GcfEvents
     /// <summary>
     /// The CloudEvent representation of a PubSub message as translated from a GCF event.
     /// </summary>
+    public sealed class MessagePublishedData
+    {
+        /// <summary>
+        /// The resource name of the subscription receiving this message.
+        /// This property is not always populated.
+        /// </summary>
+        [JsonPropertyName("subscription")]
+        public string? Subscription { get; set; }
+
+        /// <summary>
+        /// The message that was published.
+        /// </summary>
+        [JsonPropertyName("message")]
+        public PubSubMessage? Message { get; set; }
+    }
+
+    /// <summary>
+    /// A PubSub message received as part of a <see cref="MessagePublishedData"/>
+    /// </summary>
     public sealed class PubSubMessage
     {
-        internal const string PublishEventType = "com.google.cloud.pubsub.topic.publish.v0";
-
         /// <summary>
         /// The message type, e.g. "type.googleapis.com/google.pubsub.v1.PubsubMessage".
         /// </summary>
