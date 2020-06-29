@@ -42,6 +42,7 @@ references, additional MSBuild imports removed, and the example should still wor
 
 ## Additional documentation in this directory:
 
+- [Version History](history.md)
 - [Package Details](packages.md)
 - [Deployment](deployment.md)
 - [Testing Functions](testing.md)
