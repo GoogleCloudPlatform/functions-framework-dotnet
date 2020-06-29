@@ -14,7 +14,7 @@
 
 using CloudNative.CloudEvents;
 using Google.Cloud.Functions.Framework;
-using Google.Cloud.Functions.Framework.GcfEvents;
+using Google.Events.SystemTextJson.Cloud.Storage.V1;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -23,12 +23,12 @@ namespace Google.Cloud.Functions.Examples.SimpleEventFunction
 {
     /// <summary>
     /// A function that can be triggered in responses to changes in Google Cloud Storage.
-    /// The type argument (StorageObject in this case) determines how the event payload is deserialized.
+    /// The type argument (StorageObjectData in this case) determines how the event payload is deserialized.
     /// The event must be deployed so that the trigger matches the expected payload type. (For example,
     /// deploying a function expecting a StorageObject payload will not work for a trigger that provides
     /// a FirestoreEvent.)
     /// </summary>
-    public class Function : ICloudEventFunction<StorageObject>
+    public class Function : ICloudEventFunction<StorageObjectData>
     {
         /// <summary>
         /// Logic for your function goes here. Note that a Cloud Event function just consumes an event;
@@ -38,7 +38,7 @@ namespace Google.Cloud.Functions.Examples.SimpleEventFunction
         /// <param name="data">The deserialized data within the Cloud Event.</param>
         /// <param name="cancellationToken">A cancellation token that is notified if the request is aborted.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public Task HandleAsync(CloudEvent cloudEvent, StorageObject data, CancellationToken cancellationToken)
+        public Task HandleAsync(CloudEvent cloudEvent, StorageObjectData data, CancellationToken cancellationToken)
         {
             Console.WriteLine("Storage object information:");
             Console.WriteLine($"  Name: {data.Name}");
