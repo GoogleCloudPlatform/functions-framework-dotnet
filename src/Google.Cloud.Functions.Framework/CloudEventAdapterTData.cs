@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 using CloudNative.CloudEvents;
+using Google.Events;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
@@ -52,7 +53,7 @@ namespace Google.Cloud.Functions.Framework
             try
             {
                 cloudEvent = await CloudEventConverter.ConvertRequest(context.Request);
-                data = ConvertData(cloudEvent);
+                data = CloudEventConverters.ConvertCloudEventData<TData>(cloudEvent);
             }
             catch (CloudEventConverter.ConversionException e)
             {
@@ -62,19 +63,6 @@ namespace Google.Cloud.Functions.Framework
             }
 
             await _function.HandleAsync(cloudEvent, data, context.RequestAborted);
-        }
-
-        // Note: static for ease of testing.
-        /// <summary>
-        /// Converts the data within <paramref name="cloudEvent"/> into the specified type.
-        /// </summary>
-        /// <param name="cloudEvent">The CloudEvent to extract the data from.</param>
-        /// <returns>The converted data.</returns>
-        internal static TData ConvertData(CloudEvent cloudEvent)
-        {
-            string text = cloudEvent.Data as string
-                ?? throw new CloudEventConverter.ConversionException($"Unable to handle events with a Data property type of '{cloudEvent.Data?.GetType()}'");
-            return JsonSerializer.Deserialize<TData>(text);
         }
     }
 }

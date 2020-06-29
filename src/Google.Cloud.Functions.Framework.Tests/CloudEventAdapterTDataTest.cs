@@ -15,6 +15,9 @@
 using CloudNative.CloudEvents;
 using Google.Cloud.Functions.Framework.GcfEvents;
 using Google.Cloud.Functions.Framework.Tests.GcfEvents;
+using Google.Events;
+using Google.Events.SystemTextJson;
+using Google.Events.SystemTextJson.Cloud.Storage.V1;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging.Abstractions;
 using System;
@@ -74,14 +77,13 @@ namespace Google.Cloud.Functions.Framework.Tests
         [Fact]
         public async Task StorageEventConversion()
         {
-            var (cloudEvent, data) = await DeserializeViaFunction<StorageObject>("storage.json");
+            var (cloudEvent, data) = await DeserializeViaFunction<StorageObjectData>("storage.json");
             Assert.Equal("1147091835525187", cloudEvent.Id);
-            Assert.Equal(StorageObject.FinalizeEventType, cloudEvent.Type);
 
             Assert.Equal("some-bucket", data.Bucket);
             Assert.Equal(new DateTimeOffset(2020, 4, 23, 7, 38, 57, 230, TimeSpan.Zero), data.TimeCreated);
             Assert.Equal(1587627537231057L, data.Generation);
-            Assert.Equal(1L, data.MetaGeneration);
+            Assert.Equal(1L, data.Metageneration);
             Assert.Equal(352UL, data.Size);
         }
 
@@ -122,6 +124,7 @@ namespace Google.Cloud.Functions.Framework.Tests
         private static CloudEventAdapter<TData> CreateAdapter<TData>(ICloudEventFunction<TData> function) where TData : class =>
             new CloudEventAdapter<TData>(function, new NullLogger<CloudEventAdapter<TData>>());
 
+        [CloudEventDataConverter(typeof(JsonCloudEventDataConverter<SimpleData>))]
         public class SimpleData
         {
             [JsonPropertyName("name")]
