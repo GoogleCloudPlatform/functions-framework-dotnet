@@ -87,11 +87,11 @@ have to specify the *event trigger* as part of the deployment
 
 Replace any ***bold italic*** parts with your project ID, bucket name and so forth.
 
-Trigger type             | Payload type   | Sample command line options
------------------------- | -------------- | --------------------------
-Cloud Storage operation  | StorageObject  | --trigger-event google.storage.object.finalize --trigger-resource ***my-gcs-bucket***
-Pub/Sub message          | PubSubMessage  | --trigger-topic ***my-pubsub-topic-id***
-Firestore event          | FirestoreEvent | --trigger-event providers/cloud.firestore/eventTypes/document.write --trigger-resource 'projects/***my-project***/databases/(default)/documents/***my-collection***/{document}'
+Trigger type             | Payload type          | Sample command line options
+------------------------ | --------------------- | --------------------------
+Cloud Storage operation  | StorageObjectData     | --trigger-event google.storage.object.finalize --trigger-resource ***my-gcs-bucket***
+Pub/Sub message          | MessagePublishedData  | --trigger-topic ***my-pubsub-topic-id***
+Firestore event          | DocumentEventData     | --trigger-event providers/cloud.firestore/eventTypes/document.write --trigger-resource 'projects/***my-project***/databases/(default)/documents/***my-collection***/{document}'
 
 > **Notes for the Firestore trigger**:  
 > - The quotes around the Firestore resource are to avoid having to escape the parentheses in `(default)`.

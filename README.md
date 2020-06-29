@@ -59,7 +59,7 @@ dotnet new gcf-event
 ```
 
 That will create the same set of files as before, but the `Function`
-class now implements `ICloudEventFunction<StorageObject>`. This is a
+class now implements `ICloudEventFunction<StorageObjectData>`. This is a
 function that responds to [CNCF Cloud
 Events](https://cloudevents.io/), expecting data corresponding to a
 Google Cloud Storage object. If you deploy the function with a
@@ -73,10 +73,15 @@ as for an HTTP Function.
 
 The type argument to the generic `ICloudEventFunction<TData>` interface
 expresses the type of data your function expects within the
-Cloud Event. This is deserialized using System.Text.Json
-deserialization: you can specify any type, so long as
-it can be deserialized appropriately from the Cloud Event data
-attribute.
+Cloud Event. The data type should be annotated with
+[CloudEventDataConverterAttribute](https://github.com/googleapis/google-cloudevents-dotnet/blob/master/src/Google.Events/CloudEventDataConverterAttribute.cs)
+to indicate how to convert from a CloudEvent to the data type.
+Typically this is a type from the
+[Google.Events.Protobuf](https://www.nuget.org/packages/Google.Events.Protobuf) or
+[Google.Events.SystemTextJson](https://www.nuget.org/packages/Google.Events.SystemTextJson)
+package. See the [google-cloudevents-dotnet
+README](https://github.com/googleapis/google-cloudevents-dotnet/blob/master/README.md)
+for more information about these packages.
 
 > **Note:**  
 > Google Cloud Functions support for events predates the CNCF Cloud
