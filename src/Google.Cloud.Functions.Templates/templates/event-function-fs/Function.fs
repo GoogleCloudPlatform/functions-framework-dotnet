@@ -2,18 +2,18 @@ namespace MyFunction
 
 open CloudNative.CloudEvents
 open Google.Cloud.Functions.Framework
-open Google.Cloud.Functions.Framework.GcfEvents
+open Google.Events.SystemTextJson.Cloud.Storage.V1
 open System.Threading.Tasks
 
 /// <summary>
 /// A function that can be triggered in responses to changes in Google Cloud Storage.
-/// The type argument (StorageObject in this case) determines how the event payload is deserialized.
+/// The type argument (StorageObjectData in this case) determines how the event payload is deserialized.
 /// The event must be deployed so that the trigger matches the expected payload type. (For example,
 /// deploying a function expecting a StorageObject payload will not work for a trigger that provides
 /// a FirestoreEvent.)
 /// </summary>
 type Function() =
-    interface ICloudEventFunction<StorageObject> with
+    interface ICloudEventFunction<StorageObjectData> with
         /// <summary>
         /// Logic for your function goes here. Note that a Cloud Event function just consumes an event;
         /// it doesn't provide any response.
