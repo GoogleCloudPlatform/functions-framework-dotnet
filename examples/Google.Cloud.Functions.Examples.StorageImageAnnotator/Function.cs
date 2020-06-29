@@ -14,9 +14,9 @@
 
 using CloudNative.CloudEvents;
 using Google.Cloud.Functions.Framework;
-using Google.Cloud.Functions.Framework.GcfEvents;
 using Google.Cloud.Storage.V1;
 using Google.Cloud.Vision.V1;
+using Google.Events.Protobuf.Cloud.Storage.V1;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -34,7 +34,7 @@ namespace Google.Cloud.Functions.Examples.StorageImageAnnotator
     /// use the Google Cloud Vision API to annotate them, then write a text file
     /// back into the bucket with the information from the Vision API.
     /// </summary>
-    public class Function : ICloudEventFunction<StorageObject>
+    public class Function : ICloudEventFunction<StorageObjectData>
     {
         private const string JpegContentType = "image/jpeg";
         private const string TextContentType = "text/plain";
@@ -58,7 +58,7 @@ namespace Google.Cloud.Functions.Examples.StorageImageAnnotator
         /// </summary>
         /// <param name="payload">The storage object that's been uploaded.</param>
         /// <param name="context">Event context (event ID etc)</param>
-        public async Task HandleAsync(CloudEvent cloudEvent, StorageObject data, CancellationToken cancellationToken)
+        public async Task HandleAsync(CloudEvent cloudEvent, StorageObjectData data, CancellationToken cancellationToken)
         {
             // Only handle JPEG images. (This prevents us from trying to perform image recognition on
             // the files we upload.)
@@ -80,7 +80,7 @@ namespace Google.Cloud.Functions.Examples.StorageImageAnnotator
         /// objects directly based on their name, so we don't need to download the object and then upload it
         /// to the Vision API.
         /// </summary>
-        private Task<AnnotateImageResponse> AnnotateImageAsync(StorageObject payload, CancellationToken cancellationToken)
+        private Task<AnnotateImageResponse> AnnotateImageAsync(StorageObjectData payload, CancellationToken cancellationToken)
         {
             var features = new[] { FaceDetection, LandmarkDetection, TextDetection, LogoDetection, LabelDetection }
                 .Select(type => new Feature { Type = type, MaxResults = 20 });
@@ -132,7 +132,7 @@ namespace Google.Cloud.Functions.Examples.StorageImageAnnotator
         /// <summary>
         /// Creates a storage object alongside the original one, just renaming the extension to .txt.
         /// </summary>
-        private async Task<string> CreateDescriptionFileAsync(StorageObject payload, string text)
+        private async Task<string> CreateDescriptionFileAsync(StorageObjectData payload, string text)
         {
             var name = Path.ChangeExtension(payload.Name, TextExtension);
             using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(text)))
