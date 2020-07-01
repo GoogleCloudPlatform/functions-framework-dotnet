@@ -27,14 +27,14 @@ namespace Google.Cloud.Functions.Framework.Tests.GcfEvents
     {
         // Checks a basic mapping for each event source
         [Theory]
-        [InlineData("storage.json", "com.google.cloud.storage.object.finalize.v0", "//storage.googleapis.com/projects/_/buckets/some-bucket", "objects/folder/Test.cs")]
-        [InlineData("legacy_storage_change.json", "com.google.cloud.storage.object.change.v0", "//storage.googleapis.com/projects/_/buckets/sample-bucket", "objects/MyFile")]
-        [InlineData("firestore_simple.json", "com.google.cloud.firestore.document.write.v0", "//firestore.googleapis.com/projects/project-id/databases/(default)/documents/gcf-test/2Vm2mI1d0wIaK2Waj5to", null)]
-        [InlineData("pubsub_text.json", "com.google.cloud.pubsub.topic.publish.v0", "//pubsub.googleapis.com/projects/sample-project/topics/gcf-test", null)]
-        [InlineData("legacy_pubsub.json", "com.google.cloud.pubsub.topic.publish.v0", "//pubsub.googleapis.com/projects/sample-project/topics/gcf-test", null)]
-        [InlineData("firebase-db1.json", "com.google.cloud.firebase.database.write.v0", "//firebase.googleapis.com/projects/_/instances/my-project-id/refs/gcf-test/xyz", null)]
-        [InlineData("firebase-auth1.json", "com.google.cloud.firebase.auth.user.create.v0", "//firebase.googleapis.com/projects/my-project-id", null)]
-        [InlineData("firebase-auth2.json", "com.google.cloud.firebase.auth.user.delete.v0", "//firebase.googleapis.com/projects/my-project-id", null)]
+        [InlineData("storage.json", "google.cloud.storage.object.v1.finalized", "//storage.googleapis.com/projects/_/buckets/some-bucket", "objects/folder/Test.cs")]
+        [InlineData("legacy_storage_change.json", "google.cloud.storage.object.v1.changed", "//storage.googleapis.com/projects/_/buckets/sample-bucket", "objects/MyFile")]
+        [InlineData("firestore_simple.json", "google.cloud.firestore.document.v1.written", "//firestore.googleapis.com/projects/project-id/databases/(default)/documents/gcf-test/2Vm2mI1d0wIaK2Waj5to", null)]
+        [InlineData("pubsub_text.json", "google.cloud.pubsub.topic.v1.messagePublished", "//pubsub.googleapis.com/projects/sample-project/topics/gcf-test", null)]
+        [InlineData("legacy_pubsub.json", "google.cloud.pubsub.topic.v1.messagePublished", "//pubsub.googleapis.com/projects/sample-project/topics/gcf-test", null)]
+        [InlineData("firebase-db1.json", "google.firebase.database.document.v1.written", "//firebase.googleapis.com/projects/_/instances/my-project-id/refs/gcf-test/xyz", null)]
+        [InlineData("firebase-auth1.json", "google.firebase.auth.user.v1.created", "//firebase.googleapis.com/projects/my-project-id", null)]
+        [InlineData("firebase-auth2.json", "google.firebase.auth.user.v1.deleted", "//firebase.googleapis.com/projects/my-project-id", null)]
         public async Task ConvertGcfEvent(string resourceName, string expectedType, string expectedSource, string expectedSubject)
         {
             var context = GcfEventResources.CreateHttpContext(resourceName);
@@ -52,7 +52,7 @@ namespace Google.Cloud.Functions.Framework.Tests.GcfEvents
             var cloudEvent = await GcfConverters.ConvertGcfEventToCloudEvent(context.Request);
             Assert.Equal("application/json", cloudEvent.DataContentType.MediaType);
             Assert.Equal("1147091835525187", cloudEvent.Id);
-            Assert.Equal("com.google.cloud.storage.object.finalize.v0", cloudEvent.Type);
+            Assert.Equal("google.cloud.storage.object.v1.finalized", cloudEvent.Type);
             Assert.Equal(new DateTime(2020, 4, 23, 7, 38, 57, 772), cloudEvent.Time);
             Assert.Equal(new Uri("//storage.googleapis.com/projects/_/buckets/some-bucket"), cloudEvent.Source);
             Assert.Equal("objects/folder/Test.cs", cloudEvent.Subject);

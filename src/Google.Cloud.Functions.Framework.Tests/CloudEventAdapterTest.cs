@@ -71,7 +71,7 @@ namespace Google.Cloud.Functions.Framework.Tests
             await adapter.HandleAsync(context);
             Assert.Equal(200, context.Response.StatusCode);
             Assert.Equal("1147091835525187", function.LastEvent?.Id);
-            Assert.Equal("com.google.cloud.storage.object.finalize.v0", function.LastEvent?.Type);
+            Assert.Equal("google.cloud.storage.object.v1.finalized", function.LastEvent?.Type);
         }
 
         private class TestCloudEventFunction : ICloudEventFunction
