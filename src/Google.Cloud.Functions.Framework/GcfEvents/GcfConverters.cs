@@ -29,40 +29,80 @@ namespace Google.Cloud.Functions.Framework.GcfEvents
     /// </summary>
     internal static class GcfConverters
     {
+        private static class Services
+        {
+            internal const string Firebase = "firebase.googleapis.com";
+            internal const string Firestore = "firestore.googleapis.com";
+            internal const string PubSub = "pubsub.googleapis.com";
+            internal const string Storage = "storage.googleapis.com";
+        }
+
+        private static class EventTypes
+        {
+            private const string FirestoreDocumentV1 = "google.cloud.firestore.document.v1";
+            internal const string FirestoreDocumentCreated = FirestoreDocumentV1 + ".created";
+            internal const string FirestoreDocumentUpdated = FirestoreDocumentV1 + ".updated";
+            internal const string FirestoreDocumentDeleted = FirestoreDocumentV1 + ".deleted";
+            internal const string FirestoreDocumentWritten = FirestoreDocumentV1 + ".written";
+
+            private const string FirebaseDatabaseDocumentV1 = "google.firebase.database.document.v1";
+            internal const string FirebaseDatabaseDocumentCreated = FirebaseDatabaseDocumentV1 + ".created";
+            internal const string FirebaseDatabaseDocumentUpdated = FirebaseDatabaseDocumentV1 + ".updated";
+            internal const string FirebaseDatabaseDocumentDeleted = FirebaseDatabaseDocumentV1 + ".deleted";
+            internal const string FirebaseDatabaseDocumentWritten = FirebaseDatabaseDocumentV1 + ".written";
+
+            private const string FirebaseAuthUserV1 = "google.firebase.auth.user.v1";
+            internal const string FirebaseAuthUserCreated = FirebaseAuthUserV1 + ".created";
+            internal const string FirebaseAuthUserDeleted = FirebaseAuthUserV1 + ".deleted";
+
+            internal const string FirebaseAnalyticsLogWritten = "google.firebase.analytics.log.v1.written";
+
+            internal const string PubSubMessagePublished = "google.cloud.pubsub.topic.v1.messagePublished";
+
+            private const string StorageObjectV1 = "google.cloud.storage.object.v1";
+            internal const string StorageObjectFinalized = StorageObjectV1 + ".finalized";
+            internal const string StorageObjectArchived = StorageObjectV1 + ".archived";
+            internal const string StorageObjectDeleted = StorageObjectV1 + ".deleted";
+            internal const string StorageObjectMetadataUpdated = StorageObjectV1 + ".metadataUpdated";
+
+            // Note: this isn't documented in google-cloudevents; it's from the legacy Storage change notification.
+            internal const string StorageObjectChanged = StorageObjectV1 + ".changed";
+        }
+
         private static readonly string JsonContentTypeText = "application/json";
         private static readonly ContentType JsonContentType = new ContentType(JsonContentTypeText);
 
         private static readonly Dictionary<string, EventAdapter> s_eventTypeMapping = new Dictionary<string, EventAdapter>
         {
-            { "google.pubsub.topic.publish", new PubSubEventAdapter("com.google.cloud.pubsub.topic.publish.v0") },
-            { "google.storage.object.finalize", new StorageEventAdapter("com.google.cloud.storage.object.finalize.v0") },
-            { "google.storage.object.delete", new StorageEventAdapter("com.google.cloud.storage.object.delete.v0") },
-            { "google.storage.object.archive", new StorageEventAdapter("com.google.cloud.storage.object.archive.v0") },
-            { "google.storage.object.metadataUpdate", new StorageEventAdapter("com.google.cloud.storage.object.metadataUpdate.v0") },
+            { "google.pubsub.topic.publish", new PubSubEventAdapter(EventTypes.PubSubMessagePublished) },
+            { "google.storage.object.finalize", new StorageEventAdapter(EventTypes.StorageObjectFinalized) },
+            { "google.storage.object.delete", new StorageEventAdapter(EventTypes.StorageObjectDeleted) },
+            { "google.storage.object.archive", new StorageEventAdapter(EventTypes.StorageObjectArchived) },
+            { "google.storage.object.metadataUpdate", new StorageEventAdapter(EventTypes.StorageObjectMetadataUpdated) },
             { "providers/cloud.firestore/eventTypes/document.write",
-                new FirestoreFirebaseEventAdapter("com.google.cloud.firestore.document.write.v0", "firestore.googleapis.com") },
+                new FirestoreFirebaseEventAdapter(EventTypes.FirestoreDocumentWritten, Services.Firestore) },
             { "providers/cloud.firestore/eventTypes/document.create",
-                new FirestoreFirebaseEventAdapter("com.google.cloud.firestore.document.create.v0", "firestore.googleapis.com") },
+                new FirestoreFirebaseEventAdapter(EventTypes.FirestoreDocumentCreated, Services.Firestore) },
             { "providers/cloud.firestore/eventTypes/document.update",
-                new FirestoreFirebaseEventAdapter("com.google.cloud.firestore.document.update.v0", "firestore.googleapis.com") },
+                new FirestoreFirebaseEventAdapter(EventTypes.FirestoreDocumentUpdated, Services.Firestore) },
             { "providers/cloud.firestore/eventTypes/document.delete",
-                new FirestoreFirebaseEventAdapter("com.google.cloud.firestore.document.delete.v0", "firestore.googleapis.com") },
+                new FirestoreFirebaseEventAdapter(EventTypes.FirestoreDocumentDeleted, Services.Firestore) },
             { "providers/firebase.auth/eventTypes/user.create",
-                new FirestoreFirebaseEventAdapter("com.google.cloud.firebase.auth.user.create.v0", "firebase.googleapis.com") },
+                new FirestoreFirebaseEventAdapter(EventTypes.FirebaseAuthUserCreated, Services.Firebase) },
             { "providers/firebase.auth/eventTypes/user.delete",
-                new FirestoreFirebaseEventAdapter("com.google.cloud.firebase.auth.user.delete.v0", "firebase.googleapis.com") },
+                new FirestoreFirebaseEventAdapter(EventTypes.FirebaseAuthUserDeleted, Services.Firebase) },
             { "providers/google.firebase.analytics/eventTypes/event.log",
-                new FirestoreFirebaseEventAdapter("com.google.cloud.firebase.analytics.log.v0", "firebase.googleapis.com") },
+                new FirestoreFirebaseEventAdapter(EventTypes.FirebaseAnalyticsLogWritten, Services.Firebase) },
             { "providers/google.firebase.database/eventTypes/ref.create",
-                new FirestoreFirebaseEventAdapter("com.google.cloud.firebase.database.create.v0", "firebase.googleapis.com") },
+                new FirestoreFirebaseEventAdapter(EventTypes.FirebaseDatabaseDocumentCreated, Services.Firebase) },
             { "providers/google.firebase.database/eventTypes/ref.write",
-                new FirestoreFirebaseEventAdapter("com.google.cloud.firebase.database.write.v0", "firebase.googleapis.com") },
+                new FirestoreFirebaseEventAdapter(EventTypes.FirebaseDatabaseDocumentWritten, Services.Firebase) },
             { "providers/google.firebase.database/eventTypes/ref.update",
-                new FirestoreFirebaseEventAdapter("com.google.cloud.firebase.database.update.v0", "firebase.googleapis.com") },
+                new FirestoreFirebaseEventAdapter(EventTypes.FirebaseDatabaseDocumentUpdated, Services.Firebase) },
             { "providers/google.firebase.database/eventTypes/ref.delete",
-                new FirestoreFirebaseEventAdapter("com.google.cloud.firebase.database.delete.v0", "firebase.googleapis.com") },
-            { "providers/cloud.pubsub/eventTypes/topic.publish", new PubSubEventAdapter("com.google.cloud.pubsub.topic.publish.v0") },
-            { "providers/cloud.storage/eventTypes/object.change", new StorageEventAdapter("com.google.cloud.storage.object.change.v0") },
+                new FirestoreFirebaseEventAdapter(EventTypes.FirebaseDatabaseDocumentDeleted, Services.Firebase) },
+            { "providers/cloud.pubsub/eventTypes/topic.publish", new PubSubEventAdapter(EventTypes.PubSubMessagePublished) },
+            { "providers/cloud.storage/eventTypes/object.change", new StorageEventAdapter(EventTypes.StorageObjectChanged) },
         };
 
         internal static async ValueTask<CloudEvent> ConvertGcfEventToCloudEvent(HttpRequest request)
@@ -159,7 +199,7 @@ namespace Google.Cloud.Functions.Framework.GcfEvents
             private static readonly Regex StorageResourcePattern =
                 new Regex(@"^(projects/_/buckets/[^/]+)/(objects/.*?)(?:#\d+)?$", RegexOptions.Compiled);
 
-            internal StorageEventAdapter(string cloudEventType) : base(cloudEventType, "storage.googleapis.com")
+            internal StorageEventAdapter(string cloudEventType) : base(cloudEventType, Services.Storage)
             {
             }
 
@@ -183,7 +223,7 @@ namespace Google.Cloud.Functions.Framework.GcfEvents
 
         private class PubSubEventAdapter : EventAdapter
         {
-            internal PubSubEventAdapter(string cloudEventType) : base(cloudEventType, "pubsub.googleapis.com")
+            internal PubSubEventAdapter(string cloudEventType) : base(cloudEventType, Services.PubSub)
             {
             }
 
