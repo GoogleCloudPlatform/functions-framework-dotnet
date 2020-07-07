@@ -1,7 +1,8 @@
 # Version History
 
-## 1.0.0-alpha08 (not yet released)
+## 1.0.0-alpha08 (released 2020-07-07)
 
+- Added an in-memory logger provider to the test server
 - Moved the event data classes out of the Functions Framework into
   `Google.Events.*`. We have a dependency on `Google.Events` but
   not on any specific serialization strategy.
