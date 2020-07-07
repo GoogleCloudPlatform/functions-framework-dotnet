@@ -19,6 +19,7 @@
   <ItemGroup>
     <PackageReference Include="Google.Cloud.Functions.Invoker.Testing" Version="1.0.0-alpha07" />
     <ProjectReference Include="..\Google.Cloud.Functions.Examples.AdvancedDependencyInjection\Google.Cloud.Functions.Examples.AdvancedDependencyInjection.csproj" />
+    <ProjectReference Include="..\Google.Cloud.Functions.Examples.SimpleDependencyInjection\Google.Cloud.Functions.Examples.SimpleDependencyInjection.csproj" />
     <ProjectReference Include="..\Google.Cloud.Functions.Examples.SimpleHttpFunction\Google.Cloud.Functions.Examples.SimpleHttpFunction.csproj" />
   </ItemGroup>
 

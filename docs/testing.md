@@ -64,3 +64,31 @@ similar functionality.
   is used for all tests in the fixture. See
   [SimpleHttpFunctionTest_WithTestServerFixture](../examples/Google.Cloud.Functions.Examples.IntegrationTests/SimpleHttpFunctionTest_WithTestServerFixture.cs)
   for an example of this.
+  
+## Testing logs with FunctionTestServer
+
+`FunctionTestServer` augments the default logging with an in-memory
+logger provider, allowing you to retrieve logs by category using the
+`GetLogEntries` method. See
+[SimpleDependencyInjectionTest.cs](../examples/Google.Cloud.Functions.Examples.IntegrationTests/SimpleDependencyInjectionTest.cs)
+for an example of how this can be used.
+
+Currently the functionality is somewhat primitive, but should meet
+the demands of most users. Aspects that may change later include:
+
+- The logger provider is configured after any other services. If you
+  manually configure services during startup, eagerly loading
+  singletons, the in-memory logger will not be configured.
+- If the test server is constructed as part of a fixture, the logs
+  persist between tests. (A `ClearLogs` method allows you to
+  explicitly clear the logs if you need to.)
+- The logger provider is unconditionally installed, and has an
+  unlimited buffer size. This makes the test server inappropriate
+  for long-running soak tests, for example. In the future we may
+  provide options to disable the in-memory logger, or limit its
+  log entry buffer.
+- The logger only provides the log message rather than separate
+  parts of the log entry that may be available, such as placeholder
+  replacement values.
+- The logger does not support log scopes; all log entries are stored
+  in a flat structure.

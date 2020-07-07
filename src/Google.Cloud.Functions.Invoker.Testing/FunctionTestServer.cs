@@ -14,6 +14,7 @@
 
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -31,10 +32,14 @@ namespace Google.Cloud.Functions.Invoker.Testing
         /// </summary>
         public TestServer Server { get; }
 
+        private readonly TestLoggerProvider _testLoggerProvider;
+
         private FunctionTestServer(IHostBuilder builder)
         {
+            _testLoggerProvider = new TestLoggerProvider();
             var host = builder
                 .ConfigureWebHost(webBuilder => webBuilder.UseTestServer())
+                .ConfigureLogging(logging => logging.AddProvider(_testLoggerProvider))
                 .Build();
             host.Start();
             Server = host.GetTestServer();
@@ -65,6 +70,29 @@ namespace Google.Cloud.Functions.Invoker.Testing
         /// <returns>An <see cref="HttpClient"/> that will connect to <see cref="Server"/> by default.</returns>
         public HttpClient CreateClient() => Server.CreateClient();
 
+        /// <summary>
+        /// Clears all logs.
+        /// </summary>
+        public void ClearLogs() => _testLoggerProvider.Clear();
+
+        /// <summary>
+        /// Returns a list of log entries for the category with the given type's full name. If no logs have been
+        /// written for the given category, an empty list is returned.
+        /// </summary>
+        /// <param name="type">The type whose name is used as a logger category name.</param>
+        /// <returns>A list of log entries for the given category name.</returns>
+        public List<TestLogEntry> GetLogEntries(Type type) =>
+            GetLogEntries(Preconditions.CheckNotNull(type, nameof(type)).FullName ?? "");
+
+        /// <summary>
+        /// Returns a list of log entries for the given category name. If no logs have been
+        /// written for the given category, an empty list is returned.
+        /// </summary>
+        /// <param name="categoryName">The category name for which to get log entries.</param>
+        /// <returns>A list of log entries for the given category name.</returns>
+        public List<TestLogEntry> GetLogEntries(string categoryName) =>
+            _testLoggerProvider.GetLogEntries(Preconditions.CheckNotNull(categoryName, nameof(categoryName)));
+        
         /// <summary>
         /// Disposes of the test server.
         /// </summary>
