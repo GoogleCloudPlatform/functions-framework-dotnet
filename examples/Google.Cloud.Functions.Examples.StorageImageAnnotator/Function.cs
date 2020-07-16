@@ -107,11 +107,12 @@ namespace Google.Cloud.Functions.Examples.StorageImageAnnotator
             builder.AppendLine();
             if (response.FaceAnnotations.Any())
             {
+                _logger.LogWarning("Did you mean to include faces in your storage bucket?");
                 builder.AppendLine($"Faces: {response.FaceAnnotations.Count}");
             }
             MaybeAppend("Landmarks", response.LandmarkAnnotations, ann => $"{ann.Description} - {ann.Score}");
             // Multi-part descriptions come with line breaks; we'll just remove them for now. Text annotations have no score.
-            MaybeAppend("Text", response.LandmarkAnnotations, ann => ann.Description.Replace('\n', ' '));
+            MaybeAppend("Text", response.TextAnnotations, ann => ann.Description.Replace('\n', ' '));
             MaybeAppend("Logos", response.LogoAnnotations, ann => $"{ann.Description} - {ann.Score}");
             MaybeAppend("Labels", response.LabelAnnotations, ann => $"{ann.Description} - {ann.Score}");
 
