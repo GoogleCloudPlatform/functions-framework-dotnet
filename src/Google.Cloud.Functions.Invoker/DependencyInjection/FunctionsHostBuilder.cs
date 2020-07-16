@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Google.Cloud.Functions.Invoker.DependencyInjection
@@ -22,9 +23,10 @@ namespace Google.Cloud.Functions.Invoker.DependencyInjection
     /// </summary>
     internal sealed class FunctionsHostBuilder : IFunctionsHostBuilder
     {
+        public IConfiguration Configuration { get; }
         public IServiceCollection Services { get; }
 
-        internal FunctionsHostBuilder(IServiceCollection services) =>
-            Services = services;
+        internal FunctionsHostBuilder(IConfiguration configuration, IServiceCollection services) =>
+            (Configuration, Services) = (configuration, services);
     }
 }

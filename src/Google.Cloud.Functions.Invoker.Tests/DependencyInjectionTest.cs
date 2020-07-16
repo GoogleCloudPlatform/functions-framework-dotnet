@@ -14,6 +14,7 @@
 
 using Google.Cloud.Functions.Framework;
 using Google.Cloud.Functions.Invoker.DependencyInjection;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
@@ -45,8 +46,9 @@ namespace Google.Cloud.Functions.Invoker.Tests
                 new[] { typeof(DependencyTestFunction).FullName },
                 ConfigurationVariableProvider.FromDictionary(new Dictionary<string, string>()));
 
+            var context = new WebHostBuilderContext();
             var services = new ServiceCollection();
-            environment.ConfigureServices(services);
+            environment.ConfigureServices(context, services);
             var providerFactory = new DefaultServiceProviderFactory();
 
             var provider = providerFactory.CreateServiceProvider(services);

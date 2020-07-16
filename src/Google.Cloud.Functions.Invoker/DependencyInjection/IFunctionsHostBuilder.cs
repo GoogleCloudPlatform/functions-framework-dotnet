@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Google.Cloud.Functions.Invoker.DependencyInjection
@@ -26,5 +27,10 @@ namespace Google.Cloud.Functions.Invoker.DependencyInjection
         /// The services used for dependency injection.
         /// </summary>
         IServiceCollection Services { get; }
+
+        /// <summary>
+        /// The application configuration.
+        /// </summary>
+        IConfiguration Configuration { get; }
     }
 }

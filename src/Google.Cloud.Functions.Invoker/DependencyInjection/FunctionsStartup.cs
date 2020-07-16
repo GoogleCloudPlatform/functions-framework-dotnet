@@ -14,11 +14,15 @@
 
 namespace Google.Cloud.Functions.Invoker.DependencyInjection
 {
-    // Note: this follows the exact pattern that Azure Functions uses. If instead we created
-    // an interface, then a function application could use a single startup class targeting
-    // both platforms. They can't do that with this approach, because no single class can derive
-    // from both the Azure abstract class ant this abstract class. It's easy enough to adapt
-    // one to another, admittedly.
+    // Note: this follows the exact pattern that Azure Functions uses, modulo the difference
+    // noted below. If instead we created an interface, then a function application could use
+    // a single startup class targeting both platforms. They can't do that with this approach,
+    // because no single class can derive from both the Azure abstract class and this abstract
+    // class. It's easy enough to adapt one to another, admittedly.
+
+    // Note: the IFunctionsHostBuilder interface in this assembly has an IConfiguration property
+    // not currently provided in Azure Functions. (This was requested as a feature to allow
+    // dependency injection to vary based on settings, which seems reasonable.)
 
     /// <summary>
     /// Abstract class used for additional configuration. Users should derive from

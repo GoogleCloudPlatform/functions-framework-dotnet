@@ -67,7 +67,7 @@ namespace Google.Cloud.Functions.Invoker
 
         /// <summary>
         /// The FunctionsStartup instances to use for configuring services.
-        /// This is currently private because they're just used in <see cref="ConfigureServices(IServiceCollection)"/>;
+        /// This is currently private because they're just used in <see cref="ConfigureServices(WebHostBuilderContext, IServiceCollection)"/>;
         /// it could be made internal if we wanted.
         /// </summary>
         private IReadOnlyList<FunctionsStartup> Startups { get; }
@@ -83,10 +83,10 @@ namespace Google.Cloud.Functions.Invoker
         /// Configures the services for the application by asking each <see cref="FunctionsStartup"/>
         /// that's been detected to contribute services, along with any we need in order to run the function.
         /// </summary>
-        internal void ConfigureServices(IServiceCollection services)
+        internal void ConfigureServices(WebHostBuilderContext context, IServiceCollection services)
         {
-            // Perform any user-specified configuration.
-            var builder = new FunctionsHostBuilder(services);
+            // Perform any user-specified DI configuration.
+            var builder = new FunctionsHostBuilder(context.Configuration, services);
             foreach (var startup in Startups)
             {
                 startup.Configure(builder);

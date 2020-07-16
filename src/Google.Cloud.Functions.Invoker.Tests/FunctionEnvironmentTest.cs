@@ -16,6 +16,7 @@ using CloudNative.CloudEvents;
 using Google.Cloud.Functions.Framework;
 using Google.Events;
 using Google.Events.SystemTextJson;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -345,12 +346,13 @@ namespace Google.Cloud.Functions.Invoker.Tests
         /// </summary>
         private async Task ExecuteRequest(FunctionEnvironment environment, HttpContext context)
         {
+            var builderContext = new WebHostBuilderContext();
             var services = new ServiceCollection();
             // Normally ASP.NET Core provides logging for everything, so it's natural to depend on it.
             // Our adapters may need logging, so let's make sure it's available.
             services.AddSingleton<ILoggerFactory>(new LoggerFactory());
             services.AddLogging();
-            environment.ConfigureServices(services);
+            environment.ConfigureServices(builderContext, services);
             var providerFactory = new DefaultServiceProviderFactory();
 
             var provider = providerFactory.CreateServiceProvider(services);
