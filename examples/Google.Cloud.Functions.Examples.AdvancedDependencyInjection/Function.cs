@@ -54,8 +54,8 @@ namespace Google.Cloud.Functions.Examples.AdvancedDependencyInjection
     }
 
     /// <summary>
-    /// The startup class is provided with a host builder which exposes a service collection.
-    /// This can be used to make additional dependencies available.
+    /// The startup class is provided with a host builder which exposes a service collection
+    /// and configuration. This can be used to make additional dependencies available.
     /// </summary>
     public class Startup : FunctionsStartup
     {
