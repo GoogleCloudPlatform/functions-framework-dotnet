@@ -280,9 +280,16 @@ gcloud functions deploy simple-dependency-injection \
 ## AdvancedDependencyInjection
 
 The [AdvancedDependencyInjection](../examples/Google.Cloud.Functions.Examples.AdvancedDependencyInjection)
-example demonstrates dependency injection with extra configuration
-provided via a startup class, including scoped and singleton
-dependencies.
+example demonstrates dependency injection with services provided via a startup class,
+including scoped and singleton dependencies.
+
+See the [dependency injection documentation](dependency-injection.md) for more details.
+
+## Configuration
+
+The [Configuration](../examples/Google.Cloud.Functions.Examples.Configuration)
+example demonstrates using `IConfiguration` to obtain information from
+settings files to configure services.
 
 See the [dependency injection documentation](dependency-injection.md) for more details.
 

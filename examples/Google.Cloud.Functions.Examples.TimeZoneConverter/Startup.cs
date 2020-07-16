@@ -22,7 +22,7 @@ using NodaTime;
 namespace Google.Cloud.Functions.Examples.TimeZoneConverter
 {
     /// <summary>
-    /// Service provider to provide the NodaTime built-in TZDB (IANA) date time zone provider
+    /// Startup class to provide the NodaTime built-in TZDB (IANA) date time zone provider
     /// as a dependency to <see cref="Function"/>.
     /// </summary>
     public class Startup : FunctionsStartup

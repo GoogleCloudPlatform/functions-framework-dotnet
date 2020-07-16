@@ -37,6 +37,8 @@ Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Google.Cloud.Functions.Exam
 EndProject
 Project("{778DAE3C-4631-46EA-AA77-85C1314464D9}") = "Google.Cloud.Functions.Examples.VbUntypedEventFunction", "Google.Cloud.Functions.Examples.VbUntypedEventFunction\Google.Cloud.Functions.Examples.VbUntypedEventFunction.vbproj", "{C82DC952-122D-4260-86AA-A84D3137B42C}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Google.Cloud.Functions.Examples.Configuration", "Google.Cloud.Functions.Examples.Configuration\Google.Cloud.Functions.Examples.Configuration.csproj", "{5085BF04-084E-4B52-9381-B23A1DAE268B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -251,6 +253,18 @@ Global
 		{C82DC952-122D-4260-86AA-A84D3137B42C}.Release|x64.Build.0 = Release|Any CPU
 		{C82DC952-122D-4260-86AA-A84D3137B42C}.Release|x86.ActiveCfg = Release|Any CPU
 		{C82DC952-122D-4260-86AA-A84D3137B42C}.Release|x86.Build.0 = Release|Any CPU
+		{5085BF04-084E-4B52-9381-B23A1DAE268B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5085BF04-084E-4B52-9381-B23A1DAE268B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5085BF04-084E-4B52-9381-B23A1DAE268B}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{5085BF04-084E-4B52-9381-B23A1DAE268B}.Debug|x64.Build.0 = Debug|Any CPU
+		{5085BF04-084E-4B52-9381-B23A1DAE268B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{5085BF04-084E-4B52-9381-B23A1DAE268B}.Debug|x86.Build.0 = Debug|Any CPU
+		{5085BF04-084E-4B52-9381-B23A1DAE268B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5085BF04-084E-4B52-9381-B23A1DAE268B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5085BF04-084E-4B52-9381-B23A1DAE268B}.Release|x64.ActiveCfg = Release|Any CPU
+		{5085BF04-084E-4B52-9381-B23A1DAE268B}.Release|x64.Build.0 = Release|Any CPU
+		{5085BF04-084E-4B52-9381-B23A1DAE268B}.Release|x86.ActiveCfg = Release|Any CPU
+		{5085BF04-084E-4B52-9381-B23A1DAE268B}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
