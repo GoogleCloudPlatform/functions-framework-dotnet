@@ -31,7 +31,7 @@ namespace Google.Cloud.Functions.Examples.IntegrationTests
         public async Task FunctionWritesHelloFunctionsFramework()
         {
             // Various other extension methods are available to configure logging,
-            // service providers, application configurers, along with reading configuration
+            // startups, application configurers, along with reading configuration
             // from the command line and environment variables - but those aren't
             // required for this test.
             var builder = Host.CreateDefaultBuilder()

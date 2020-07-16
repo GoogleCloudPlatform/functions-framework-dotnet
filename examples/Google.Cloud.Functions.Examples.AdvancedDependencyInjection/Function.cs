@@ -21,11 +21,11 @@ using System;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-// FunctionsServiceProviderAttribute is applied to the assembly to tell the Functions Framework which service provider
-// types to load. If you have multiple service provider classes, you can apply the attribute multiple times, optionally
+// FunctionsServiceProviderAttribute is applied to the assembly to tell the Functions Framework which startup class
+// to load. If you have multiple startup classes, you can apply the attribute multiple times, optionally
 // using the Order property to specify ordering.
 // The attribute must be applied to the assembly containing the function, but it can potentially refer
-// to a service provider class in a different assembly.
+// to a startup class in a different assembly.
 [assembly: FunctionsStartup(typeof(Google.Cloud.Functions.Examples.AdvancedDependencyInjection.Startup))]
 
 namespace Google.Cloud.Functions.Examples.AdvancedDependencyInjection
@@ -56,9 +56,10 @@ namespace Google.Cloud.Functions.Examples.AdvancedDependencyInjection
     }
 
     /// <summary>
-    /// The startup class is provided with a host builder which exposes a service collection.
-    /// This can be used to make additional dependencies available. It can also be used to
-    /// configure additional middleware in the application, by overriding the Configure method.
+    /// The startup class can be used to perform additional configuration, including
+    /// adding application configuration sources, reconfiguring logging, providing services
+    /// for dependency injection, and adding middleware to the eventual application pipeline.
+    /// In this case, we simply add two dependencies: one a singleton, and one scoped.
     /// </summary>
     public class Startup : FunctionsStartup
     {
