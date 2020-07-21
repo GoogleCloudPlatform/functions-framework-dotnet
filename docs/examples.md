@@ -23,6 +23,30 @@ Some examples include multiple classes in a single source file. This
 is purely to make the examples easier to follow when browsing on
 GitHub.
 
+## Running and deploying
+
+Each example can be run locally from the command line by changing to
+the example directory and running
+
+```sh
+dotnet run
+```
+
+Alternatively, you can open the solution file in the `examples`
+directory, set the "Startup Project" to the example you want to run,
+and just press F5 to run.
+
+To deploy to Google Cloud Functions or Cloud Run, follow the
+[deployment guide](deployment.md). Every example uses a function
+class called `Function` in a namespace that's the same as the
+directory. For example, the entry point for the function in the
+`Google.Cloud.Functions.Examples.SimpleHttpFuntion` directory is
+`Google.Cloud.Functions.Examples.SimpleHttpFunction.Function`.
+
+A sample command line is given for each example, but you may need to
+adapt this to specify your own Google Cloud resources such as PubSub
+topics or Storage buckets.
+
 ## SimpleHttpFunction
 
 The [SimpleHttpFunction](../examples/Google.Cloud.Functions.Examples.SimpleHttpFunction)
@@ -31,6 +55,14 @@ template using the following command line:
 
 ```sh
 dotnet new gcf-http
+```
+
+Sample deployment:
+
+```sh
+gcloud functions deploy simple-http --runtime dotnet3 \
+  --trigger-http --allow-unauthenticated \
+  --entry-point Google.Cloud.Functions.Examples.SimpleHttpFunction.Function
 ```
 
 ## SimpleEventFunction
@@ -43,6 +75,17 @@ template using the following command line:
 dotnet new gcf-event
 ```
 
+This function expects Storage events, and logs details of the event it receives.
+
+Sample deployment:
+
+```sh
+gcloud functions deploy simple-event --runtime dotnet3 \
+  --trigger-event google.storage.object.finalize \
+  --trigger-resource <gcs-bucket-name> \
+  --entry-point Google.Cloud.Functions.Examples.SimpleEventFunction.Function
+```
+
 ## SimpleUntypedEventFunction
 
 The [SimpleUntypedEventFunction](../examples/Google.Cloud.Functions.Examples.SimpleUntypedEventFunction)
@@ -51,6 +94,17 @@ template using the following command line:
 
 ```sh
 dotnet new gcf-untyped-event
+```
+
+This function can handle any event type, and logs some generic
+details of the event it receives.
+
+Sample deployment to listen to PubSub events:
+
+```sh
+gcloud functions deploy simple-untyped-event --runtime dotnet3 \
+  --trigger-topic <topic-id> \
+  --entry-point Google.Cloud.Functions.Examples.SimpleUntypedEventFunction.Function
 ```
 
 ## VbHttpFunction
@@ -63,6 +117,14 @@ template using the following command line:
 dotnet new gcf-http -lang vb
 ```
 
+Sample deployment:
+
+```sh
+gcloud functions deploy vb-http --runtime dotnet3 \
+  --trigger-http --allow-unauthenticated \
+  --entry-point Google.Cloud.Functions.Examples.VbHttpFunction.Function
+```
+
 ## VbEventFunction
 
 The [VbEventFunction](../examples/Google.Cloud.Functions.Examples.VbEventFunction)
@@ -73,6 +135,16 @@ template using the following command line:
 dotnet new gcf-event -lang vb
 ```
 
+This function expects Storage events, and logs details of the event it receives.
+
+Sample deployment:
+
+```sh
+gcloud functions deploy vb-event --runtime dotnet3 \
+  --trigger-event google.storage.object.finalize \
+  --trigger-resource <gcs-bucket-name> \
+  --entry-point Google.Cloud.Functions.Examples.VbEventFunction.Function
+```
 
 ## VbUntypedEventFunction
 
@@ -85,6 +157,17 @@ template using the following command line:
 dotnet new gcf-untyped-event -lang vb
 ```
 
+This function can handle any event type, and logs some generic
+details of the event it receives.
+
+Sample deployment to listen to PubSub events:
+
+```sh
+gcloud functions deploy vb-untyped-event --runtime dotnet3 \
+  --trigger-topic <topic-id> \
+  --entry-point Google.Cloud.Functions.Examples.VbUntypedEventFunction.Function
+```
+
 ## FSharpHttpFunction
 
 The [FSharpHttpFunction](../examples/Google.Cloud.Functions.Examples.FSharpHttpFunction)
@@ -93,6 +176,14 @@ template using the following command line:
 
 ```sh
 dotnet new gcf-http -lang f#
+```
+
+Sample deployment:
+
+```sh
+gcloud functions deploy fsharp-http --runtime dotnet3 \
+  --trigger-http --allow-unauthenticated \
+  --entry-point Google.Cloud.Functions.Examples.FSharpHttpFunction.Function
 ```
 
 ## FSharpEventFunction
@@ -105,7 +196,18 @@ template using the following command line:
 dotnet new gcf-event -lang f#
 ```
 
-## FSharpEventFunction
+This function expects Storage events, and logs details of the event it receives.
+
+Sample deployment:
+
+```sh
+gcloud functions deploy fsharp-event --runtime dotnet3 \
+  --trigger-event google.storage.object.finalize \
+  --trigger-resource <gcs-bucket-name> \
+  --entry-point Google.Cloud.Functions.Examples.FSharpEventFunction.Function
+```
+
+## FSharpUntypedEventFunction
 
 The [FSharpUntypedEventFunction](../examples/Google.Cloud.Functions.Examples.FSharpUntypedEventFunction)
 function is the result of creating a new untyped Cloud Event function via the
@@ -113,6 +215,17 @@ template using the following command line:
 
 ```sh
 dotnet new gcf-untyped-event -lang f#
+```
+
+This function can handle any event type, and logs some generic
+details of the event it receives.
+
+Sample deployment to listen to PubSub events:
+
+```sh
+gcloud functions deploy fsharp-untyped-event --runtime dotnet3 \
+  --trigger-topic <topic-id> \
+  --entry-point Google.Cloud.Functions.Examples.FSharpUntypedEventFunction.Function
 ```
 
 ## SimpleDependencyInjection
@@ -123,6 +236,14 @@ any additional configuration.
 
 See the [dependency injection documentation](dependency-injection.md) for more details.
 
+Sample deployment:
+
+```sh
+gcloud functions deploy simple-dependency-injection --runtime dotnet3 \
+  --trigger-http --allow-unauthenticated \
+  --entry-point Google.Cloud.Functions.Examples.SimpleDependencyInjection.Function
+```
+
 ## AdvancedDependencyInjection
 
 The [AdvancedDependencyInjection](../examples/Google.Cloud.Functions.Examples.AdvancedDependencyInjection)
@@ -131,6 +252,14 @@ provided via a startup class, including scoped and singleton
 dependencies.
 
 See the [dependency injection documentation](dependency-injection.md) for more details.
+
+Sample deployment:
+
+```sh
+gcloud functions deploy advanced-dependency-injection --runtime dotnet3 \
+  --trigger-http --allow-unauthenticated \
+  --entry-point Google.Cloud.Functions.Examples.AdvancedDependencyInjection.Function
+```
 
 ## TimeZoneConverter
 
@@ -142,6 +271,14 @@ on the [IANA time zone database](https://www.iana.org/time-zones).
 See the [README.md file](../examples/Google.Cloud.Functions.Examples.TimeZoneConverter/README.md)
 for more details.
 
+Sample deployment:
+
+```sh
+gcloud functions deploy time-zone-converter --runtime dotnet3 \
+  --trigger-http --allow-unauthenticated \
+  --entry-point Google.Cloud.Functions.Examples.TimeZoneConverter.Function
+```
+
 ## StorageImageAnnotator
 
 The [StorageImageAnnotator](../examples/Google.Cloud.Functions.Examples.StorageImageAnnotator)
@@ -152,6 +289,15 @@ then writes the results as a new Storage object.
 
 See the [README.md file](../examples/Google.Cloud.Functions.Examples.StorageImageAnnotator/README.md)
 for more details.
+
+Sample deployment:
+
+```sh
+gcloud functions deploy image-annotator --runtime dotnet3 \
+  --trigger-event google.storage.object.finalize \
+  --trigger-resource <gcs-bucket-name> \
+  --entry-point=Google.Cloud.Functions.Examples.StorageImageAnnotator.Function
+```
 
 ## Integration Tests
 
