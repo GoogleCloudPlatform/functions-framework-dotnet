@@ -47,6 +47,19 @@ A sample command line is given for each example, but you may need to
 adapt this to specify your own Google Cloud resources such as PubSub
 topics or Storage buckets.
 
+> **Note for Windows users**  
+> The sample command lines shown below are split over multiple lines
+> for readability, using `\` as a line continuation character. That
+> allows the whole command line to be copied and pasted in one go
+> within Unix shells such as bash, but won't work in a single step on
+> the Windows command line. Copy and paste each line, removing the
+> trailing `\`, and execute as a single command. For example, the
+> command to deploy SimpleHttpFunction would be:
+>
+> ```sh
+> gcloud functions deploy simple-http --runtime dotnet3 --trigger-http --allow-unauthenticated --entry-point Google.Cloud.Functions.Examples.SimpleHttpFunction.Function
+> ```
+
 ## SimpleHttpFunction
 
 The [SimpleHttpFunction](../examples/Google.Cloud.Functions.Examples.SimpleHttpFunction)
