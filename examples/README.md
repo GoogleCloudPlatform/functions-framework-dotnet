@@ -1,3 +1,13 @@
+# Example source code
+
+## Documentation
+
+For information about running these samples, along with a brief
+description of what each example demonstrates, see the
+[examples documentation page](../docs/examples.md).
+
+## Generating
+
 The following projects are the result of creating new projects from
 the templates:
 
