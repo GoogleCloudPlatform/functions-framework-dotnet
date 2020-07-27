@@ -22,10 +22,17 @@ namespace Google.Cloud.Functions.Invoker.Logging
     /// </summary>
     internal abstract class LoggerBase : ILogger
     {
+        private const string KestrelCategory = "Microsoft.AspNetCore.Server.Kestrel";
+
+        // As defined in https://github.com/dotnet/aspnetcore/blob/master/src/Servers/Kestrel/Core/src/Internal/Infrastructure/KestrelTrace.cs
+        // This has been stable since April 2017, so it seems reasonable to rely on it.
+        private const int HeartbeatSlowEventId = 22;
+
+        private readonly bool _isKestrelCategory;
         protected string Category { get; }
 
         protected LoggerBase(string category) =>
-            Category = category;
+            (Category, _isKestrelCategory) = (category, category == KestrelCategory);
 
         // We don't really support scopes
         public IDisposable BeginScope<TState>(TState state) => SingletonDisposable.Instance;
@@ -39,6 +46,12 @@ namespace Google.Cloud.Functions.Invoker.Logging
         /// </summary>
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
         {
+            // Functions expect to go for a long time without any CPU. It's reasonable to suppress this warning.
+            if (_isKestrelCategory && eventId.Id == HeartbeatSlowEventId)
+            {
+                return;
+            }
+
             string message = formatter(state, exception);
             if (string.IsNullOrEmpty(message))
             {
