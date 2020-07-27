@@ -33,7 +33,24 @@ namespace Google.Cloud.Functions.Invoker.Logging
         // Note: log level filtering is handled by other logging infrastructure, so we don't do any of it here.
         public bool IsEnabled(LogLevel logLevel) => logLevel != LogLevel.None;
 
-        public abstract void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter);
+        /// <summary>
+        /// Performs common filtering and formats the message, before delegating
+        /// to <see cref="LogImpl"/>.
+        /// </summary>
+        public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
+        {
+            string message = formatter(state, exception);
+            if (string.IsNullOrEmpty(message))
+            {
+                return;
+            }
+            LogImpl(logLevel, eventId, state, exception, message);
+        }
+
+        /// <summary>
+        /// Delegated "we've definitely got something to log" handling.
+        /// </summary>
+        protected abstract void LogImpl<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, string formattedMessage);
 
         // Used for scope handling.
         private class SingletonDisposable : IDisposable
