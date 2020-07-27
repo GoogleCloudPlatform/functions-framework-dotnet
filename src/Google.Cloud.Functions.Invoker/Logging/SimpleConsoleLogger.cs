@@ -23,14 +23,8 @@ namespace Google.Cloud.Functions.Invoker.Logging
         {
         }
 
-        public override void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
+        protected override void LogImpl<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, string formattedMessage)
         {
-            string message = formatter(state, exception);
-            if (string.IsNullOrEmpty(message))
-            {
-                return;
-            }
-
             // Note: these are deliberately the same values used by ASP.NET Core's console logger.
             string briefLevel = logLevel switch
             {
@@ -43,7 +37,7 @@ namespace Google.Cloud.Functions.Invoker.Logging
                 _ => throw new ArgumentOutOfRangeException(nameof(logLevel))
             };
 
-            Console.WriteLine($"{DateTime.UtcNow:yyyy-MM-dd'T'HH:mm:ss.fff'Z'} [{Category}] [{briefLevel}] {message}");
+            Console.WriteLine($"{DateTime.UtcNow:yyyy-MM-dd'T'HH:mm:ss.fff'Z'} [{Category}] [{briefLevel}] {formattedMessage}");
             // Note: it's not ideal to break out of the "one line per log entry" approach here, but there's no particularly
             // nice way of getting all the relevant information otherwise.
             if (exception is object)

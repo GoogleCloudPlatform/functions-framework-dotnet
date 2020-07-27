@@ -30,7 +30,7 @@ namespace Google.Cloud.Functions.Invoker.Logging
         {
         }
 
-        public override void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
+        protected override void LogImpl<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, string formattedMessage)
         {
             string severity = logLevel switch
             {
@@ -43,16 +43,11 @@ namespace Google.Cloud.Functions.Invoker.Logging
                 _ => throw new ArgumentOutOfRangeException(nameof(logLevel))
             };
 
-            string message = formatter(state, exception);
-            if (string.IsNullOrEmpty(message))
-            {
-                return;
-            }
             StringBuilder builder = new StringBuilder();
             JsonWriter writer = new JsonTextWriter(new StringWriter(builder));
             writer.WriteStartObject();
             writer.WritePropertyName("message");
-            writer.WriteValue(message);
+            writer.WriteValue(formattedMessage);
             writer.WritePropertyName("category");
             writer.WriteValue(Category);
             if (exception != null)
