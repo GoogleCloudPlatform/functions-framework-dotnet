@@ -32,11 +32,11 @@ namespace Google.Cloud.Functions.Invoker.Testing
         /// </summary>
         public TestServer Server { get; }
 
-        private readonly TestLoggerProvider _testLoggerProvider;
+        private readonly MemoryLoggerProvider _testLoggerProvider;
 
         private FunctionTestServer(IHostBuilder builder)
         {
-            _testLoggerProvider = new TestLoggerProvider();
+            _testLoggerProvider = new MemoryLoggerProvider();
             var host = builder
                 .ConfigureWebHost(webBuilder => webBuilder.UseTestServer())
                 .ConfigureLogging(logging => logging.AddProvider(_testLoggerProvider))
@@ -46,7 +46,7 @@ namespace Google.Cloud.Functions.Invoker.Testing
         }
 
         /// <summary>
-        /// Creates a FunctionServerFactory for the specified environment and function assembly.
+        /// Creates a FunctionTestServer for the specified environment and function assembly.
         /// </summary>
         /// <param name="environment">The fake environment variables to use when constructing the server.</param>
         /// <param name="functionAssembly">The assembly containing the target function.</param>
@@ -56,7 +56,7 @@ namespace Google.Cloud.Functions.Invoker.Testing
         }
 
         /// <summary>
-        /// Creates a FunctionServerFactory for the specified function type.
+        /// Creates a FunctionTestServer for the specified function type.
         /// </summary>
         /// <param name="functionType">The function type to host in the server.</param>
         public FunctionTestServer(Type functionType)
@@ -71,7 +71,8 @@ namespace Google.Cloud.Functions.Invoker.Testing
         public HttpClient CreateClient() => Server.CreateClient();
 
         /// <summary>
-        /// Clears all logs.
+        /// Clears all logs. This does not affect any loggers that have already been created, but causes
+        /// new loggers to be created for future requests.
         /// </summary>
         public void ClearLogs() => _testLoggerProvider.Clear();
 
@@ -112,5 +113,11 @@ namespace Google.Cloud.Functions.Invoker.Testing
         public FunctionTestServer() : base(typeof(TFunction))
         {
         }
+
+        /// <summary>
+        /// Returns a list of the log entries for the category associated with the 
+        /// </summary>
+        /// <returns></returns>
+        public List<TestLogEntry> GetFunctionLogEntries() => GetLogEntries(typeof(TFunction));
     }
 }

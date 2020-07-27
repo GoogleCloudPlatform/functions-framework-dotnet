@@ -14,6 +14,7 @@
 
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 
 namespace Google.Cloud.Functions.Invoker.Testing
 {
@@ -22,6 +23,8 @@ namespace Google.Cloud.Functions.Invoker.Testing
     /// </summary>
     public sealed class TestLogEntry
     {
+        private static readonly IReadOnlyList<object> EmptyScopeList = new List<object>().AsReadOnly();
+
         /// <summary>
         /// The category name of the log entry.
         /// </summary>
@@ -47,14 +50,32 @@ namespace Google.Cloud.Functions.Invoker.Testing
         /// </summary>
         public string Message { get; }
 
-        private TestLogEntry(string categoryName, LogLevel level, EventId eventId, string message, Exception? exception) =>
-            (CategoryName, Level, EventId, Message, Exception) =
-            (categoryName, level, eventId, message, exception);
+        /// <summary>
+        /// The scopes of the log entry. This is never null, but may be empty.
+        /// </summary>
+        public IReadOnlyList<object> Scopes { get; }
 
-        internal static TestLogEntry Create<TState>(string categoryName, LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
+        private TestLogEntry(string categoryName, LogLevel level, EventId eventId, string message, Exception? exception, IReadOnlyList<object> scopes) =>
+            (CategoryName, Level, EventId, Message, Exception, Scopes) =
+            (categoryName, level, eventId, message, exception, scopes);
+
+        internal static TestLogEntry Create<TState>(
+            string categoryName, LogLevel logLevel, EventId eventId,
+            TState state, Exception exception, Func<TState, Exception, string> formatter,
+            IExternalScopeProvider scopeProvider)
         {
             var message = formatter(state, exception);
-            return new TestLogEntry(categoryName, logLevel, eventId, message, exception);
+            List<object>? scopes = null;
+            scopeProvider.ForEachScope((scope, state) =>
+            {
+                if (scopes is null)
+                {
+                    scopes = new List<object>();
+                }
+                scopes.Add(scope);
+            }, state: (object?) null);
+
+            return new TestLogEntry(categoryName, logLevel, eventId, message, exception, scopes?.AsReadOnly() ?? EmptyScopeList);
         }
     }
 }
