@@ -44,7 +44,7 @@ directory. For example, the entry point for the function in the
 `Google.Cloud.Functions.Examples.SimpleHttpFunction.Function`.
 
 A sample command line is given for each example, but you may need to
-adapt this to specify your own Google Cloud resources such as PubSub
+adapt this to specify your own Google Cloud resources such as Pub/Sub
 topics or Storage buckets.
 
 > **Note for Windows users**  
@@ -60,6 +60,12 @@ topics or Storage buckets.
 > gcloud functions deploy simple-http --runtime dotnet3 --trigger-http --allow-unauthenticated --entry-point Google.Cloud.Functions.Examples.SimpleHttpFunction.Function
 > ```
 
+Where environment variables are used in the command line (e.g. `$GCS_BUCKET_NAME`)
+you can substitute the bucket name directly into the command line, or set an environment
+variable to make it easier to run multiple command lines that all use the same
+value. The environment variables shown are not used by the `gcloud functions deploy`
+command itself; they're only shown here to indicate a "placeholder" value.
+
 ## SimpleHttpFunction
 
 The [SimpleHttpFunction](../examples/Google.Cloud.Functions.Examples.SimpleHttpFunction)
@@ -73,8 +79,10 @@ dotnet new gcf-http
 Sample deployment:
 
 ```sh
-gcloud functions deploy simple-http --runtime dotnet3 \
-  --trigger-http --allow-unauthenticated \
+gcloud functions deploy simple-http \
+  --runtime dotnet3 \
+  --trigger-http \
+  --allow-unauthenticated \
   --entry-point Google.Cloud.Functions.Examples.SimpleHttpFunction.Function
 ```
 
@@ -93,9 +101,10 @@ This function expects Storage events, and logs details of the event it receives.
 Sample deployment:
 
 ```sh
-gcloud functions deploy simple-event --runtime dotnet3 \
+gcloud functions deploy simple-event \
+  --runtime dotnet3 \
   --trigger-event google.storage.object.finalize \
-  --trigger-resource <gcs-bucket-name> \
+  --trigger-resource $GCS_BUCKET_NAME \
   --entry-point Google.Cloud.Functions.Examples.SimpleEventFunction.Function
 ```
 
@@ -112,11 +121,12 @@ dotnet new gcf-untyped-event
 This function can handle any event type, and logs some generic
 details of the event it receives.
 
-Sample deployment to listen to PubSub events:
+Sample deployment to listen to Pub/Sub events:
 
 ```sh
-gcloud functions deploy simple-untyped-event --runtime dotnet3 \
-  --trigger-topic <topic-id> \
+gcloud functions deploy simple-untyped-event \
+  --runtime dotnet3 \
+  --trigger-topic $PUBSUB_TOPIC_NAME \
   --entry-point Google.Cloud.Functions.Examples.SimpleUntypedEventFunction.Function
 ```
 
@@ -133,7 +143,8 @@ dotnet new gcf-http -lang vb
 Sample deployment:
 
 ```sh
-gcloud functions deploy vb-http --runtime dotnet3 \
+gcloud functions deploy vb-http \
+  --runtime dotnet3 \
   --trigger-http --allow-unauthenticated \
   --entry-point Google.Cloud.Functions.Examples.VbHttpFunction.Function
 ```
@@ -153,9 +164,10 @@ This function expects Storage events, and logs details of the event it receives.
 Sample deployment:
 
 ```sh
-gcloud functions deploy vb-event --runtime dotnet3 \
+gcloud functions deploy vb-event \
+  --runtime dotnet3 \
   --trigger-event google.storage.object.finalize \
-  --trigger-resource <gcs-bucket-name> \
+  --trigger-resource $ \
   --entry-point Google.Cloud.Functions.Examples.VbEventFunction.Function
 ```
 
@@ -173,11 +185,12 @@ dotnet new gcf-untyped-event -lang vb
 This function can handle any event type, and logs some generic
 details of the event it receives.
 
-Sample deployment to listen to PubSub events:
+Sample deployment to listen to Pub/Sub events:
 
 ```sh
-gcloud functions deploy vb-untyped-event --runtime dotnet3 \
-  --trigger-topic <topic-id> \
+gcloud functions deploy vb-untyped-event \
+  --runtime dotnet3 \
+  --trigger-topic $PUBSUB_TOPIC_NAME \
   --entry-point Google.Cloud.Functions.Examples.VbUntypedEventFunction.Function
 ```
 
@@ -194,8 +207,10 @@ dotnet new gcf-http -lang f#
 Sample deployment:
 
 ```sh
-gcloud functions deploy fsharp-http --runtime dotnet3 \
-  --trigger-http --allow-unauthenticated \
+gcloud functions deploy fsharp-http \
+  --runtime dotnet3 \
+  --trigger-http \
+  --allow-unauthenticated \
   --entry-point Google.Cloud.Functions.Examples.FSharpHttpFunction.Function
 ```
 
@@ -214,9 +229,10 @@ This function expects Storage events, and logs details of the event it receives.
 Sample deployment:
 
 ```sh
-gcloud functions deploy fsharp-event --runtime dotnet3 \
+gcloud functions deploy fsharp-event \
+  --runtime dotnet3 \
   --trigger-event google.storage.object.finalize \
-  --trigger-resource <gcs-bucket-name> \
+  --trigger-resource $GCS_BUCKET_NAME \
   --entry-point Google.Cloud.Functions.Examples.FSharpEventFunction.Function
 ```
 
@@ -233,11 +249,12 @@ dotnet new gcf-untyped-event -lang f#
 This function can handle any event type, and logs some generic
 details of the event it receives.
 
-Sample deployment to listen to PubSub events:
+Sample deployment to listen to Pub/Sub events:
 
 ```sh
-gcloud functions deploy fsharp-untyped-event --runtime dotnet3 \
-  --trigger-topic <topic-id> \
+gcloud functions deploy fsharp-untyped-event \
+  --runtime dotnet3 \
+  --trigger-topic $PUBSUB_TOPIC_NAME \
   --entry-point Google.Cloud.Functions.Examples.FSharpUntypedEventFunction.Function
 ```
 
@@ -252,8 +269,10 @@ See the [dependency injection documentation](dependency-injection.md) for more d
 Sample deployment:
 
 ```sh
-gcloud functions deploy simple-dependency-injection --runtime dotnet3 \
-  --trigger-http --allow-unauthenticated \
+gcloud functions deploy simple-dependency-injection \
+  --runtime dotnet3 \
+  --trigger-http \
+  --allow-unauthenticated \
   --entry-point Google.Cloud.Functions.Examples.SimpleDependencyInjection.Function
 ```
 
@@ -269,8 +288,10 @@ See the [dependency injection documentation](dependency-injection.md) for more d
 Sample deployment:
 
 ```sh
-gcloud functions deploy advanced-dependency-injection --runtime dotnet3 \
-  --trigger-http --allow-unauthenticated \
+gcloud functions deploy advanced-dependency-injection \
+  --runtime dotnet3 \
+  --trigger-http \
+  --allow-unauthenticated \
   --entry-point Google.Cloud.Functions.Examples.AdvancedDependencyInjection.Function
 ```
 
@@ -287,8 +308,10 @@ for more details.
 Sample deployment:
 
 ```sh
-gcloud functions deploy time-zone-converter --runtime dotnet3 \
-  --trigger-http --allow-unauthenticated \
+gcloud functions deploy time-zone-converter \
+  --runtime dotnet3 \
+  --trigger-http \
+  --allow-unauthenticated \
   --entry-point Google.Cloud.Functions.Examples.TimeZoneConverter.Function
 ```
 
@@ -306,9 +329,10 @@ for more details.
 Sample deployment:
 
 ```sh
-gcloud functions deploy image-annotator --runtime dotnet3 \
+gcloud functions deploy image-annotator \
+  --runtime dotnet3 \
   --trigger-event google.storage.object.finalize \
-  --trigger-resource <gcs-bucket-name> \
+  --trigger-resource $GCS_BUCKET_NAME \
   --entry-point=Google.Cloud.Functions.Examples.StorageImageAnnotator.Function
 ```
 
