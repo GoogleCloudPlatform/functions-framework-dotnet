@@ -115,9 +115,10 @@ namespace Google.Cloud.Functions.Invoker.Testing
         }
 
         /// <summary>
-        /// Returns a list of the log entries for the category associated with the 
+        /// Returns a list of the log entries for the category associated with the function.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>A list of log entries. The returned value may refer to an empty list,
+        /// but is never null.</returns>
         public List<TestLogEntry> GetFunctionLogEntries() => GetLogEntries(typeof(TFunction));
     }
 }
