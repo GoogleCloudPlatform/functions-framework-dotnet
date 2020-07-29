@@ -145,7 +145,8 @@ Sample deployment:
 ```sh
 gcloud functions deploy vb-http \
   --runtime dotnet3 \
-  --trigger-http --allow-unauthenticated \
+  --trigger-http \
+  --allow-unauthenticated \
   --entry-point Google.Cloud.Functions.Examples.VbHttpFunction.Function
 ```
 
