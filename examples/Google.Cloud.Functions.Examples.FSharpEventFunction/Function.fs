@@ -22,7 +22,7 @@ open System.Threading.Tasks
 /// <summary>
 /// A function that can be triggered in responses to changes in Google Cloud Storage.
 /// The type argument (StorageObjectData in this case) determines how the event payload is deserialized.
-/// The event must be deployed so that the trigger matches the expected payload type. (For example,
+/// The function must be deployed so that the trigger matches the expected payload type. (For example,
 /// deploying a function expecting a StorageObject payload will not work for a trigger that provides
 /// a FirestoreEvent.)
 /// </summary>
