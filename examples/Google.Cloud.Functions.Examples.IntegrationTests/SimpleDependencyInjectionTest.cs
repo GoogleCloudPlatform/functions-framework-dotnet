@@ -27,7 +27,9 @@ namespace Google.Cloud.Functions.Examples.IntegrationTests
             using (var server = new FunctionTestServer<SimpleDependencyInjection.Function>())
             {
                 // We shouldn't have any log entries (for the function's category) at the start of the test.
-                Assert.Empty(server.GetLogEntries(typeof(SimpleDependencyInjection.Function)));
+                Assert.Empty(server.GetFunctionLogEntries());
+                // Note: server.GetFunctionLogEntries() is equivalent to
+                // server.GetLogEntries(typeof(SimpleDependencyInjection.Function)
 
                 var client = server.CreateClient();
 
@@ -36,8 +38,7 @@ namespace Google.Cloud.Functions.Examples.IntegrationTests
                 response.EnsureSuccessStatusCode();
 
                 // Check that we got the expected log entry.
-
-                var logs = server.GetLogEntries(typeof(SimpleDependencyInjection.Function));
+                var logs = server.GetFunctionLogEntries();
                 var entry = Assert.Single(logs);
 
                 Assert.Equal(LogLevel.Information, entry.Level);
