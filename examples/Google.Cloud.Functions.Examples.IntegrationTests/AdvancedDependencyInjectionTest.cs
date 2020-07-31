@@ -20,17 +20,8 @@ using Xunit;
 
 namespace Google.Cloud.Functions.Examples.IntegrationTests
 {
-    public class AdvancedDependencyInjectionTest : IDisposable
+    public class AdvancedDependencyInjectionTest : FunctionTestBase<AdvancedDependencyInjection.Function>
     {
-        private readonly FunctionTestServer<AdvancedDependencyInjection.Function> _server;
-
-        public AdvancedDependencyInjectionTest() =>
-            _server = new FunctionTestServer<AdvancedDependencyInjection.Function>();
-
-        // Dispose of the function test server, which in turn disposes of the underlying test server.
-        // xUnit calls this automatically when a test is complete.
-        public void Dispose() => _server.Dispose();
-    
         [Fact]
         public async Task SingletonOperationIdRemainsStable()
         {
@@ -53,10 +44,7 @@ namespace Google.Cloud.Functions.Examples.IntegrationTests
 
         private async Task<ResponseModel> CallFunctionAsync()
         {
-            var client = _server.CreateClient();
-            var response = await client.GetAsync("");
-            response.EnsureSuccessStatusCode();
-            var content = await response.Content.ReadAsStringAsync();
+            var content = await ExecuteHttpGetRequestAsync();
             return JsonSerializer.Deserialize<ResponseModel>(content);
         }
 

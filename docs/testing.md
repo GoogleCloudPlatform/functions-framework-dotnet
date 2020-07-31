@@ -45,10 +45,12 @@ class to simplify this. The generic `FunctionTestServer<TFunction>`
 class is a derived class allowing you to use the function type as a
 type argument, avoiding the need for any other configuration.
 
-`FunctionTestServer` is typically used in one of three ways. The
+`FunctionTestServer` is typically used in one of four ways. The
 examples given below are for xUnit, but other test frameworks provide
 similar functionality.
 
+- Most simply, you can derive your test class from
+  `FunctionTestBase<TFunction>`, which is described below.
 - It can be constructed directly within the test. This should be in the context
   of a `using` statement to dispose of the server afterwards. See
   [SimpleHttpFunctionTest_WithTestServerInTest](../examples/Google.Cloud.Functions.Examples.IntegrationTests/SimpleHttpFunctionTest_WithTestServerInTest.cs)
@@ -65,11 +67,50 @@ similar functionality.
   [SimpleHttpFunctionTest_WithTestServerFixture](../examples/Google.Cloud.Functions.Examples.IntegrationTests/SimpleHttpFunctionTest_WithTestServerFixture.cs)
   for an example of this.
   
+## Simple testing with `FunctionTestBase<TFunction>`
+
+Where the test framework you're using supports it,
+`FunctionTestBase<TFunction>` is the simplest way of writing
+function tests. See
+[SimpleHttpFunctionTest_WithFunctionTestBase](../examples/Google.Cloud.Functions.Examples.IntegrationTests/SimpleHttpFunctionTest_WithFunctionTestBase.cs)
+for an example.
+
+`FunctionTestBase<TFunction>` is an abstract class designed to be a
+base class for integration tests of a function (`TFunction`) in
+test frameworks that automatically dispose of test classes. (This
+includes NUnit and xUnit.) The `Dispose` implementation disposes of
+the test server that is owned by the test class.
+
+The parameterless constructor of `FunctionTestbase<TFunction>`
+automatically creates a `FunctionTestServer<TFunction>`, or you can
+pass the test server into the constructor if you want to customize it.
+
+`FunctionTestBase<TFunction>` provides convenient access to the logs using
+`GetFunctionLogEntries()`, as well as methods to execute HTTP
+requests against the test server, in one of three ways:
+
+- Performing a simple GET request, expecting the result to be text
+  which is returned.
+- Performing any HTTP request expressed via `HttpRequestMessage`,
+  with validators executed against the `HttpResponseMessage` (before
+  both the response message and the `HttpClient` are disposed)
+- Performing an HTTP request containing a CloudEvent, and asserting
+  that the response indicated success. (CloudEvent functions do not
+  return a response, so typically a test would then make assertions
+  about the side-effects of the request.)
+
 ## Testing logs with FunctionTestServer
 
 `FunctionTestServer` augments the default logging with an in-memory
 logger provider, allowing you to retrieve logs by category using the
-`GetLogEntries` method. See
+`GetLogEntries` method.
+
+Additionally, the `GetFunctionLogEntries` method in
+`FunctionTestServer<TFunction>` retrieves the log entries
+corresponding with the function type's full name. If you inject an
+`ILogger<T>` where the type argument is the function type (as is the
+convention) then this method will provide the log entries for that
+logger. See
 [SimpleDependencyInjectionTest.cs](../examples/Google.Cloud.Functions.Examples.IntegrationTests/SimpleDependencyInjectionTest.cs)
 for an example of how this can be used.
 
@@ -92,3 +133,21 @@ the demands of most users. Aspects that may change later include:
   replacement values.
 - The logger does not support log scopes; all log entries are stored
   in a flat structure.
+
+## Testing logs in unit tests
+
+If you want to write a unit test for a function whose constructor
+accepts an `ILogger<T>`, you can use the built-in ASP.NET Core
+`NullLogger<T>` if you don't need to test the log entries. However,
+this doesn't help if you want to make sure that the expected log
+entries are emitted. The logger implementation used by
+`FunctionTestServer` is also available for standalone testing. Just
+create an instance of
+[FunctionTestServer&lt;TCategoryName>](../src/Google.Cloud.Functions.Invoker.Testing/MemoryLogger.cs)
+and pass that to the constructor. You can then retrieve a snapshot
+at any time by calling `ListLogEntries()` on the logger, or clear it
+using the `Clear()` method.
+
+See
+[SimpleDependencyInjectionUnitTest.cs](../examples/Google.Cloud.Functions.Examples.IntegrationTests/SimpleDependencyInjectionUnitTest.cs)
+for an example of a unit test that validates a log entry.
