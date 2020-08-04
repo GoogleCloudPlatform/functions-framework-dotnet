@@ -13,12 +13,10 @@
 // limitations under the License.
 
 using Microsoft.AspNetCore.TestHost;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
-using System.Reflection;
 
 namespace Google.Cloud.Functions.Invoker.Testing
 {
@@ -32,37 +30,34 @@ namespace Google.Cloud.Functions.Invoker.Testing
         /// </summary>
         public TestServer Server { get; }
 
-        private readonly MemoryLoggerProvider _testLoggerProvider;
-
-        private FunctionTestServer(IHostBuilder builder)
-        {
-            _testLoggerProvider = new MemoryLoggerProvider();
-            var host = builder
-                .ConfigureWebHost(webBuilder => webBuilder.UseTestServer())
-                .ConfigureLogging(logging => logging.AddProvider(_testLoggerProvider))
-                .Build();
-            host.Start();
-            Server = host.GetTestServer();
-        }
-
         /// <summary>
-        /// Creates a FunctionTestServer for the specified environment and function assembly.
+        /// The function type executed by the server.
         /// </summary>
-        /// <param name="environment">The fake environment variables to use when constructing the server.</param>
-        /// <param name="functionAssembly">The assembly containing the target function.</param>
-        public FunctionTestServer(IReadOnlyDictionary<string, string> environment, Assembly functionAssembly)
-            : this(EntryPoint.CreateHostBuilder(environment, Preconditions.CheckNotNull(functionAssembly, nameof(functionAssembly))))
-        {
-        }
+        public Type FunctionTarget { get; }
+
+        private readonly MemoryLoggerProvider _testLoggerProvider;
 
         /// <summary>
         /// Creates a FunctionTestServer for the specified function type.
         /// </summary>
-        /// <param name="functionType">The function type to host in the server.</param>
-        public FunctionTestServer(Type functionType)
-            : this(EntryPoint.CreateHostBuilder(functionType))
+        /// <param name="functionTarget">The function type to host in the server.</param>
+        public FunctionTestServer(Type functionTarget) : this(FunctionTestServerBuilder.Create(functionTarget).BuildTestServer(), functionTarget)
         {
         }
+
+        internal FunctionTestServer(TestServer server, Type functionTarget)
+        {
+            Server = server;
+            FunctionTarget = functionTarget;
+            _testLoggerProvider = server.Services.GetRequiredService<MemoryLoggerProvider>();
+        }
+
+        /// <summary>
+        /// Returns a list of the log entries for the category associated with the function.
+        /// </summary>
+        /// <returns>A list of log entries. The returned value may refer to an empty list,
+        /// but is never null.</returns>
+        public List<TestLogEntry> GetFunctionLogEntries() => GetLogEntries(FunctionTarget);
 
         /// <summary>
         /// Creates an <see cref="HttpClient"/> to make requests to the test server.
@@ -113,12 +108,5 @@ namespace Google.Cloud.Functions.Invoker.Testing
         public FunctionTestServer() : base(typeof(TFunction))
         {
         }
-
-        /// <summary>
-        /// Returns a list of the log entries for the category associated with the function.
-        /// </summary>
-        /// <returns>A list of log entries. The returned value may refer to an empty list,
-        /// but is never null.</returns>
-        public List<TestLogEntry> GetFunctionLogEntries() => GetLogEntries(typeof(TFunction));
     }
 }

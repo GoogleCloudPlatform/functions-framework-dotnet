@@ -13,10 +13,8 @@
 // limitations under the License.
 
 using CloudNative.CloudEvents;
-using Microsoft.AspNetCore.Authorization.Infrastructure;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Mime;
@@ -42,15 +40,16 @@ namespace Google.Cloud.Functions.Invoker.Testing
         /// The server which will invoke <typeparamref name="TFunction"/>
         /// when a request is made.
         /// </summary>
-        public FunctionTestServer<TFunction> Server { get; }
+        public FunctionTestServer Server { get; }
 
         /// <summary>
         /// Constructs a new instance using the specified server. Note that
         /// this effectively takes ownership of the given server, which will be
         /// disposed when the FunctionTestBase instance is disposed.
         /// </summary>
-        /// <param name="server">The function test server.</param>
-        protected FunctionTestBase(FunctionTestServer<TFunction> server)
+        /// <param name="server">The function test server, which is expected to have a
+        /// function target of <typeparamref name="TFunction"/>.</param>
+        protected FunctionTestBase(FunctionTestServer server)
         {
             Server = server;
         }

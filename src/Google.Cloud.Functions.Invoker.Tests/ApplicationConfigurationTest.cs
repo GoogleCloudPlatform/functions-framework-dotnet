@@ -22,41 +22,27 @@ using Xunit;
 
 namespace Google.Cloud.Functions.Invoker.Tests
 {
-    public class EntryPointTest
+    /// <summary>
+    /// Tests for the final part of configuring the "application".
+    /// </summary>
+    public partial class ApplicationConfigurationTest
     {
-        [Fact]
-        public async Task CreateHostBuilder()
-        {
-            var builder = EntryPoint
-                .CreateHostBuilder<SimpleFunction>()
-                .ConfigureWebHost(builder => builder.UseTestServer());
-            using (var server = await builder.StartAsync())
-            {
-                var client = server.GetTestServer().CreateClient();
-
-                var response = await client.GetAsync("relativePath");
-                response.EnsureSuccessStatusCode();
-                var content = await response.Content.ReadAsStringAsync();
-                Assert.Equal("Test message", content);
-            }
-        }
-
         [Theory]
         [InlineData("robots.txt")]
         [InlineData("favicon.ico")]
         public async Task NonFunctionPathsGive404(string path)
         {
-            var builder = EntryPoint
-                .CreateHostBuilder<SimpleFunction>()
-                .ConfigureWebHost(builder => builder.UseTestServer());
-            using (var server = await builder.StartAsync())
-            {
-                var client = server.GetTestServer().CreateClient();
-                var response = await client.GetAsync(path);
-                Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
-                var content = await response.Content.ReadAsStringAsync();
-                Assert.Empty(content);
-            }
+            var builder = Host.CreateDefaultBuilder()
+                .ConfigureWebHostDefaults(webHostBuilder => webHostBuilder
+                    .ConfigureFunctionsFrameworkTarget<SimpleFunction>()
+                    .ConfigureApplicationForFunctionsFramework()
+                    .UseTestServer());
+            using var server = await builder.StartAsync();
+            using var client = server.GetTestServer().CreateClient();
+            using var response = await client.GetAsync(path);
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+            var content = await response.Content.ReadAsStringAsync();
+            Assert.Empty(content);
         }
 
         public class SimpleFunction : IHttpFunction

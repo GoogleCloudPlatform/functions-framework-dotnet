@@ -29,9 +29,15 @@ namespace Google.Cloud.Functions.Examples.IntegrationTests
         [Fact]
         public async Task FunctionWritesHelloFunctionsFramework()
         {
-            var builder = EntryPoint
-                .CreateHostBuilder<SimpleHttpFunction.Function>()
-                .ConfigureWebHost(builder => builder.UseTestServer());
+            // Various other extension methods are available to configure logging,
+            // service providers, application configurers, along with reading configuration
+            // from the command line and environment variables - but those aren't
+            // required for this test.
+            var builder = Host.CreateDefaultBuilder()
+                .ConfigureWebHostDefaults(webHostBuilder => webHostBuilder
+                    .ConfigureFunctionsFrameworkTarget<SimpleHttpFunction.Function>()
+                    .ConfigureApplicationForFunctionsFramework()
+                    .UseTestServer());
             using (var server = await builder.StartAsync())
             {
                 var client = server.GetTestServer().CreateClient();

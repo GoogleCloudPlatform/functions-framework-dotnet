@@ -13,15 +13,17 @@
 // limitations under the License.
 
 using Google.Cloud.Functions.Framework;
-using Google.Cloud.Functions.Invoker.DependencyInjection;
+using Google.Cloud.Functions.Invoker;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
-using System.Collections.Generic;
+using Microsoft.Extensions.Hosting;
 using System.Threading.Tasks;
 using Xunit;
 
-[assembly: FunctionsStartup(typeof(Google.Cloud.Functions.Invoker.Tests.DependencyInjectionTest.TestStartup1))]
-[assembly: FunctionsStartup(typeof(Google.Cloud.Functions.Invoker.Tests.DependencyInjectionTest.TestStartup2))]
+[assembly: FunctionsServiceProvider(typeof(Google.Cloud.Functions.Invoker.Tests.DependencyInjectionTest.TestStartup1))]
+[assembly: FunctionsServiceProvider(typeof(Google.Cloud.Functions.Invoker.Tests.DependencyInjectionTest.TestStartup2))]
 
 namespace Google.Cloud.Functions.Invoker.Tests
 {
@@ -29,7 +31,7 @@ namespace Google.Cloud.Functions.Invoker.Tests
     /// Separate test from FunctionEnvironmentTest as it's a little more complex - and it's testing more than just
     /// the FunctionEnvironment code; it's making sure we understand how dependency injection works.
     /// </summary>
-    public class DependencyInjectionTest
+    public partial class DependencyInjectionTest
     {
         public const string Dependency1Key = "Dependency1";
         public const string Dependency2Key = "Dependency2";
@@ -40,16 +42,17 @@ namespace Google.Cloud.Functions.Invoker.Tests
         [Fact]
         public async Task Integration()
         {
-            var environment = FunctionEnvironment.Create(
-                typeof(DependencyInjectionTest).Assembly,
-                new[] { typeof(DependencyTestFunction).FullName },
-                ConfigurationVariableProvider.FromDictionary(new Dictionary<string, string>()));
+            // We create a test server, but we bypass most of it - we're really just using it to create
+            // services we can execute an HttpContext against. (This is simpler than interacting via
+            // an actual HTTP request and response.)
+            var host = Host.CreateDefaultBuilder()
+                .ConfigureWebHost(webHostBuilder => webHostBuilder
+                    .ConfigureFunctionsServiceProviders(typeof(DependencyTestFunction).Assembly)
+                    .ConfigureFunctionsFrameworkTarget<DependencyTestFunction>()
+                    .UseTestServer())
+                .Build();
+            var testServer = host.GetTestServer();
 
-            var services = new ServiceCollection();
-            environment.ConfigureServices(services);
-            var providerFactory = new DefaultServiceProviderFactory();
-
-            var provider = providerFactory.CreateServiceProvider(services);
             // Execute two requests, and remember the dependencies we saw in each of them.
             var request1Deps = await MakeRequestAsync();
             var request2Deps = await MakeRequestAsync();
@@ -67,10 +70,10 @@ namespace Google.Cloud.Functions.Invoker.Tests
 
             async Task<(object dep1, object dep2)> MakeRequestAsync()
             {
-                using (var scope = provider.CreateScope())
+                using (var scope = testServer.Services.CreateScope())
                 {
                     var context = new DefaultHttpContext { RequestServices = scope.ServiceProvider };
-                    await environment.Execute(context);
+                    await HostingInternals.Execute(context);
                     return (context.Items[Dependency1Key], context.Items[Dependency2Key]);
                 }
             }
@@ -92,16 +95,16 @@ namespace Google.Cloud.Functions.Invoker.Tests
             }
         }
 
-        public class TestStartup1 : FunctionsStartup
+        public class TestStartup1 : FunctionsServiceProvider
         {
-            public override void Configure(IFunctionsHostBuilder builder) =>
-                builder.Services.AddSingleton<IDependency1, Dependency1>();
+            public override void ConfigureServices(WebHostBuilderContext context, IServiceCollection services) =>
+                services.AddSingleton<IDependency1, Dependency1>();
         }
 
-        public class TestStartup2 : FunctionsStartup
+        public class TestStartup2 : FunctionsServiceProvider
         {
-            public override void Configure(IFunctionsHostBuilder builder) =>
-                builder.Services.AddScoped<IDependency2, Dependency2>();
+            public override void ConfigureServices(WebHostBuilderContext context, IServiceCollection services) =>
+                services.AddScoped<IDependency2, Dependency2>();
         }
 
         public interface IDependency1 { }
