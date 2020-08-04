@@ -13,18 +13,20 @@
 // limitations under the License.
 
 using Google.Cloud.Functions.Framework;
-using Google.Cloud.Functions.Invoker.DependencyInjection;
+using Google.Cloud.Functions.Invoker;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-// FunctionsStartupAttribute is applied to the assembly to tell the Functions Framework which startup
-// types to load. If you have multiple startup classes, you can apply the attribute multiple times.
+// FunctionsServiceProviderAttribute is applied to the assembly to tell the Functions Framework which service provider
+// types to load. If you have multiple service provider classes, you can apply the attribute multiple times, optionally
+// using the Order property to specify ordering.
 // The attribute must be applied to the assembly containing the function, but it can potentially refer
-// to a startup class in a different assembly.
-[assembly:FunctionsStartup(typeof(Google.Cloud.Functions.Examples.AdvancedDependencyInjection.Startup))]
+// to a service provider class in a different assembly.
+[assembly: FunctionsStartup(typeof(Google.Cloud.Functions.Examples.AdvancedDependencyInjection.Startup))]
 
 namespace Google.Cloud.Functions.Examples.AdvancedDependencyInjection
 {
@@ -55,14 +57,15 @@ namespace Google.Cloud.Functions.Examples.AdvancedDependencyInjection
 
     /// <summary>
     /// The startup class is provided with a host builder which exposes a service collection.
-    /// This can be used to make additional dependencies available.
+    /// This can be used to make additional dependencies available. It can also be used to
+    /// configure additional middleware in the application, by overriding the Configure method.
     /// </summary>
     public class Startup : FunctionsStartup
     {
         // Provide implementations for IOperationSingleton, and IOperationScoped.
         // The implementation is the same for both interfaces (the Operation class)
-        public override void Configure(IFunctionsHostBuilder builder) =>
-            builder.Services
+        public override void ConfigureServices(WebHostBuilderContext context, IServiceCollection services) =>
+            services
                 .AddSingleton<IOperationSingleton, Operation>()
                 .AddScoped<IOperationScoped, Operation>();
     }

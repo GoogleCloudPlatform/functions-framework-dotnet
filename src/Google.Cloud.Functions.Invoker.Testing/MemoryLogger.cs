@@ -75,7 +75,7 @@ namespace Google.Cloud.Functions.Invoker.Testing
         /// <summary>
         /// Constructs a logger using the type argument as the category name.
         /// </summary>
-        public MemoryLogger() : base(typeof(TCategoryName).FullName ?? "Unknown")
+        public MemoryLogger() : base(LoggerTypeNameHelper.GetCategoryNameForType<TCategoryName>())
         {
         }
     }
