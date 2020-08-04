@@ -12,19 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Microsoft.Extensions.DependencyInjection;
+using System.Runtime.CompilerServices;
 
-namespace Google.Cloud.Functions.Invoker.DependencyInjection
-{
-    /// <summary>
-    /// Representation of the host builder being configured. This is used
-    /// by <see cref="FunctionsStartup"/> instances for service configuration.
-    /// </summary>
-    public interface IFunctionsHostBuilder
-    {
-        /// <summary>
-        /// The services used for dependency injection.
-        /// </summary>
-        IServiceCollection Services { get; }
-    }
-}
+
+#if STRONG_NAMING_DISABLED
+[assembly: InternalsVisibleTo("Google.Cloud.Functions.Invoker.Tests")]
+#else
+[assembly: InternalsVisibleTo("Google.Cloud.Functions.Invoker.Tests,PublicKey=0024000004800000940000000602000000240000525341310004000001000100afab79952ee22215f12b4e09337e65509c943fbc22d7006bc371d581d0f0ebf0da5d8039aab2607fb68a138a5d80a71bc02b7ebf586dbe1f2493c0ab20423ababfd15ce74d2264a6b37745f3658f016abaad662182aaef634a60f1346fcc45343acab5b6781535a3134818e13fac895a6c106c0480e34bbb06cb123e5583d8d2")]
+#endif

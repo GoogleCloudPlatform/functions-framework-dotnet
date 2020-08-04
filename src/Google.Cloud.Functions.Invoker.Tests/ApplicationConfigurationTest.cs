@@ -1,4 +1,4 @@
-// Copyright 2020, Google LLC
+﻿// Copyright 2020, Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,41 +12,48 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Google.Cloud.Functions.Framework;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System.Net;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Google.Cloud.Functions.Examples.IntegrationTests
+namespace Google.Cloud.Functions.Invoker.Tests
 {
     /// <summary>
-    /// Simple example of an integration test against a Cloud Function, without using
-    /// the Google.Cloud.Functions.Invoker.Testing package.
+    /// Tests for the final part of configuring the "application".
     /// </summary>
-    public class SimpleHttpFunctionTest
+    public partial class ApplicationConfigurationTest
     {
-        [Fact]
-        public async Task FunctionWritesHelloFunctionsFramework()
+        [Theory]
+        [InlineData("robots.txt", HttpStatusCode.NotFound, "")]
+        [InlineData("favicon.ico", HttpStatusCode.NotFound, "")]
+        [InlineData("foo.txt", HttpStatusCode.OK, "Test message")]
+        public async Task PathHandling(string path, HttpStatusCode expectedStatus, string expectedText)
         {
-            // Various other extension methods are available to configure logging,
-            // service providers, application configurers, along with reading configuration
-            // from the command line and environment variables - but those aren't
-            // required for this test.
             var builder = Host.CreateDefaultBuilder()
                 .ConfigureWebHostDefaults(webHostBuilder => webHostBuilder
-                    .ConfigureServices(services => services.AddFunctionTarget<SimpleHttpFunction.Function>())
+                    .ConfigureServices(services => services.AddFunctionTarget<SimpleFunction>())
                     .Configure((context, app) => app.UseFunctionsFramework(context))
                     .UseTestServer());
             using var server = await builder.StartAsync();
             using var client = server.GetTestServer().CreateClient();
-                
-                // Make a request to the function, and test that the response looks how we expect it to.
-            using var response = await client.GetAsync("request-uri");
-            response.EnsureSuccessStatusCode();
+            using var response = await client.GetAsync(path);
+            Assert.Equal(expectedStatus, response.StatusCode);
             var content = await response.Content.ReadAsStringAsync();
-            Assert.Equal("Hello, Functions Framework.", content);
+            Assert.Equal(expectedText, content);
+        }
+
+        public class SimpleFunction : IHttpFunction
+        {
+            public async Task HandleAsync(HttpContext context)
+            {
+                await context.Response.WriteAsync("Test message");
+            }
         }
     }
 }

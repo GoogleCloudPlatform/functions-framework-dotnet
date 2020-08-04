@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Cloud.Functions.Examples.StorageImageAnnotator;
-using Google.Cloud.Functions.Invoker.DependencyInjection;
+using Google.Cloud.Functions.Invoker;
 using Google.Cloud.Storage.V1;
 using Google.Cloud.Vision.V1;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 
-[assembly: FunctionsStartup(typeof(Startup))]
+[assembly: FunctionsStartup(typeof(Google.Cloud.Functions.Examples.StorageImageAnnotator.Startup))]
 
 namespace Google.Cloud.Functions.Examples.StorageImageAnnotator
 {
@@ -29,10 +29,9 @@ namespace Google.Cloud.Functions.Examples.StorageImageAnnotator
     /// </summary>
     public class Startup : FunctionsStartup
     {
-        public override void Configure(IFunctionsHostBuilder builder)
-        {
-            builder.Services.AddSingleton(ImageAnnotatorClient.Create());
-            builder.Services.AddSingleton(StorageClient.Create());
-        }
+        public override void ConfigureServices(WebHostBuilderContext context, IServiceCollection services) =>
+            services
+                .AddSingleton(ImageAnnotatorClient.Create())
+                .AddSingleton(StorageClient.Create());
     }
 }

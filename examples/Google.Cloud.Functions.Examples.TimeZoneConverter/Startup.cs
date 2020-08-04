@@ -12,22 +12,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Cloud.Functions.Examples.TimeZoneConverter;
-using Google.Cloud.Functions.Invoker.DependencyInjection;
+using Google.Cloud.Functions.Invoker;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using NodaTime;
 
-[assembly: FunctionsStartup(typeof(Startup))]
+[assembly: FunctionsStartup(typeof(Google.Cloud.Functions.Examples.TimeZoneConverter.Startup))]
 
 namespace Google.Cloud.Functions.Examples.TimeZoneConverter
 {
     /// <summary>
-    /// Startup class to provide the NodaTime built-in TZDB (IANA) date time zone provider
+    /// Service provider to provide the NodaTime built-in TZDB (IANA) date time zone provider
     /// as a dependency to <see cref="Function"/>.
     /// </summary>
     public class Startup : FunctionsStartup
     {
-        public override void Configure(IFunctionsHostBuilder builder) =>
-            builder.Services.AddSingleton(DateTimeZoneProviders.Tzdb);
+        public override void ConfigureServices(WebHostBuilderContext context, IServiceCollection services) =>
+            services.AddSingleton(DateTimeZoneProviders.Tzdb);
     }
 }
