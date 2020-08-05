@@ -22,17 +22,17 @@ namespace Google.Cloud.Functions.Invoker
     /// An IConfigurationSource that deals with *specific* Functions Framework environment variables
     /// (unlike the more general EnvironmentVariablesConfigurationSource).
     /// </summary>
-    internal sealed class FunctionsEnvironmentVariablesConfigurationSource : IConfigurationSource
+    internal sealed class FunctionsEnvironmentVariablesConfigurationProvider : IConfigurationSource
     {
         private readonly Func<string, string?> _variableProvider;
 
-        internal FunctionsEnvironmentVariablesConfigurationSource()
+        internal FunctionsEnvironmentVariablesConfigurationProvider()
             : this(Environment.GetEnvironmentVariable)
         {
         }
 
         // Testable 
-        internal FunctionsEnvironmentVariablesConfigurationSource(Func<string, string?> variableProvider) =>
+        internal FunctionsEnvironmentVariablesConfigurationProvider(Func<string, string?> variableProvider) =>
             _variableProvider = variableProvider;
 
         public IConfigurationProvider Build(IConfigurationBuilder builder) => new Provider(_variableProvider);

@@ -58,16 +58,7 @@ namespace Google.Cloud.Functions.Invoker
             // doesn't matter much. Potentially catch exceptions during configuration, but let any
             // during web server execution propagate.
             var host = Host.CreateDefaultBuilder()
-                .ConfigureWebHostDefaults(webHostBuilder => webHostBuilder
-                    .AddFunctionsFrameworkEnvironmentConfiguration()
-                    .AddFunctionsFrameworkCommandLineConfiguration(args)
-                    .ConfigureKestrelForFunctionsFramework()
-                    .ConfigureFunctionsFrameworkLogging()
-                    .ConfigureFunctionsFrameworkTarget(functionAssembly)
-                    .ConfigureFunctionsServiceProviders(functionAssembly)
-                    .ConfigureFunctionsApplicationConfigurers(functionAssembly)
-                    .ConfigureApplicationForFunctionsFramework()
-                )
+                .ConfigureWebHostDefaults(webHostBuilder => webHostBuilder.UseFunctionsFramework(functionAssembly, args))
                 .Build();
             await host.RunAsync();
             return 0;

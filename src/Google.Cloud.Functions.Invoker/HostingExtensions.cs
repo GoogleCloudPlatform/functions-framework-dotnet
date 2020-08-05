@@ -1,5 +1,7 @@
 ﻿using Google.Cloud.Functions.Invoker.Logging;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
@@ -18,30 +20,24 @@ namespace Google.Cloud.Functions.Invoker
     public static class HostingExtensions
     {
         /// <summary>
-        /// Adds Functions Framework configuration based on environment variables (e.g. PORT and FUNCTION_TARGET).
+        /// Adds a Functions Framework configuration provider based on environment variables (e.g. PORT and FUNCTION_TARGET).
         /// </summary>
-        /// <param name="builder">The web host builder to configure.</param>
+        /// <param name="configBuilder">The configuration builder to add the provider to.</param>
         /// <returns>The original builder, for method chaining.</returns>
-        public static IWebHostBuilder AddFunctionsFrameworkEnvironmentConfiguration(this IWebHostBuilder builder) =>
-            builder.ConfigureAppConfiguration(configBuilder => configBuilder.Add(new FunctionsEnvironmentVariablesConfigurationSource()));
+        public static IConfigurationBuilder AddFunctionsFrameworkEnvironment(this IConfigurationBuilder configBuilder) =>
+            configBuilder.Add(new FunctionsEnvironmentVariablesConfigurationProvider());
 
         /// <summary>
         /// Adds Functions Framework configuration based on command line arguments.
         /// </summary>
-        /// <param name="builder">The web host builder to configure.</param>
+        /// <param name="configBuilder">The configuration builder to add the provider to.</param>
         /// <param name="args">The command line arguments to use for configuration.</param>
         /// <returns>The original builder, for method chaining.</returns>
-        public static IWebHostBuilder AddFunctionsFrameworkCommandLineConfiguration(this IWebHostBuilder builder, string[] args) =>
-            builder.ConfigureAppConfiguration(configBuilder => HostingInternals.AddCommandLineArguments(configBuilder, args));
-
-        /// <summary>
-        /// Configures Functions Framework logging for the given web host builder. This is a convenience method
-        /// for calling <see cref="ConfigureFunctionsFrameworkLogging(ILoggingBuilder, WebHostBuilderContext)"/>.
-        /// </summary>
-        /// <param name="builder">The web host builder to configure.</param>
-        /// <returns>The original builder, for method chaining.</returns>
-        public static IWebHostBuilder ConfigureFunctionsFrameworkLogging(this IWebHostBuilder builder) =>
-            builder.ConfigureLogging((context, logging) => logging.ConfigureFunctionsFrameworkLogging(context));
+        public static IConfigurationBuilder AddFunctionsFrameworkCommandLine(this IConfigurationBuilder configBuilder, string[] args)
+        {
+            HostingInternals.AddCommandLineArguments(configBuilder, args);
+            return configBuilder;
+        }
 
         /// <summary>
         /// Configures Functions Framework logging for the given logging builder. This is a convenience method to
@@ -50,7 +46,7 @@ namespace Google.Cloud.Functions.Invoker
         /// </summary>
         /// <param name="builder">The logging builder to configure.</param>
         /// <returns>The original builder, for method chaining.</returns>
-        public static ILoggingBuilder ConfigureFunctionsFrameworkLogging(this ILoggingBuilder builder, WebHostBuilderContext context) =>
+        public static ILoggingBuilder AddFunctionsFrameworkLogging(this ILoggingBuilder builder, WebHostBuilderContext context) =>
             builder.ClearProviders().AddFunctionsFrameworkConsoleLogging(context);
 
         /// <summary>
@@ -82,87 +78,128 @@ namespace Google.Cloud.Functions.Invoker
             });
 
         /// <summary>
-        /// Configures the services within the given web host builder for the Functions Framework to use
+        /// Adds the services for the Functions Framework to use
         /// a target function from the given assembly. If the Functions Framework configuration (typically provided by
         /// command line arguments or environment variables) does not specify a target function, the assembly is
         /// scanned for a single compatible function type.
         /// </summary>
-        /// <param name="builder">The web host builder to configure.</param>
+        /// <param name="services">The service collection to add the service to.</param>
         /// <param name="assembly">The assembly expected to contain the Functions Framework target function.</param>
-        /// <returns>The original builder, for method chaining.</returns>
-        public static IWebHostBuilder ConfigureFunctionsFrameworkTarget(this IWebHostBuilder builder, Assembly assembly) =>
-            builder.ConfigureServices((context, serviceCollection) =>
-                HostingInternals.AddServicesForTarget(serviceCollection, HostingInternals.GetFunctionTarget(context, assembly)));
+        /// <returns>The original service collection, for method chaining.</returns>
+        public static IServiceCollection AddFunctionsFrameworkTarget(this IServiceCollection services, WebHostBuilderContext context, Assembly assembly)
+        {
+            HostingInternals.AddServicesForTarget(services, HostingInternals.GetFunctionTarget(context, assembly));
+            return services;
+        }
 
         /// <summary>
-        /// Configures the services within the given web host builder for the Functions Framework to use
+        /// Adds the services for the Functions Framework to use
         /// the target function type specified by the <typeparamref name="TFunction"/> type parameter.
         /// </summary>
         /// <typeparam name="TFunction">The target function type.</typeparam>
-        /// <param name="builder">The web host builder to configure.</param>
-        /// <returns>The original builder, for method chaining.</returns>
-        public static IWebHostBuilder ConfigureFunctionsFrameworkTarget<TFunction>(this IWebHostBuilder builder) =>
-            builder.ConfigureFunctionsFrameworkTarget(typeof(TFunction));
+        /// <param name="services">The service collection to add the service to.</param>
+        /// <returns>The original service collection, for method chaining.</returns>
+        public static IServiceCollection AddFunctionsFrameworkTarget<TFunction>(this IServiceCollection services) =>
+            services.AddFunctionsFrameworkTarget(typeof(TFunction));
 
         /// <summary>
-        /// Configures the services within the given web host builder for the Functions Framework to use
+        /// Adds the services for the Functions Framework to use
         /// the specified target function type.
         /// </summary>
-        /// <param name="builder">The web host builder to configure.</param>
+        /// <param name="services">The service collection to add the service to.</param>
         /// <param name="type">The target function type.</param>
-        /// <returns>The original builder, for method chaining.</returns>
-        public static IWebHostBuilder ConfigureFunctionsFrameworkTarget(this IWebHostBuilder builder, Type type) =>
-            builder.ConfigureServices(services => HostingInternals.AddServicesForTarget(services, type));
+        /// <returns>The original service collection, for method chaining.</returns>
+        public static IServiceCollection AddFunctionsFrameworkTarget(this IServiceCollection services, Type type)
+        {
+            HostingInternals.AddServicesForTarget(services, type);
+            return services;
+        }
 
         /// <summary>
-        /// Configures the services within the given web host builder using service providers specified by
+        /// Adds the services specified by
         /// assembly attributes.
         /// </summary>
-        /// <param name="builder">The web host builder to configure.</param>
+        /// <param name="services">The service collection to add services to.</param>
         /// <param name="assembly">The assembly to query for attributes specifying service providers.</param>
-        /// <returns>The original builder, for method chaining.</returns>
-        public static IWebHostBuilder ConfigureFunctionsServiceProviders(this IWebHostBuilder builder, Assembly assembly) =>
-            builder.ConfigureFunctionsServiceProviders(HostingInternals.GetServiceProviders(assembly));
+        /// <returns>The original service collection, for method chaining.</returns>
+        public static IServiceCollection AddFunctionsUserServices(this IServiceCollection services, WebHostBuilderContext context, Assembly assembly) =>
+            services.AddFunctionsUserServices(context, HostingInternals.GetServiceProviders(assembly));
 
         /// <summary>
-        /// Configures the services within the given web host builder using the specified service providers.
+        /// Adds the specified services.
         /// </summary>
-        /// <param name="builder">The web host builder to configure.</param>
-        /// <param name="providers">The providers to configure.</param>
-        /// <returns>The original builder, for method chaining.</returns>
-        public static IWebHostBuilder ConfigureFunctionsServiceProviders(this IWebHostBuilder builder, IEnumerable<FunctionsServiceProvider> providers) =>
-            builder.ConfigureServices((context, services) => HostingInternals.ConfigureServiceProviders(context, services, providers));
+        /// <param name="services">The service collection to add services to.</param>
+        /// <param name="providers">The services to add.</param>
+        /// <returns>The original service collection, for method chaining.</returns>
+        public static IServiceCollection AddFunctionsUserServices(this IServiceCollection services, WebHostBuilderContext context, IEnumerable<FunctionsServiceProvider> providers)
+        {
+            HostingInternals.ConfigureServiceProviders(context, services, providers);
+            return services;
+        }
 
         /// <summary>
-        /// Configures the given web host builder to use application configurers specified by
+        /// Adds application configurers services specified by
         /// assembly attributes. The application configurers are then executed by
-        /// <see cref="ConfigureApplicationForFunctionsFramework(IWebHostBuilder)"/>.
+        /// <see cref="UseFunctionsFramework(IApplicationBuilder, WebHostBuilderContext)"/>.
         /// </summary>
-        /// <param name="builder">The web host builder to configure.</param>
+        /// <param name="services">The service collection to add services to.</param>
         /// <param name="assembly">The assembly to query for attributes specifying application configurers.</param>
-        /// <returns>The original builder, for method chaining.</returns>
-        public static IWebHostBuilder ConfigureFunctionsApplicationConfigurers(this IWebHostBuilder builder, Assembly assembly) =>
-            builder.ConfigureFunctionsApplicationConfigurers(HostingInternals.GetApplicationConfigurers(assembly));
+        /// <returns>The original service collection, for method chaining.</returns>
+        public static IServiceCollection AddFunctionsApplicationConfigurers(this IServiceCollection services, WebHostBuilderContext context, Assembly assembly) =>
+            services.AddFunctionsApplicationConfigurers(context, HostingInternals.GetApplicationConfigurers(assembly));
 
         /// <summary>
-        /// Configures the given web host builder to use the specified application configurers.
-        /// The application configurers are then executed by <see cref="ConfigureApplicationForFunctionsFramework(IWebHostBuilder)"/>.
+        /// Adds the specified application configurers services.
+        /// The application configurers are then executed by <see cref="UseFunctionsFramework(IApplicationBuilder, WebHostBuilderContext)"/>.
         /// </summary>
-        /// <param name="builder">The web host builder to configure.</param>
+        /// <param name="services">The service collection to add services to.</param>
         /// <param name="configurers">The application configurers.</param>
-        /// <returns>The original builder, for method chaining.</returns>
-        public static IWebHostBuilder ConfigureFunctionsApplicationConfigurers(this IWebHostBuilder builder, IEnumerable<FunctionsApplicationConfigurer> configurers) =>
-            builder.ConfigureServices((context, services) => HostingInternals.ConfigureApplicationConfigurers(context, services, configurers));
+        /// <returns>The original service collection, for method chaining.</returns>
+        public static IServiceCollection AddFunctionsApplicationConfigurers(this IServiceCollection services, WebHostBuilderContext context, IEnumerable<FunctionsApplicationConfigurer> configurers)
+        {
+            HostingInternals.ConfigureApplicationConfigurers(context, services, configurers);
+            return services;
+        }
 
         /// <summary>
-        /// Configures the given web host builder to use the Functions Framework.
+        /// Configures the given app builder to use the Functions Framework.
         /// This method executes any application configurers before adding handlers for fixed paths to
         /// return "not found" responses for fixed paths (e.g. "favicon.ico") and setting the terminal
         /// handler to execute the target function.
         /// </summary>
-        /// <param name="builder">The web host builder to configure.</param>
+        /// <param name="app">The application builder to configure.</param>
         /// <returns>The original builder, for method chaining.</returns>
-        public static IWebHostBuilder ConfigureApplicationForFunctionsFramework(this IWebHostBuilder builder) =>
-            builder.Configure(HostingInternals.ConfigureApplication);
+        public static IApplicationBuilder UseFunctionsFramework(this IApplicationBuilder app, WebHostBuilderContext context)
+        {
+            HostingInternals.ConfigureApplication(context, app);
+            return app;
+        }
+
+        /// <summary>
+        /// Helper to configure Functions Framework with default settings.
+        /// </summary>
+        /// <param name="builder"></param>
+        /// <param name="functionAssembly"></param>
+        /// <param name="args"></param>
+        /// <returns></returns>
+        public static IWebHostBuilder UseFunctionsFramework(this IWebHostBuilder builder, Assembly functionAssembly, string[] args)
+        {
+            builder.ConfigureAppConfiguration(configBuilder =>
+            {
+                configBuilder.AddFunctionsFrameworkEnvironment();
+                configBuilder.AddFunctionsFrameworkCommandLine(args);
+            });
+            builder.ConfigureKestrelForFunctionsFramework();
+            builder.ConfigureLogging((context, loggingBuilder) => loggingBuilder.AddFunctionsFrameworkLogging(context));
+            builder.ConfigureServices((context, services) =>
+            {
+                services.AddFunctionsFrameworkTarget(context, functionAssembly);
+                services.AddFunctionsUserServices(context, functionAssembly);
+                services.AddFunctionsApplicationConfigurers(context, functionAssembly);
+            });
+            builder.Configure((context, app) => app.UseFunctionsFramework(context));
+
+            return builder;
+        }
     }
 }
