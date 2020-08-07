@@ -61,7 +61,7 @@ namespace Google.Cloud.Functions.Invoker.Testing
         /// <param name="startups">The startup classes to use, or <c>null</c> to use ones specified in the
         /// assembly containing the function target.</param>
         /// <returns>The same test server builder, for method chaining.</returns>
-        public FunctionTestServerBuilder UseStartups(IEnumerable<FunctionsStartup>? startups)
+        public FunctionTestServerBuilder UseFunctionsStartups(IEnumerable<FunctionsStartup>? startups)
         {
             _startups = startups;
             return this;
@@ -69,13 +69,13 @@ namespace Google.Cloud.Functions.Invoker.Testing
 
         /// <summary>
         /// Specifies the startup classes to use in the test server.  This is a convenience method for calling
-        /// <see cref="UseStartups(IEnumerable{FunctionsStartup})"/> with a parameter array.
+        /// <see cref="UseFunctionsStartups(IEnumerable{FunctionsStartup})"/> with a parameter array.
         /// </summary>
         /// <param name="startups">The startup classes to use, or <c>null</c> to use ones specified in the
         /// assembly containing the function target.</param>
         /// <returns>The same test server builder, for method chaining.</returns>
-        public FunctionTestServerBuilder UseStartups(params FunctionsStartup[] startups) =>
-            UseStartups((IEnumerable<FunctionsStartup>) startups);
+        public FunctionTestServerBuilder UseFunctionsStartups(params FunctionsStartup[] startups) =>
+            UseFunctionsStartups((IEnumerable<FunctionsStartup>) startups);
 
         /// <summary>
         /// Specifies whether or not to use Functions Framework console logging in addition to the
@@ -88,6 +88,12 @@ namespace Google.Cloud.Functions.Invoker.Testing
             _consoleLogging = enabled;
             return this;
         }
+
+        /// <summary>
+        /// Builds a <see cref="FunctionTestServer"/> representing the configuration of this builder.
+        /// </summary>
+        /// <returns>A <see cref="FunctionTestServer"/> using the configuration of this builder.</returns>
+        public FunctionTestServer Build() => new FunctionTestServer(BuildTestServer(), FunctionTarget);
 
         internal TestServer BuildTestServer()
         {
