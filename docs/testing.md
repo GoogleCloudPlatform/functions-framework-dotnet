@@ -99,11 +99,47 @@ requests against the test server, in one of three ways:
   return a response, so typically a test would then make assertions
   about the side-effects of the request.)
 
+## Customizing the test server with `FunctionTestServerBuilder`
+
+By default, `FunctionTestServer` configures the server in the same
+way as in production, just without using Kestrel or console logging.
+For simple functions that's fine, but if your function uses
+dependencies such as web APIs that you want to fake/mock in tests,
+you need to be able to replace the [Functions Startup
+classes](customization.md) that are usually used to configure
+dependencies, middleware and so on.
+
+`FunctionTestServerBuilder` allows you to create a test server that
+uses specified `FunctionsStartup` instances instead of detecting the
+Functions Startup classes based on assembly attributes. To create
+the builder, start by calling one of the `Create` overloads, either
+specifying the function target as a `Type` reference, or as a generic
+type argument.
+
+After that, just call the
+`FunctionTestServerBuilder.UseFunctionsStartups` method and pass in
+the complete set of startup instances, or `null` to use the
+production behavior of using assembly attributes. The method returns
+the same builder it's called on, so you can chain method calls easily.
+
+The `FunctionTestServerBuilder.UseFunctionsFrameworkConsoleLogging`
+method can be used to enable console logging in addition to the
+in-memory logging.
+
+The `Build()` method on `FunctionTestServerBuilder` constructs a
+`FunctionTestServer` for the given function target, using the
+configured behavior.
+
+See [TestableDependenciesTest.cs](../examples/Google.Cloud.Functions.Examples.IntegrationTests/TestableDependenciesTest.cs)
+for an example of using `FunctionTestServerBuilder` in
+`FunctionTestBase` subclass to test a function that needs a custom
+dependency for testing.
+
 ## Testing logs with FunctionTestServer
 
-`FunctionTestServer` augments the default logging with an in-memory
-logger provider, allowing you to retrieve logs by category using the
-`GetLogEntries` method.
+`FunctionTestServer` replaces the default console logging with an
+in-memory logger provider, allowing you to retrieve logs by category
+using the `GetLogEntries` method.
 
 Additionally, the `GetFunctionLogEntries` method in
 `FunctionTestServer<TFunction>` retrieves the log entries

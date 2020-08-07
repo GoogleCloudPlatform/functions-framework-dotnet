@@ -265,7 +265,7 @@ The [SimpleDependencyInjection](../examples/Google.Cloud.Functions.Examples.Simp
 example demonstrates out-of-the-box dependency injection without
 any additional configuration.
 
-See the [dependency injection documentation](dependency-injection.md) for more details.
+See the [customization documentation](customization.md) for more details.
 
 Sample deployment:
 
@@ -280,18 +280,10 @@ gcloud functions deploy simple-dependency-injection \
 ## AdvancedDependencyInjection
 
 The [AdvancedDependencyInjection](../examples/Google.Cloud.Functions.Examples.AdvancedDependencyInjection)
-example demonstrates dependency injection with services provided via a startup class,
+example demonstrates dependency injection with services provided via a Functions Startup class,
 including scoped and singleton dependencies.
 
-See the [dependency injection documentation](dependency-injection.md) for more details.
-
-## Configuration
-
-The [Configuration](../examples/Google.Cloud.Functions.Examples.Configuration)
-example demonstrates using `IConfiguration` to obtain information from
-settings files to configure services.
-
-See the [dependency injection documentation](dependency-injection.md) for more details.
+See the [customization documentation](customization.md) for more details.
 
 Sample deployment:
 
@@ -301,6 +293,87 @@ gcloud functions deploy advanced-dependency-injection \
   --trigger-http \
   --allow-unauthenticated \
   --entry-point Google.Cloud.Functions.Examples.AdvancedDependencyInjection.Function
+```
+
+## TestableDependencies
+
+The [TestableDependencies](../examples/Google.Cloud.Functions.Examples.TestableDependencies)
+example demonstrates how a function with dependency injection configured by a Functions Startup class
+can be [tested](../examples/Google.Cloud.Functions.Examples.IntegrationTests.TestableDependenciesTest.cs)
+using test-only dependencies.
+
+See the [testing documentation](testing.md) for more details.
+
+Sample deployment:
+
+```sh
+gcloud functions deploy testable-dependencies \
+  --runtime dotnet3 \
+  --trigger-http \
+  --allow-unauthenticated \
+  --entry-point Google.Cloud.Functions.Examples.TestableDependencies.Function
+```
+
+## Middleware
+
+The [Middleware](../examples/Google.Cloud.Functions.Examples.Middleware)
+example demonstrates adding middleware to the request pipeline using a Functions Startup class.
+
+See the [customization documentation](customization.md) for more details.
+
+Sample deployment:
+
+```sh
+gcloud functions deploy middleware \
+  --runtime dotnet3 \
+  --trigger-http \
+  --allow-unauthenticated \
+  --entry-point Google.Cloud.Functions.Examples.Middleware.Function
+```
+
+## Standard configuration
+
+The [Configuration](../examples/Google.Cloud.Functions.Examples.Configuration)
+example demonstrates using `IConfiguration` to obtain information from
+settings files to configure services.
+
+This example uses three settings files:
+[appsettings.json](../examples/Google.Cloud.Functions.Examples.Configuration/appsettings.json),
+[appsettings.Development.json](../examples/Google.Cloud.Functions.Examples.Configuration/appsettings.Development.json)
+and [appsettings.Production.json](../examples/Google.Cloud.Functions.Examples.Configuration/appsettings.Production.json).
+The configuration is loaded in the normal way for .NET Core, based on the environment which is determined
+by the `ASPNETCORE_ENVIRONMENT` and `DOTNET_ENVIRONMENT` environment variables.
+
+> **Note**
+>
+> When using configuration settings like this, please be aware that the default environment in
+> ASP.NET Core is Production. You may wish to set the `ASPNETCORE_ENVIRONMENT` or `DOTNET_ENVIRONMENT`
+> environment variables on a user level, to avoid accidentally attempting to run against the production
+> configuration.
+
+Sample deployment:
+
+```sh
+gcloud functions deploy configuration-example \
+  --runtime dotnet3 \
+  --trigger-http \
+  --allow-unauthenticated \
+  --entry-point Google.Cloud.Functions.Examples.Configuration.Function
+```
+
+## Additional configuration sources
+
+The [CustomConfiguration](../examples/Google.Cloud.Functions.Examples.CustomConfiguration)
+example demonstrates adding a custom configuration source using a Functions Startup class.
+
+See the [customization documentation](customization.md) for more details.
+
+```sh
+gcloud functions deploy additional-configuration-example \
+  --runtime dotnet3 \
+  --trigger-http \
+  --allow-unauthenticated \
+  --entry-point Google.Cloud.Functions.Examples.CustomConfiguration.Function
 ```
 
 ## TimeZoneConverter
