@@ -47,5 +47,5 @@ references, additional MSBuild imports removed, and the example should still wor
 - [Deployment](deployment.md)
 - [Testing Functions](testing.md)
 - [Examples](examples.md)
-- [Dependency Injection](dependency-injection.md)
+- [Customization using Functions Startup classes](customization.md)
 - [Microsoft.NET.Sdk.Web and launchSettings.json](launch-settings.md)
