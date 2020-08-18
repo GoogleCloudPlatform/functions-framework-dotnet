@@ -147,7 +147,7 @@ gcloud functions deploy vb-http \
   --runtime dotnet3 \
   --trigger-http \
   --allow-unauthenticated \
-  --entry-point Google.Cloud.Functions.Examples.VbHttpFunction.Function
+  --entry-point Google.Cloud.Functions.Examples.VbHttpFunction.CloudFunction
 ```
 
 ## VbEventFunction
@@ -169,7 +169,7 @@ gcloud functions deploy vb-event \
   --runtime dotnet3 \
   --trigger-event google.storage.object.finalize \
   --trigger-resource $ \
-  --entry-point Google.Cloud.Functions.Examples.VbEventFunction.Function
+  --entry-point Google.Cloud.Functions.Examples.VbEventFunction.CloudFunction
 ```
 
 ## VbUntypedEventFunction
@@ -192,7 +192,7 @@ Sample deployment to listen to Pub/Sub events:
 gcloud functions deploy vb-untyped-event \
   --runtime dotnet3 \
   --trigger-topic $PUBSUB_TOPIC_NAME \
-  --entry-point Google.Cloud.Functions.Examples.VbUntypedEventFunction.Function
+  --entry-point Google.Cloud.Functions.Examples.VbUntypedEventFunction.CloudFunction
 ```
 
 ## FSharpHttpFunction
