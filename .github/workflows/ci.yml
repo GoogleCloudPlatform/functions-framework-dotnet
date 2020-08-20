@@ -2,6 +2,14 @@ name: .NET CI
 
 on: [push, pull_request]
 
+env:
+  ContinuousIntegrationBuild: true
+  Configuration: Release
+  # When building examples, build against the version in this
+  # repo rather than against NuGet; this allows us to make breaking
+  # changes.
+  LocalFunctionsFramework: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
