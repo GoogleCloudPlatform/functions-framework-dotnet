@@ -16,19 +16,20 @@ jobs:
 
     steps:
     - uses: actions/checkout@main
-    - uses: actions/setup-dotnet@v1
+    - name: setup
+      uses: actions/setup-dotnet@v1
       with:
         dotnet-version: '3.1.x'
-    - run: dotnet build -nologo -clp:NoSummary -v quiet src
-    - run: dotnet build -nologo -clp:NoSummary -v quiet examples
+      run: dotnet build -nologo -clp:NoSummary -v quiet src
+      run: dotnet build -nologo -clp:NoSummary -v quiet examples
 
     - name: Testing...
-    - run: dotnet test -nologo --no-build -v quiet src
-    - run: dotnet test -nologo --no-build -v quiet examples
+      run: dotnet test -nologo --no-build -v quiet src
+      run: dotnet test -nologo --no-build -v quiet examples
 
     - name: Packing...
-    - run: rm -rf nupkg
-    - run: dotnet pack -nologo -v quiet src -o $PWD/nupkg
+      run: rm -rf nupkg
+      run: dotnet pack -nologo -v quiet src -o $PWD/nupkg
 
     - name: Created packages...
-    - run: ls nupkg
+      run: ls nupkg
