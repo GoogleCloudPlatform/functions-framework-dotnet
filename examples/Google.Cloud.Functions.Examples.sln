@@ -43,7 +43,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Google.Cloud.Functions.Exam
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Google.Cloud.Functions.Examples.CustomConfiguration", "Google.Cloud.Functions.Examples.CustomConfiguration\Google.Cloud.Functions.Examples.CustomConfiguration.csproj", "{743A84EF-9B19-4E52-9FF1-38DBB54221F3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Google.Cloud.Functions.Examples.TestableDependencies", "Google.Cloud.Functions.Examples.TestableDependencies\Google.Cloud.Functions.Examples.TestableDependencies.csproj", "{658EC94D-9A70-4078-8CBD-5FA6CFB0E0EF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Google.Cloud.Functions.Examples.TestableDependencies", "Google.Cloud.Functions.Examples.TestableDependencies\Google.Cloud.Functions.Examples.TestableDependencies.csproj", "{658EC94D-9A70-4078-8CBD-5FA6CFB0E0EF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Google.Cloud.Functions.Examples.EventFunctionWithReply", "Google.Cloud.Functions.Examples.EventFunctionWithReply\Google.Cloud.Functions.Examples.EventFunctionWithReply.csproj", "{56E74F1D-36A1-4CDC-94E4-BD2BA5DC4431}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -307,6 +309,18 @@ Global
 		{658EC94D-9A70-4078-8CBD-5FA6CFB0E0EF}.Release|x64.Build.0 = Release|Any CPU
 		{658EC94D-9A70-4078-8CBD-5FA6CFB0E0EF}.Release|x86.ActiveCfg = Release|Any CPU
 		{658EC94D-9A70-4078-8CBD-5FA6CFB0E0EF}.Release|x86.Build.0 = Release|Any CPU
+		{56E74F1D-36A1-4CDC-94E4-BD2BA5DC4431}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{56E74F1D-36A1-4CDC-94E4-BD2BA5DC4431}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{56E74F1D-36A1-4CDC-94E4-BD2BA5DC4431}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{56E74F1D-36A1-4CDC-94E4-BD2BA5DC4431}.Debug|x64.Build.0 = Debug|Any CPU
+		{56E74F1D-36A1-4CDC-94E4-BD2BA5DC4431}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{56E74F1D-36A1-4CDC-94E4-BD2BA5DC4431}.Debug|x86.Build.0 = Debug|Any CPU
+		{56E74F1D-36A1-4CDC-94E4-BD2BA5DC4431}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{56E74F1D-36A1-4CDC-94E4-BD2BA5DC4431}.Release|Any CPU.Build.0 = Release|Any CPU
+		{56E74F1D-36A1-4CDC-94E4-BD2BA5DC4431}.Release|x64.ActiveCfg = Release|Any CPU
+		{56E74F1D-36A1-4CDC-94E4-BD2BA5DC4431}.Release|x64.Build.0 = Release|Any CPU
+		{56E74F1D-36A1-4CDC-94E4-BD2BA5DC4431}.Release|x86.ActiveCfg = Release|Any CPU
+		{56E74F1D-36A1-4CDC-94E4-BD2BA5DC4431}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
