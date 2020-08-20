@@ -19,16 +19,20 @@ jobs:
     - uses: actions/setup-dotnet@v1
       with:
         dotnet-version: '3.1.x'
-    - run: dotnet build -nologo -clp:NoSummary -v quiet src
-    - run: dotnet build -nologo -clp:NoSummary -v quiet examples
+    - name: Build src
+      run: dotnet build -nologo -clp:NoSummary -v quiet src
+    - name: Build examples
+      run: dotnet build -nologo -clp:NoSummary -v quiet examples
 
-    - name: Testing...
-    - run: dotnet test -nologo --no-build -v quiet src
-    - run: dotnet test -nologo --no-build -v quiet examples
+    - name: Test src
+      run: dotnet test -nologo --no-build -v quiet src
+    - name: Test examples
+      run: dotnet test -nologo --no-build -v quiet examples
 
-    - name: Packing...
-    - run: rm -rf nupkg
-    - run: dotnet pack -nologo -v quiet src -o $PWD/nupkg
+    - name: Remove nupkg
+      run: rm -rf nupkg
+    - name: Pack
+      run: dotnet pack -nologo -v quiet src -o $PWD/nupkg
 
-    - name: Created packages...
-    - run: ls nupkg
+    - name: Create packages
+      run: ls nupkg
