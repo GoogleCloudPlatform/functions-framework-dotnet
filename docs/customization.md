@@ -22,7 +22,7 @@ Startup classes*.
 > The Functions Framework expects a function to always be "the final
 > part of the request pipeline". The intention of Functions Startup
 > classes is to add extra customization, rather than to take
-> complete control over the application. If you need more a greater
+> complete control over the application. If you need a greater
 > degree of flexibility than Function Startup classes provide,
 > you may want to create a host yourself instead of using the Invoker
 > package.
