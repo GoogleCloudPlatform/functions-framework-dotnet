@@ -16,7 +16,7 @@ namespace Google.Cloud.Functions.Examples.FSharpEventFunction
 
 open CloudNative.CloudEvents
 open Google.Cloud.Functions.Framework
-open Google.Events.SystemTextJson.Cloud.Storage.V1
+open Google.Events.Protobuf.Cloud.Storage.V1
 open System.Threading.Tasks
 
 /// <summary>

@@ -14,7 +14,7 @@
 
 Imports CloudNative.CloudEvents
 Imports Google.Cloud.Functions.Framework
-Imports Google.Events.SystemTextJson.Cloud.Storage.V1
+Imports Google.Events.Protobuf.Cloud.Storage.V1
 Imports System.Threading
 
 ''' <summary>
