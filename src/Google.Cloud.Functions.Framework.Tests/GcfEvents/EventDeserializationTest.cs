@@ -14,16 +14,17 @@
 
 using Google.Cloud.Functions.Framework.GcfEvents;
 using Google.Events;
-using Google.Events.SystemTextJson.Cloud.PubSub.V1;
-using Google.Events.SystemTextJson.Cloud.Storage.V1;
-using Google.Events.SystemTextJson.Firebase.V1;
-using Google.Events.SystemTextJson.Type;
+using Google.Events.Protobuf;
+using Google.Events.Protobuf.Cloud.PubSub.V1;
+using Google.Events.Protobuf.Cloud.Storage.V1;
+using Google.Events.Protobuf.Firebase.Database.V1;
+using Google.Protobuf.WellKnownTypes;
+using Google.Type;
 using System;
 using System.Collections.Generic;
-using System.Text.Json;
 using System.Threading.Tasks;
 using Xunit;
-using FirestoreDocumentEventData = Google.Events.SystemTextJson.Cloud.Firestore.V1.DocumentEventData;
+using FirestoreDocumentEventData = Google.Events.Protobuf.Cloud.Firestore.V1.DocumentEventData;
 
 namespace Google.Cloud.Functions.Framework.Tests.GcfEvents
 {
@@ -35,10 +36,10 @@ namespace Google.Cloud.Functions.Framework.Tests.GcfEvents
             var data = await ConvertAndDeserialize<StorageObjectData>("storage.json");
 
             Assert.Equal("some-bucket", data.Bucket);
-            Assert.Equal(new DateTimeOffset(2020, 4, 23, 7, 38, 57, 230, TimeSpan.Zero), data.TimeCreated);
+            Assert.Equal(new DateTimeOffset(2020, 4, 23, 7, 38, 57, 230, TimeSpan.Zero).ToTimestamp(), data.TimeCreated);
             Assert.Equal(1587627537231057L, data.Generation);
             Assert.Equal(1L, data.Metageneration);
-            Assert.Equal(352UL, data.Size);
+            Assert.Equal(352L, data.Size);
         }
 
         [Fact]
@@ -46,11 +47,10 @@ namespace Google.Cloud.Functions.Framework.Tests.GcfEvents
         {
             var data = await ConvertAndDeserialize<FirestoreDocumentEventData>("firestore_simple.json");
 
-            Assert.Equal("2Vm2mI1d0wIaK2Waj5to", data.Wildcards["doc"]);
             Assert.Equal("projects/project-id/databases/(default)/documents/gcf-test/2Vm2mI1d0wIaK2Waj5to", data.Value!.Name);
-            Assert.Equal(new DateTimeOffset(2020, 4, 23, 9, 58, 53, 211, TimeSpan.Zero).AddTicks(350), data.Value.CreateTime);
-            Assert.Equal(new DateTimeOffset(2020, 4, 23, 12, 0, 27, 247, TimeSpan.Zero).AddTicks(1870), data.Value.UpdateTime);
-            IDictionary<string, object?> fields = data.Value!.Fields!;
+            Assert.Equal(new DateTimeOffset(2020, 4, 23, 9, 58, 53, 211, TimeSpan.Zero).AddTicks(350).ToTimestamp(), data.Value.CreateTime);
+            Assert.Equal(new DateTimeOffset(2020, 4, 23, 12, 0, 27, 247, TimeSpan.Zero).AddTicks(1870).ToTimestamp(), data.Value.UpdateTime);
+            IReadOnlyDictionary<string, object?> fields = data.Value!.ConvertFields();
             Assert.Equal(3, fields.Count);
             Assert.Equal("asd", fields["another test"]);
             Assert.Equal(4L, fields["count"]);
@@ -66,7 +66,7 @@ namespace Google.Cloud.Functions.Framework.Tests.GcfEvents
         public async Task Firestore_Complex()
         {
             var data = await ConvertAndDeserialize<FirestoreDocumentEventData>("firestore_complex.json");
-            IDictionary<string, object?> fields = data.Value!.Fields!;
+            IReadOnlyDictionary<string, object?> fields = data.Value!.ConvertFields();
 
             Assert.Equal(10, fields.Count);
             Assert.Equal(new object[] { 1L, 2L }, fields["arrayValue"]);
@@ -93,8 +93,6 @@ namespace Google.Cloud.Functions.Framework.Tests.GcfEvents
             var message = data.Message!;
             Assert.NotNull(message);
             Assert.Equal("test message 3", message.TextData);
-            Assert.Equal(1, message.Attributes.Count);
-            Assert.Equal("attr1-value", message.Attributes["attr1"]);
         }
 
         [Fact]
@@ -104,7 +102,6 @@ namespace Google.Cloud.Functions.Framework.Tests.GcfEvents
             var message = data.Message!;
             Assert.NotNull(message);
             Assert.Equal(new byte[] { 1, 2, 3, 4 }, message.Data);
-            Assert.Equal(0, message.Attributes.Count);
         }
 
         [Fact]
@@ -113,12 +110,11 @@ namespace Google.Cloud.Functions.Framework.Tests.GcfEvents
             var data = await ConvertAndDeserialize<MessagePublishedData>("pubsub_text.json");
             var message = data.Message!;
             Assert.NotNull(message);
-            Assert.Equal(1, message.Attributes.Count);
-            Assert.Equal("attr1-value", message.Attributes["attr1"]);
+            Assert.Equal(new Dictionary<string, string> { { "attr1", "attr1-value" } }, message.Attributes);
 
             data = await ConvertAndDeserialize<MessagePublishedData>("pubsub_binary.json");
             message = data.Message!;
-            Assert.Equal(0, message.Attributes.Count);
+            Assert.Empty(message.Attributes);
         }
 
         [Fact]
@@ -144,45 +140,38 @@ namespace Google.Cloud.Functions.Framework.Tests.GcfEvents
         [InlineData("firebase-dbdelete1.json")]
         [InlineData("firebase-dbdelete2.json")]
         public Task FirebaseDatabaseEvent_ParseWithoutError(string resource) =>
-            ConvertAndDeserialize<DocumentEventData>(resource);
+            ConvertAndDeserialize<ReferenceEventData>(resource);
 
         [Fact]
         public async Task FirebaseDatabaseEvent_NullData()
         {
-            var firebaseEvent = await ConvertAndDeserialize<DocumentEventData>("firebase-db1.json");
-            Assert.Null(firebaseEvent.Data);
-        }
-
-        [Fact]
-        public async Task FirebaseDatabaseEvent_Wildcards()
-        {
-            var firebaseEvent = await ConvertAndDeserialize<DocumentEventData>("firebase-db1.json");
-            Assert.Equal("xyz", firebaseEvent.Wildcards["child"]);
+            var firebaseEvent = await ConvertAndDeserialize<ReferenceEventData>("firebase-db1.json");
+            Assert.Equal(Value.KindOneofCase.NullValue, firebaseEvent.Data.KindCase);
         }
 
         [Fact]
         public async Task FirebaseDatabaseEvent_ObjectData()
         {
-            var firebaseEvent = await ConvertAndDeserialize<DocumentEventData>("firebase-db2.json");
+            var firebaseEvent = await ConvertAndDeserialize<ReferenceEventData>("firebase-db2.json");
             Assert.NotNull(firebaseEvent.Data);
-            var dataElement = firebaseEvent.Data!.Value;
-            Assert.Equal(JsonValueKind.Object, dataElement.ValueKind);
-            Assert.Equal("other", dataElement.GetProperty("grandchild").GetString());
+            var data = firebaseEvent.Data;
+            Assert.Equal(Value.KindOneofCase.StructValue, data.KindCase);
+            Assert.Equal("other", data.StructValue.GetValue("grandchild"));
 
             Assert.NotNull(firebaseEvent.Delta);
-            var deltaElement = firebaseEvent.Delta!.Value;
-            Assert.Equal(JsonValueKind.Object, deltaElement.ValueKind);
-            Assert.Equal("other changed", deltaElement.GetProperty("grandchild").GetString());
+            var delta = firebaseEvent.Delta;
+            Assert.Equal(Value.KindOneofCase.StructValue, delta.KindCase);
+            Assert.Equal("other changed", delta.StructValue.GetValue("grandchild"));
         }
 
         [Fact]
         public async Task FirebaseDatabaseEvent_NumericData()
         {
-            var firebaseEvent = await ConvertAndDeserialize<DocumentEventData>("firebase-dbdelete2.json");
+            var firebaseEvent = await ConvertAndDeserialize<ReferenceEventData>("firebase-dbdelete2.json");
             Assert.NotNull(firebaseEvent.Data);
-            var element = firebaseEvent.Data!.Value;
-            Assert.Equal(JsonValueKind.Number, element.ValueKind);
-            Assert.Equal(10, element.GetInt32());
+            var data = firebaseEvent.Data;
+            Assert.Equal(Value.KindOneofCase.NumberValue, data.KindCase);
+            Assert.Equal(10, data.NumberValue);
         }
 
         private static async Task<T> ConvertAndDeserialize<T>(string resourceName) where T : class

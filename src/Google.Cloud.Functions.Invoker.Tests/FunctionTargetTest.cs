@@ -14,14 +14,12 @@
 
 using CloudNative.CloudEvents;
 using Google.Cloud.Functions.Framework;
-using Google.Events;
-using Google.Events.SystemTextJson;
+using Google.Events.Protobuf.Cloud.Storage.V1;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.IO;
 using System.Text;
-using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
@@ -91,18 +89,18 @@ namespace Google.Cloud.Functions.Invoker.Tests
         {
             var services = new ServiceCollection();
             services.AddLogging();
-            HostingInternals.AddServicesForFunctionTarget(services, typeof(SimplePayloadCloudEventFunction));
+            HostingInternals.AddServicesForFunctionTarget(services, typeof(StorageCloudEventFunction));
             var provider = services.BuildServiceProvider();
             var function = provider.GetRequiredService<IHttpFunction>();
 
-            Assert.Equal(typeof(SimplePayloadCloudEventFunction), provider.GetRequiredService<HostingInternals.FunctionTypeProvider>().FunctionType);
+            Assert.Equal(typeof(StorageCloudEventFunction), provider.GetRequiredService<HostingInternals.FunctionTypeProvider>().FunctionType);
             var eventId = Guid.NewGuid().ToString();
             var context = new DefaultHttpContext
             {
                 Request =
                 {
                     ContentType = "application/json",
-                    Body = new MemoryStream(Encoding.UTF8.GetBytes("{\"text\": \"testdata\"}")),
+                    Body = new MemoryStream(Encoding.UTF8.GetBytes("{\"name\": \"testdata\"}")),
                     Headers =
                     {
                         { "ce-specversion", "1.0" },
@@ -114,8 +112,8 @@ namespace Google.Cloud.Functions.Invoker.Tests
             };
 
             await function.HandleAsync(context);
-            Assert.Equal(eventId, SimplePayloadCloudEventFunction.LastEventId);
-            Assert.Equal("testdata", SimplePayloadCloudEventFunction.LastData.Text);
+            Assert.Equal(eventId, StorageCloudEventFunction.LastEventId);
+            Assert.Equal("testdata", StorageCloudEventFunction.LastData.Name);
         }
 
         [Fact]
@@ -149,8 +147,8 @@ namespace Google.Cloud.Functions.Invoker.Tests
         [Fact]
         public void FindDefaultFunctionType_TypedCloudEventFunction()
         {
-            var expected = typeof(SimplePayloadCloudEventFunction);
-            var actual = HostingInternals.FindDefaultFunctionType(typeof(SimplePayloadCloudEventFunction));
+            var expected = typeof(StorageCloudEventFunction);
+            var actual = HostingInternals.FindDefaultFunctionType(typeof(StorageCloudEventFunction));
             Assert.Equal(expected, actual);
         }
 
@@ -181,12 +179,12 @@ namespace Google.Cloud.Functions.Invoker.Tests
             }
         }
 
-        public class SimplePayloadCloudEventFunction : ICloudEventFunction<SimplePayload>
+        public class StorageCloudEventFunction : ICloudEventFunction<StorageObjectData>
         {
             public static string LastEventId { get; set; }
-            public static SimplePayload LastData { get; set; }
+            public static StorageObjectData LastData { get; set; }
 
-            public Task HandleAsync(CloudEvent cloudEvent, SimplePayload data, CancellationToken cancellationToken)
+            public Task HandleAsync(CloudEvent cloudEvent, StorageObjectData data, CancellationToken cancellationToken)
             {
                 LastEventId = cloudEvent.Id;
                 LastData = data;
@@ -196,13 +194,6 @@ namespace Google.Cloud.Functions.Invoker.Tests
 
         public class NonFunction
         {
-        }
-
-        [CloudEventDataConverter(typeof(JsonCloudEventDataConverter<SimplePayload>))]
-        public class SimplePayload
-        {
-            [JsonPropertyName("text")]
-            public string Text { get; set; }
         }
 
         public class NonInstantiableFunction : IHttpFunction
