@@ -1,6 +1,6 @@
 # Functions Framework for .NET
 
-[![Build Status](https://travis-ci.com/GoogleCloudPlatform/functions-framework-dotnet.svg?branch=master)](https://travis-ci.com/GoogleCloudPlatform/functions-framework-dotnet)
+[![Build Status](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2FGoogleCloudPlatform%2Ffunctions-framework-dotnet%2Fbadge&style=flat)](https://actions-badge.atrox.dev/GoogleCloudPlatform/functions-framework-dotnet/goto)
 
 An open source FaaS (Function as a service) framework for writing portable
 .NET functions -- brought to you by the Google Cloud Functions team.
