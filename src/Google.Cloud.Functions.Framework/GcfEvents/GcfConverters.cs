@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net.Mime;
 using System.Text.Json;
 using System.Text.RegularExpressions;
@@ -251,6 +252,22 @@ namespace Google.Cloud.Functions.Framework.GcfEvents
                 {
                     request.Data["wildcards"] = request.Params;
                 }
+            }
+
+            // Reformat the service/resource so that the part of the resource before "documents" is in the source, but
+            // "documents" onwards is in the subject.
+            protected override (Uri source, string? subject) ConvertResourceToSourceAndSubject(string service, string resource)
+            {
+                string[] resourceSegments = resource.Split('/');
+                int documentsIndex = Array.IndexOf(resourceSegments, "documents");
+                if (documentsIndex == -1)
+                {
+                    // This is odd... just put everything in the source as normal.
+                    return base.ConvertResourceToSourceAndSubject(service, resource);
+                }
+                string sourcePath = string.Join('/', resourceSegments.Take(documentsIndex));
+                string subject = string.Join('/', resourceSegments.Skip(documentsIndex));
+                return (new Uri($"//{service}/{sourcePath}", UriKind.RelativeOrAbsolute), subject);
             }
         }
     }
