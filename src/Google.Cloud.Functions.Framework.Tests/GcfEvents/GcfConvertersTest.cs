@@ -29,7 +29,7 @@ namespace Google.Cloud.Functions.Framework.Tests.GcfEvents
         [Theory]
         [InlineData("storage.json", "google.cloud.storage.object.v1.finalized", "//storage.googleapis.com/projects/_/buckets/some-bucket", "objects/folder/Test.cs")]
         [InlineData("legacy_storage_change.json", "google.cloud.storage.object.v1.changed", "//storage.googleapis.com/projects/_/buckets/sample-bucket", "objects/MyFile")]
-        [InlineData("firestore_simple.json", "google.cloud.firestore.document.v1.written", "//firestore.googleapis.com/projects/project-id/databases/(default)/documents/gcf-test/2Vm2mI1d0wIaK2Waj5to", null)]
+        [InlineData("firestore_simple.json", "google.cloud.firestore.document.v1.written", "//firestore.googleapis.com/projects/project-id/databases/(default)", "documents/gcf-test/2Vm2mI1d0wIaK2Waj5to")]
         [InlineData("pubsub_text.json", "google.cloud.pubsub.topic.v1.messagePublished", "//pubsub.googleapis.com/projects/sample-project/topics/gcf-test", null)]
         [InlineData("legacy_pubsub.json", "google.cloud.pubsub.topic.v1.messagePublished", "//pubsub.googleapis.com/projects/sample-project/topics/gcf-test", null)]
         [InlineData("firebase-db1.json", "google.firebase.database.document.v1.written", "//firebase.googleapis.com/projects/_/instances/my-project-id/refs/gcf-test/xyz", null)]
