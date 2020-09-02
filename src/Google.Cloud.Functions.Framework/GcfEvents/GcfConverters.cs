@@ -188,7 +188,7 @@ namespace Google.Cloud.Functions.Framework.GcfEvents
 
             protected virtual void MaybeReshapeData(Request request) { }
             protected virtual (Uri source, string? subject) ConvertResourceToSourceAndSubject(string service, string resource) =>
-                (new Uri($"//{service}/{resource}"), null);
+                (new Uri($"//{service}/{resource}", UriKind.RelativeOrAbsolute), null);
         }
 
         private class StorageEventAdapter : EventAdapter
@@ -214,7 +214,7 @@ namespace Google.Cloud.Functions.Framework.GcfEvents
                     resource = match.Groups[1].Value;
                     // Resource name from "objects" onwards, but without the generation
                     var subject = match.Groups[2].Value;
-                    return (new Uri($"//{service}/{resource}"), subject);
+                    return (new Uri($"//{service}/{resource}", UriKind.RelativeOrAbsolute), subject);
                 }
                 // If the resource name didn't match for whatever reason, just use the default behaviour.
                 return base.ConvertResourceToSourceAndSubject(service, resource);
