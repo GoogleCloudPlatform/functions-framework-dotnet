@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using CloudNative.CloudEvents;
+using Google.Events;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -76,13 +77,23 @@ namespace Google.Cloud.Functions.Invoker.Testing
         }
 
         /// <summary>
-        /// Executes the given HTTP request against the server, calling the validators against the response.
+        /// Executes the given HTTP request against the server, calling a synchronous validator against the response.
         /// </summary>
         public async Task ExecuteHttpRequestAsync(HttpRequestMessage request, Action<HttpResponseMessage> validator)
         {
             using var client = Server.CreateClient();
             using var response = await client.SendAsync(request);
             validator(response);
+        }
+
+        /// <summary>
+        /// Executes the given HTTP request against the server, calling an asynchronous validator against the response.
+        /// </summary>
+        public async Task ExecuteHttpRequestAsync(HttpRequestMessage request, Func<HttpResponseMessage, Task> validator)
+        {
+            using var client = Server.CreateClient();
+            using var response = await client.SendAsync(request);
+            await validator(response);
         }
 
         /// <summary>
@@ -107,6 +118,30 @@ namespace Google.Cloud.Functions.Invoker.Testing
             using var client = Server.CreateClient();
             using var response = await client.SendAsync(request);
             response.EnsureSuccessStatusCode();
+        }
+
+        /// <summary>
+        /// Convenience method to test CloudEvents by supplying only the most important aspects.
+        /// This method simply constructs a CloudEvent from the parameters and delegates to
+        /// <see cref="ExecuteCloudEventRequestAsync(CloudEvent)"/>.
+        /// </summary>
+        /// <param name="eventType">The CloudEvent type.</param>
+        /// <param name="data">The data to populate the CloudEvent with. The data should be convertible
+        /// via <see cref="CloudEventConverters"/>.</param>
+        /// <param name="source">The source URI for the CloudEvent, or null to use a default of "//test-source".</param>
+        /// <param name="subject">The subject of the CloudEvent, or null if no subject is required.</param>
+        public Task ExecuteCloudEventRequestAsync(string eventType, object? data, Uri? source = null, string? subject = null)
+        {
+            var cloudEvent = new CloudEvent(eventType, source ?? new Uri("//test-source", UriKind.RelativeOrAbsolute));
+            if (data is object)
+            {
+                CloudEventConverters.PopulateCloudEvent(cloudEvent, data);
+            }
+            if (subject is object)
+            {
+                cloudEvent.Subject = subject;
+            }
+            return ExecuteCloudEventRequestAsync(cloudEvent);
         }
 
         /// <summary>
