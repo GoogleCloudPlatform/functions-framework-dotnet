@@ -130,9 +130,14 @@ namespace Google.Cloud.Functions.Invoker.Testing
         /// via <see cref="CloudEventConverters"/>.</param>
         /// <param name="source">The source URI for the CloudEvent, or null to use a default of "//test-source".</param>
         /// <param name="subject">The subject of the CloudEvent, or null if no subject is required.</param>
-        public Task ExecuteCloudEventRequestAsync(string eventType, object? data, Uri? source = null, string? subject = null)
+        /// <typeparam name="T">The type of the event data. This is used to find the appropriate data converter.</typeparam>
+        public Task ExecuteCloudEventRequestAsync<T>(string eventType, T? data, Uri? source = null, string? subject = null)
+            where T : class
         {
-            var cloudEvent = new CloudEvent(eventType, source ?? new Uri("//test-source", UriKind.RelativeOrAbsolute));
+            var cloudEvent = new CloudEvent(
+                eventType,
+                source ?? new Uri("//test-source", UriKind.RelativeOrAbsolute),
+                id: Guid.NewGuid().ToString());
             if (data is object)
             {
                 CloudEventConverters.PopulateCloudEvent(cloudEvent, data);
