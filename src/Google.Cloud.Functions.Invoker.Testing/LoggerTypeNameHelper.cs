@@ -14,10 +14,7 @@
 
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 
 namespace Google.Cloud.Functions.Invoker.Testing
 {
@@ -40,6 +37,7 @@ namespace Google.Cloud.Functions.Invoker.Testing
             var method = typeof(LoggerTypeNameHelper).GetMethod(
                 nameof(GetCategoryNameForType), 1, BindingFlags.NonPublic | BindingFlags.Static,
                 binder: null, Type.EmptyTypes, modifiers: null);
+            method = method!.MakeGenericMethod(type);
             return (string?) method!.Invoke(null, null) ?? throw new InvalidOperationException("Method returned null");
         }
 

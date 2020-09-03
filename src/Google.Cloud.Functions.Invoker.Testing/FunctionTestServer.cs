@@ -78,7 +78,7 @@ namespace Google.Cloud.Functions.Invoker.Testing
         /// <param name="type">The type whose name is used as a logger category name.</param>
         /// <returns>A list of log entries for the given category name.</returns>
         public List<TestLogEntry> GetLogEntries(Type type) =>
-            GetLogEntries(Preconditions.CheckNotNull(type, nameof(type)).FullName ?? "");
+            GetLogEntries(LoggerTypeNameHelper.GetCategoryNameForType(Preconditions.CheckNotNull(type, nameof(type))));
 
         /// <summary>
         /// Returns a list of log entries for the given category name. If no logs have been
