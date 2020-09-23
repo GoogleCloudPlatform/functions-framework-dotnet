@@ -17,7 +17,9 @@ different environments, including:
 
 The Functions Framework for .NET requires the [.NET Core SDK 3.1](https://dotnet.microsoft.com/download).
 
-## Quickstart: Hello, World on your local machine
+## Quickstarts
+
+### Quickstart: Hello, World on your local machine
 
 First, install the template package into the .NET tooling:
 
@@ -46,6 +48,33 @@ dotnet run
 
 Once the server is running, browse to http://localhost:8080 to
 invoke the function. Press Ctrl-C in the console to stop the server.
+
+### Quickstart: Build a Deployable Container
+
+Here is how to build and run a deployable container on your local machine.
+
+1. Install [Docker](https://store.docker.com/search?type=edition&offering=community) and the [`pack` tool](https://buildpacks.io/docs/install-pack/).
+
+1. Build a container from your function using the Functions [buildpacks](https://github.com/GoogleCloudPlatform/buildpacks):
+	```sh
+	pack build \
+  	--builder gcr.io/buildpacks/builder:v1 \
+		--env GOOGLE_FUNCTION_SIGNATURE_TYPE=http \
+		--env GOOGLE_FUNCTION_TARGET=HelloFunctions.Function \
+		my-first-function
+	```
+
+1. Start the built container:
+	```sh
+	docker run --rm -p 8080:8080 my-first-function
+	# Output: Serving function...
+	```
+
+1. Send requests to this function using `curl` from another terminal window:
+	```sh
+	curl localhost:8080
+	# Output: Hello, Functions Framework.
+	```
 
 ## Cloud Event Functions
 
