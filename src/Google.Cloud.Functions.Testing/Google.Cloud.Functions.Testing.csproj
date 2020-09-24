@@ -2,8 +2,8 @@
   <Import Project="..\CommonProperties.xml" />
   
   <PropertyGroup>
-    <Title>Google Cloud Functions Framework Hosting Testing</Title>
-    <Description>Simplifies integration tests for Google Cloud Functions Framework functions.</Description>
+    <Title>Google Cloud Functions Framework Testing</Title>
+    <Description>Simplifies tests for Google Cloud Functions Framework functions.</Description>
     <PackageTags>google;cloud;functions</PackageTags>
   </PropertyGroup>
 

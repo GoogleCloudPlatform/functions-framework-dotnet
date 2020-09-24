@@ -3,7 +3,7 @@
   
   <PropertyGroup>
     <Title>Google Cloud Functions Framework Hosting</Title>
-    <Description>The Google Cloud Functions Framework Hosting makes it easy to run a web server to execute functions.</Description>
+    <Description>The Google Cloud Functions Framework Hosting package makes it easy to run a web server to execute functions.</Description>
     <PackageTags>google;cloud;functions</PackageTags>
   </PropertyGroup>
 
