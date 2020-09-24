@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Cloud.Functions.Invoker;
+using Google.Cloud.Functions.Hosting;
 using Google.Cloud.Storage.V1;
 using Google.Cloud.Vision.V1;
 using Microsoft.AspNetCore.Hosting;
