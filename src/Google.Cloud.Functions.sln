@@ -5,15 +5,15 @@ VisualStudioVersion = 16.0.29613.14
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Google.Cloud.Functions.Framework", "Google.Cloud.Functions.Framework\Google.Cloud.Functions.Framework.csproj", "{019CB3ED-5BE4-4700-A128-E21E9E4A6A7F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Google.Cloud.Functions.Invoker", "Google.Cloud.Functions.Invoker\Google.Cloud.Functions.Invoker.csproj", "{BBD690EA-D26F-472F-944F-2D533EE039C3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Google.Cloud.Functions.Hosting", "Google.Cloud.Functions.Hosting\Google.Cloud.Functions.Hosting.csproj", "{BBD690EA-D26F-472F-944F-2D533EE039C3}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Google.Cloud.Functions.Templates", "Google.Cloud.Functions.Templates\Google.Cloud.Functions.Templates.csproj", "{D7F6169F-AC1B-43EF-A1BA-D678A3525293}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Google.Cloud.Functions.Framework.Tests", "Google.Cloud.Functions.Framework.Tests\Google.Cloud.Functions.Framework.Tests.csproj", "{21AFB864-91BD-42F6-BC7C-135182569911}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Google.Cloud.Functions.Invoker.Tests", "Google.Cloud.Functions.Invoker.Tests\Google.Cloud.Functions.Invoker.Tests.csproj", "{E3EB87DB-08CB-4850-B4DA-A6ADBEA34A7D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Google.Cloud.Functions.Hosting.Tests", "Google.Cloud.Functions.Hosting.Tests\Google.Cloud.Functions.Hosting.Tests.csproj", "{E3EB87DB-08CB-4850-B4DA-A6ADBEA34A7D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Google.Cloud.Functions.Invoker.Testing", "Google.Cloud.Functions.Invoker.Testing\Google.Cloud.Functions.Invoker.Testing.csproj", "{970964D0-CA4E-4418-9859-4CA971DAEA90}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Google.Cloud.Functions.Testing", "Google.Cloud.Functions.Testing\Google.Cloud.Functions.Testing.csproj", "{970964D0-CA4E-4418-9859-4CA971DAEA90}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Google.Cloud.Functions.ConformanceTests", "Google.Cloud.Functions.ConformanceTests\Google.Cloud.Functions.ConformanceTests.csproj", "{CDD08002-50E2-4964-B597-E80BEF9AE9B3}"
 EndProject
