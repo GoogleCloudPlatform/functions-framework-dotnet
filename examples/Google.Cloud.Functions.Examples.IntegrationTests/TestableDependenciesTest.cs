@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Cloud.Functions.Invoker;
-using Google.Cloud.Functions.Invoker.Testing;
+using Google.Cloud.Functions.Hosting;
+using Google.Cloud.Functions.Testing;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using System.Threading.Tasks;

@@ -13,8 +13,8 @@
 // limitations under the License.
 
 using Google.Cloud.Functions.Framework;
-using Google.Cloud.Functions.Invoker;
-using Google.Cloud.Functions.Invoker.Testing;
+using Google.Cloud.Functions.Hosting;
+using Google.Cloud.Functions.Testing;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -24,14 +24,13 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Xunit;
 
-[assembly: FunctionsStartup(typeof(Google.Cloud.Functions.Invoker.Tests.FunctionsStartupTest.TestStartup1), Order = 3)]
-[assembly: FunctionsStartup(typeof(Google.Cloud.Functions.Invoker.Tests.FunctionsStartupTest.TestStartup2), Order = 2)]
+[assembly: FunctionsStartup(typeof(Google.Cloud.Functions.Hosting.Tests.FunctionsStartupTest.TestStartup1), Order = 3)]
+[assembly: FunctionsStartup(typeof(Google.Cloud.Functions.Hosting.Tests.FunctionsStartupTest.TestStartup2), Order = 2)]
 
 namespace Google.Cloud.Functions.Hosting.Tests
 {

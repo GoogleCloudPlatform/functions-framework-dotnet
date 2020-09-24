@@ -13,7 +13,7 @@
 // limitations under the License.
 
 using Google.Cloud.Functions.Framework;
-using Google.Cloud.Functions.Invoker;
+using Google.Cloud.Functions.Hosting;
 using Microsoft.AspNetCore.Hosting;
 using System;
 using System.Reflection;
