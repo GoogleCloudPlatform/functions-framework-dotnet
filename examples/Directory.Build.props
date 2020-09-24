@@ -5,7 +5,7 @@
     - local projects instead of the NuGet packages.
     -->
   <Import Condition="'$(LocalFunctionsFramework)' != ''"
-          Project="../src/Google.Cloud.Functions.Invoker/targets/Google.Cloud.Functions.Invoker.props" />
+          Project="../src/Google.Cloud.Functions.Hosting/targets/Google.Cloud.Functions.Hosting.props" />
   <Import Condition="'$(LocalFunctionsFramework)' != ''"
-          Project="../src/Google.Cloud.Functions.Invoker/targets/Google.Cloud.Functions.Invoker.targets" />          
+          Project="../src/Google.Cloud.Functions.Hosting/targets/Google.Cloud.Functions.Hosting.targets" />          
 </Project>
