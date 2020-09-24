@@ -24,7 +24,7 @@ Startup classes*.
 > classes is to add extra customization, rather than to take
 > complete control over the application. If you need a greater
 > degree of flexibility than Function Startup classes provide,
-> you may want to create a host yourself instead of using the Invoker
+> you may want to create a host yourself instead of using the Hosting
 > package.
 >
 > The approach taken by the Functions Framework is similar to the
@@ -54,7 +54,7 @@ customize which aspect.
 Example:
 
 ```csharp
-using Google.Cloud.Functions.Invoker;
+using Google.Cloud.Functions.Hosting;
 
 // Specify the Functions Startup class
 [assembly: FunctionsStartup(typeof(Example.Startup))]
@@ -84,7 +84,7 @@ documentation](testing.md) for more details.
 
 ## Customizing Dependency Injection using `ConfigureServices`
 
-The Functions Framework Invoker uses [ASP.NET Core dependency
+The Functions Framework Hosting package uses [ASP.NET Core dependency
 injection](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/dependency-injection)
 when constructing instances of the target function type to handle
 calls.
