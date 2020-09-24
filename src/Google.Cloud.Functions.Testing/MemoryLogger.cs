@@ -18,7 +18,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Google.Cloud.Functions.Invoker.Testing
+namespace Google.Cloud.Functions.Testing
 {
     /// <summary>
     /// Logger implementation that retains log entries in memory, for test purposes.

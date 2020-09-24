@@ -33,7 +33,7 @@ using Xunit;
 [assembly: FunctionsStartup(typeof(Google.Cloud.Functions.Invoker.Tests.FunctionsStartupTest.TestStartup1), Order = 3)]
 [assembly: FunctionsStartup(typeof(Google.Cloud.Functions.Invoker.Tests.FunctionsStartupTest.TestStartup2), Order = 2)]
 
-namespace Google.Cloud.Functions.Invoker.Tests
+namespace Google.Cloud.Functions.Hosting.Tests
 {
     /// <summary>
     /// Tests for everything to do with FunctionsStartup.

@@ -16,7 +16,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 
-namespace Google.Cloud.Functions.Invoker.Testing
+namespace Google.Cloud.Functions.Testing
 {
     /// <summary>
     /// A very simplified representation of a log entry, aimed at testing.

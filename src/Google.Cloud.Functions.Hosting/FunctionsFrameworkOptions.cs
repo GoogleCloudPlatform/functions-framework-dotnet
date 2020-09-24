@@ -16,7 +16,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using System.Net;
 
-namespace Google.Cloud.Functions.Invoker
+namespace Google.Cloud.Functions.Hosting
 {
     /// <summary>
     /// Convenience type to allow options to be bound within <see cref="HostingInternals"/>.

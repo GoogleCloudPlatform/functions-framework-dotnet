@@ -15,7 +15,7 @@
 using Microsoft.Extensions.Logging;
 using System;
 
-namespace Google.Cloud.Functions.Invoker.Logging
+namespace Google.Cloud.Functions.Hosting.Logging
 {
     internal class SimpleConsoleLogger : LoggerBase
     {

@@ -20,7 +20,7 @@ using System.Net;
 using System.Text;
 using Xunit;
 
-namespace Google.Cloud.Functions.Invoker.Tests
+namespace Google.Cloud.Functions.Hosting.Tests
 {
     public class CommandLineArgumentsConfigurationTest
     {

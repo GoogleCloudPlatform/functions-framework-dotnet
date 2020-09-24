@@ -20,7 +20,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 
-namespace Google.Cloud.Functions.Invoker.Testing
+namespace Google.Cloud.Functions.Testing
 {
     /// <summary>
     /// Builder type for <see cref="FunctionTestServer"/>, allowing for fine-tuning of the test server.

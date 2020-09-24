@@ -16,7 +16,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Reflection;
 
-namespace Google.Cloud.Functions.Invoker.Testing
+namespace Google.Cloud.Functions.Testing
 {
     /// <summary>
     /// Helper method to determine the category for an ILogger{T}, given the type T.

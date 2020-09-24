@@ -14,7 +14,7 @@
 
 using System;
 
-namespace Google.Cloud.Functions.Invoker
+namespace Google.Cloud.Functions.Hosting
 {
     /// <summary>
     /// Assembly attribute to specify a <see cref="FunctionsStartup"/> to use

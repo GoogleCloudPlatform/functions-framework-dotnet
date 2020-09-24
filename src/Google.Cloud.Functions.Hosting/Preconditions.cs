@@ -14,7 +14,7 @@
 
 using System;
 
-namespace Google.Cloud.Functions.Invoker
+namespace Google.Cloud.Functions.Hosting
 {
     /// <summary>
     /// Simple preconditions class, internal to avoid any conflicts and compatibility issues.

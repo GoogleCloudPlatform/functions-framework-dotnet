@@ -16,7 +16,7 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 
-namespace Google.Cloud.Functions.Invoker
+namespace Google.Cloud.Functions.Hosting
 {
     /// <summary>
     /// An IConfigurationSource that deals with *specific* Functions Framework environment variables
