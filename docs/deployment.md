@@ -2,7 +2,7 @@
 
 ## Deploying locally
 
-If your project depends on the Google.Cloud.Functions.Invoker
+If your project depends on the Google.Cloud.Functions.Hosting
 package, your function can run locally either by starting it through
 Visual Studio or by running `dotnet run` from the command line. If
 your project contains multiple functions, you must specify which one
@@ -12,9 +12,9 @@ command line or environment variables.
 
 See the [README](../README.md) for configuration details.
 
-(If you aren't using the invoker package, your deployment procedure
+(If you aren't using the hosting package, your deployment procedure
 may be slightly different. See the [packages
-documentation](packages.md) for details about what the invoker
+documentation](packages.md) for details about what the hosting
 package does, and considerations for writing functions which don't
 use it.)
 

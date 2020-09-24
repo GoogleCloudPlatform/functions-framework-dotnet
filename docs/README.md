@@ -12,10 +12,10 @@ This repository contains the source code for the following NuGet packages:
 - [Google.Cloud.Functions.Framework](https://www.nuget.org/packages/Google.Cloud.Functions.Framework)
   is a very small package, primarily containing interfaces for Cloud
   Functions to implement, as well as adapters between function types.
-- [Google.Cloud.Functions.Invoker](https://www.nuget.org/packages/Google.Cloud.Functions.Invoker)
+- [Google.Cloud.Functions.Hosting](https://www.nuget.org/packages/Google.Cloud.Functions.Hosting)
   contains code to start up an ASP.NET Core webserver based on
   conventional environment variables etc.
-- [Google.Cloud.Functions.Invoker.Testing](https://www.nuget.org/packages/Google.Cloud.Functions.Invoker.Testing)
+- [Google.Cloud.Functions.Testing](https://www.nuget.org/packages/Google.Cloud.Functions.Testing)
   contains code to help simplify testing functions.
 - [Google.Cloud.Functions.Templates](https://www.nuget.org/packages/Google.Cloud.Functions.Templates)
   contains templates for the `dotnet` command line to create a very

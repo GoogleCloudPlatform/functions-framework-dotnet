@@ -11,7 +11,7 @@ invoking it with an appropriately-configured `HttpClient`.
 
 ## Creating an IHostBuilder with EntryPoint.CreateHostBuilder
 
-The invoker [EntryPoint](../src/Google.Cloud.Functions.Invoker/EntryPoint.cs) class
+The hosting [EntryPoint](../src/Google.Cloud.Functions.Hosting/EntryPoint.cs) class
 not only contains the `Main` method used automatically to start the
 server, but an overloaded `CreateHostBuilder` method. The generic,
 parameterless overload expects the type argument to be a function
@@ -39,8 +39,8 @@ for an example of this.
 Using `TestHost` directly can be slightly verbose - it's not too bad
 for an occasional test, but not something you'd want to use in a
 large number of tests. The
-[Google.Cloud.Functions.Invoker.Testing](../src/Google.Cloud.Functions.Invoker.Testing)
-package provides a [FunctionTestServer](../src/Google.Cloud.Functions.Invoker.Testing/FunctionTestServer.cs)
+[Google.Cloud.Functions.Testing](../src/Google.Cloud.Functions.Testing)
+package provides a [FunctionTestServer](../src/Google.Cloud.Functions.Testing/FunctionTestServer.cs)
 class to simplify this. The generic `FunctionTestServer<TFunction>`
 class is a derived class allowing you to use the function type as a
 type argument, avoiding the need for any other configuration.
@@ -179,7 +179,7 @@ this doesn't help if you want to make sure that the expected log
 entries are emitted. The logger implementation used by
 `FunctionTestServer` is also available for standalone testing. Just
 create an instance of
-[FunctionTestServer&lt;TCategoryName>](../src/Google.Cloud.Functions.Invoker.Testing/MemoryLogger.cs)
+[FunctionTestServer&lt;TCategoryName>](../src/Google.Cloud.Functions.Testing/MemoryLogger.cs)
 and pass that to the constructor. You can then retrieve a snapshot
 at any time by calling `ListLogEntries()` on the logger, or clear it
 using the `Clear()` method.
