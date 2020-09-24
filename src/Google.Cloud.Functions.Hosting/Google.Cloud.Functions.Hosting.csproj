@@ -2,8 +2,8 @@
   <Import Project="..\CommonProperties.xml" />
   
   <PropertyGroup>
-    <Title>Google Cloud Functions Framework Invoker</Title>
-    <Description>The Google Cloud Functions Framework Invoker makes it easy to run a web server to execute functions.</Description>
+    <Title>Google Cloud Functions Framework Hosting</Title>
+    <Description>The Google Cloud Functions Framework Hosting makes it easy to run a web server to execute functions.</Description>
     <PackageTags>google;cloud;functions</PackageTags>
   </PropertyGroup>
 
