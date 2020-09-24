@@ -18,7 +18,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace Google.Cloud.Functions.Invoker
+namespace Google.Cloud.Functions.Hosting
 {
     /// <summary>
     /// Base class for startup classes providing additional configuration for functions

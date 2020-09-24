@@ -14,7 +14,7 @@
 
 using System;
 
-namespace Google.Cloud.Functions.Invoker.Testing
+namespace Google.Cloud.Functions.Testing
 {
     /// <summary>
     /// Simple preconditions class, internal to avoid any conflicts and compatibility issues.

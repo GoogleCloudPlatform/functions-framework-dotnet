@@ -15,7 +15,7 @@
 using Microsoft.Extensions.Logging;
 using System;
 
-namespace Google.Cloud.Functions.Invoker.Logging
+namespace Google.Cloud.Functions.Hosting.Logging
 {
     /// <summary>
     /// Simple logger provider that just calls a factory method each time it's asked for logger.

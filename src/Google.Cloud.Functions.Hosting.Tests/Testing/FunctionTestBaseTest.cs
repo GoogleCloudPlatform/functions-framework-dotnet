@@ -23,7 +23,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Google.Cloud.Functions.Invoker.Testing.Tests
+namespace Google.Cloud.Functions.Testing.Tests
 {
     public class FunctionTestBaseTest
     {

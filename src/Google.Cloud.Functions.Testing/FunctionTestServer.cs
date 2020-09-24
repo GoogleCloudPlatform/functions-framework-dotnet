@@ -18,7 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Net.Http;
 
-namespace Google.Cloud.Functions.Invoker.Testing
+namespace Google.Cloud.Functions.Testing
 {
     /// <summary>
     /// A test server to simplify in-memory testing.

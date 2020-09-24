@@ -15,7 +15,7 @@
 using Microsoft.Extensions.Logging;
 using System;
 
-namespace Google.Cloud.Functions.Invoker.Logging
+namespace Google.Cloud.Functions.Hosting.Logging
 {
     /// <summary>
     /// Base class for loggers that don't do any of their own filtering, and don't support scopes.

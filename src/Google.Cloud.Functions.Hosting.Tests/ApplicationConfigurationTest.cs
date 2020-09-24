@@ -22,7 +22,7 @@ using System.Net;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Google.Cloud.Functions.Invoker.Tests
+namespace Google.Cloud.Functions.Hosting.Tests
 {
     /// <summary>
     /// Tests for the final part of configuring the "application".

@@ -26,7 +26,7 @@ using System.Net;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace Google.Cloud.Functions.Invoker
+namespace Google.Cloud.Functions.Hosting
 {
     internal static class HostingInternals
     {

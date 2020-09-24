@@ -19,7 +19,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace Google.Cloud.Functions.Invoker.Logging
+namespace Google.Cloud.Functions.Hosting.Logging
 {
     /// <summary>
     /// Logger that writes a single line of JSON to the console per event, in a format that Google Cloud Logging can consume and display nicely.
