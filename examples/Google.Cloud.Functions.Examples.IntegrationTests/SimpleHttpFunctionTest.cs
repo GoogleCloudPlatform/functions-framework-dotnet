@@ -23,7 +23,7 @@ namespace Google.Cloud.Functions.Examples.IntegrationTests
 {
     /// <summary>
     /// Simple example of an integration test against a Cloud Function, without using
-    /// the Google.Cloud.Functions.Invoker.Testing package.
+    /// the Google.Cloud.Functions.Testing package.
     /// </summary>
     public class SimpleHttpFunctionTest
     {
