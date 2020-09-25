@@ -22,7 +22,7 @@ The Functions Framework for .NET requires the [.NET Core SDK 3.1](https://dotnet
 First, install the template package into the .NET tooling:
 
 ```sh
-dotnet new -i Google.Cloud.Functions.Templates::1.0.0-alpha11
+dotnet new -i Google.Cloud.Functions.Templates::1.0.0-alpha12
 ```
 
 Next, create a directory for your project, and use `dotnet new` to
