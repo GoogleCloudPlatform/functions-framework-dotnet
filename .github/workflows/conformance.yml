@@ -1,0 +1,45 @@
+name: .NET Conformance CI
+on:
+  push:
+    branches:
+    - master
+  pull_request:
+jobs:
+  run-conformance:
+    strategy:
+      matrix:
+        dotnet: [ "3.1.x" ]
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+
+    # Avoid unnecessary output
+    env:
+      DOTNET_NOLOGO: true
+      DOTNET_CLI_TELEMETRY_OPTOUT: true
+
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v2
+      with:
+        submodules: true
+
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: ${{ matrix.dotnet }}
+
+    - name: Setup Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: '^1.15.2'
+        
+    - name: Run conformance tests
+      shell: bash
+      run: ./run-conformance-tests.sh
+
+    - name: Upload logs on failure
+      uses: actions/upload-artifact@v2
+      if: failure()
+      with:
+        name: conformance-logs-${{ matrix.os }}-${{ matrix.dotnet }}
+        path: tmp/conformance-test-output
