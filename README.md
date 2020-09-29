@@ -58,7 +58,7 @@ Here is how to build and run a deployable container on your local machine.
 1. Build a container from your function using the Functions [buildpacks](https://github.com/GoogleCloudPlatform/buildpacks):
 	```sh
 	pack build \
-  	--builder gcr.io/buildpacks/builder:v1 \
+		--builder gcr.io/buildpacks/builder:v1 \
 		--env GOOGLE_FUNCTION_SIGNATURE_TYPE=http \
 		--env GOOGLE_FUNCTION_TARGET=HelloFunctions.Function \
 		my-first-function
@@ -70,11 +70,7 @@ Here is how to build and run a deployable container on your local machine.
 	# Output: Serving function...
 	```
 
-1. Send requests to this function using `curl` from another terminal window:
-	```sh
-	curl localhost:8080
-	# Output: Hello, Functions Framework.
-	```
+1. Send a request to this function by navigating to `localhost:8080`. You should see the output `Hello, Functions Framework.`
 
 ## Cloud Event Functions
 
