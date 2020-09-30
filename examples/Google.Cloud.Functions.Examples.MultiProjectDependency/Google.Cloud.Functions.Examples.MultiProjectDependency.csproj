@@ -2,15 +2,6 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    
-    <!-- 
-      - This wouldn't be needed in a normal project, but
-      - all examples are optionally built using the local Functions
-      - Framework, and the MSBuild targets are included automatically
-      - for all example projects. We need to disable the generation
-      - of an entry point, as this project isn't a function.
-      -->
-    <AutoGenerateEntryPoint>false</AutoGenerateEntryPoint>
   </PropertyGroup>
 
 </Project>
