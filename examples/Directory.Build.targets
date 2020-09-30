@@ -15,7 +15,7 @@
     <EmbeddedFiles Include="$(GeneratedAssemblyInfoFile)"/>
   </ItemGroup>
 
-  <ItemGroup Condition="'$(LocalFunctionsFramework)' != ''">
+  <ItemGroup Condition="'$(LocalFunctionsFramework)' != '' AND '$(TargetFramework)' == 'netcoreapp3.1'">
     <!-- Even if some projects don't actually need these, it doesn't hurt to have them. -->
     <ProjectReference Include="..\..\src\Google.Cloud.Functions.Hosting\Google.Cloud.Functions.Hosting.csproj" />
     <ProjectReference Include="..\..\src\Google.Cloud.Functions.Testing\Google.Cloud.Functions.Testing.csproj" />

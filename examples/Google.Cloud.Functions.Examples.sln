@@ -43,7 +43,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Google.Cloud.Functions.Exam
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Google.Cloud.Functions.Examples.CustomConfiguration", "Google.Cloud.Functions.Examples.CustomConfiguration\Google.Cloud.Functions.Examples.CustomConfiguration.csproj", "{743A84EF-9B19-4E52-9FF1-38DBB54221F3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Google.Cloud.Functions.Examples.TestableDependencies", "Google.Cloud.Functions.Examples.TestableDependencies\Google.Cloud.Functions.Examples.TestableDependencies.csproj", "{658EC94D-9A70-4078-8CBD-5FA6CFB0E0EF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Google.Cloud.Functions.Examples.TestableDependencies", "Google.Cloud.Functions.Examples.TestableDependencies\Google.Cloud.Functions.Examples.TestableDependencies.csproj", "{658EC94D-9A70-4078-8CBD-5FA6CFB0E0EF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Google.Cloud.Functions.Examples.MultiProjectDependency", "Google.Cloud.Functions.Examples.MultiProjectDependency\Google.Cloud.Functions.Examples.MultiProjectDependency.csproj", "{B20994E9-89A2-4BF9-8CA5-0EAA7B2607DE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Google.Cloud.Functions.Examples.MultiProjectFunction", "Google.Cloud.Functions.Examples.MultiProjectFunction\Google.Cloud.Functions.Examples.MultiProjectFunction.csproj", "{EE617CF8-2FC4-4A3B-A1F2-11E940644352}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -307,6 +311,30 @@ Global
 		{658EC94D-9A70-4078-8CBD-5FA6CFB0E0EF}.Release|x64.Build.0 = Release|Any CPU
 		{658EC94D-9A70-4078-8CBD-5FA6CFB0E0EF}.Release|x86.ActiveCfg = Release|Any CPU
 		{658EC94D-9A70-4078-8CBD-5FA6CFB0E0EF}.Release|x86.Build.0 = Release|Any CPU
+		{B20994E9-89A2-4BF9-8CA5-0EAA7B2607DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B20994E9-89A2-4BF9-8CA5-0EAA7B2607DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B20994E9-89A2-4BF9-8CA5-0EAA7B2607DE}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{B20994E9-89A2-4BF9-8CA5-0EAA7B2607DE}.Debug|x64.Build.0 = Debug|Any CPU
+		{B20994E9-89A2-4BF9-8CA5-0EAA7B2607DE}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B20994E9-89A2-4BF9-8CA5-0EAA7B2607DE}.Debug|x86.Build.0 = Debug|Any CPU
+		{B20994E9-89A2-4BF9-8CA5-0EAA7B2607DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B20994E9-89A2-4BF9-8CA5-0EAA7B2607DE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B20994E9-89A2-4BF9-8CA5-0EAA7B2607DE}.Release|x64.ActiveCfg = Release|Any CPU
+		{B20994E9-89A2-4BF9-8CA5-0EAA7B2607DE}.Release|x64.Build.0 = Release|Any CPU
+		{B20994E9-89A2-4BF9-8CA5-0EAA7B2607DE}.Release|x86.ActiveCfg = Release|Any CPU
+		{B20994E9-89A2-4BF9-8CA5-0EAA7B2607DE}.Release|x86.Build.0 = Release|Any CPU
+		{EE617CF8-2FC4-4A3B-A1F2-11E940644352}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE617CF8-2FC4-4A3B-A1F2-11E940644352}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EE617CF8-2FC4-4A3B-A1F2-11E940644352}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{EE617CF8-2FC4-4A3B-A1F2-11E940644352}.Debug|x64.Build.0 = Debug|Any CPU
+		{EE617CF8-2FC4-4A3B-A1F2-11E940644352}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{EE617CF8-2FC4-4A3B-A1F2-11E940644352}.Debug|x86.Build.0 = Debug|Any CPU
+		{EE617CF8-2FC4-4A3B-A1F2-11E940644352}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE617CF8-2FC4-4A3B-A1F2-11E940644352}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EE617CF8-2FC4-4A3B-A1F2-11E940644352}.Release|x64.ActiveCfg = Release|Any CPU
+		{EE617CF8-2FC4-4A3B-A1F2-11E940644352}.Release|x64.Build.0 = Release|Any CPU
+		{EE617CF8-2FC4-4A3B-A1F2-11E940644352}.Release|x86.ActiveCfg = Release|Any CPU
+		{EE617CF8-2FC4-4A3B-A1F2-11E940644352}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -417,6 +417,37 @@ gcloud functions deploy image-annotator \
   --entry-point=Google.Cloud.Functions.Examples.StorageImageAnnotator.Function
 ```
 
+## MultiProjectFunction and MultiProjectDependency
+
+All the other examples provided are standalone, but in real world
+projects, often the project containing your function will depend on
+another local project. The [MultiProjectFunction](../examples/Google.Cloud.Functions.Examples.MultiProjectFunction)
+and [MultiProjectDependency](../examples/Google.Cloud.Functions.Examples.MultiProjectDependency)
+directories provide an example of this: the MultiProjectFunction project depends on the
+MultiProjectDependency project using a `<ProjectReference>` MSBuild element.
+
+When deploying a function that depends on another local project, you
+need to ensure that all the relevant source code is uploaded, and
+that you indicate which project contains the function. See the
+[deployment documentation](deployment.md#deploying-a-function-with-a-local-project-dependency)
+for more details.
+
+Sample deployment, from the `examples` directory:
+
+```sh
+gcloud beta functions deploy multi-project \
+  --runtime dotnet3 \
+  --trigger-http \
+  --entry-point=Google.Cloud.Functions.Examples.MultiProjectFunction.Function
+  --set-build-env-vars=GOOGLE_BUILDABLE=Google.Cloud.Functions.Examples.MultiProjectFunction
+```
+
+This uses the [.gcloudignore
+file in the examples directory](../examples/.gcloudignore) to avoid uploading already-built
+binaries.
+
+Note that the ability to set build environment variables is currently in beta.
+
 ## Integration Tests
 
 The [IntegrationTests](../examples/Google.Cloud.Functions.Examples.IntegrationTests)

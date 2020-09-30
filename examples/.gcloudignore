@@ -1,0 +1,8 @@
+# This file tells "gcloud functions deploy" which files and folders
+# to ignore. This is important when deploying multi-project functions,
+# as otherwise a lot of unnecessary files (particularly in the bin and
+# obj directories) may be uploaded.
+
+.gcloudignore
+bin/
+obj/
