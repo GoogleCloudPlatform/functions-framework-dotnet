@@ -102,3 +102,36 @@ Firestore event          | DocumentEventData     | --trigger-event providers/clo
 >   available in the `FirestoreEvent` class via the `Wildcards` property. This is subject to change,
 >   as it's inconsitent with other Functions Frameworks.
 
+### Deploying a function with a local project dependency
+
+Real world functions are often part of a larger application which
+will usually contain common code for data types and common business
+logic. If your function depends on another project via a local
+project reference (a `<ProjectReference>` element in your .csproj
+file), the source code for that project must also be included when
+deploying to Google Cloud Functions. Additionally, you need to
+specify which project contains the function you wish to deploy.
+
+In a typical directory structure where all projects sit side-by-side
+within one top-level directory, this will mean you need to deploy
+from that top-level directory instead of from the function's project
+directory. You also need to use the `--set-build-env-vars` command
+line flag to specify the `GOOGLE_BUILDABLE` build-time environment
+variable. This tells the Google Cloud Functions deployment process
+which project to build and deploy.
+
+Note that the ability to set build environment variables is
+currently in beta, so you need to use `gcloud beta functions deploy`
+on the command line.
+
+When deploying a function with multiple projects, it's important to
+make sure you have a suitable
+[.gcloudignore](https://cloud.google.com/sdk/gcloud/reference/topic/gcloudignore)
+file, so that you only upload the code that you want to. In
+particular, you should almost always include `bin/` and `obj/` in the
+`.gcloudignore` file so that you don't upload your locally-built
+binaries.
+
+See [the multi-project example
+documentation](examples.md#multiprojectfunction-and-multiprojectdependency)
+for a sample deployment command line, as well as sample projects.
