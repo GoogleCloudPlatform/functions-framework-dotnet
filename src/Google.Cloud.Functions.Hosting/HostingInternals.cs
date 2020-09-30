@@ -79,7 +79,7 @@ namespace Google.Cloud.Functions.Hosting
             static void ReturnNotFound(IApplicationBuilder app) =>
                 app.Run(context =>
                 {
-                    context.Response.StatusCode = (int) HttpStatusCode.NotFound;
+                    context.Response.StatusCode = (int)HttpStatusCode.NotFound;
                     return Task.CompletedTask;
                 });
         }
@@ -97,7 +97,7 @@ namespace Google.Cloud.Functions.Hosting
             builder.ConfigureAppConfiguration(startup.ConfigureAppConfiguration);
             builder.ConfigureLogging(startup.ConfigureLogging);
             builder.ConfigureServices(startup.ConfigureServices);
-            
+
             // Remember the startup for application configuration time as well.
             builder.ConfigureServices(services => services.AddSingleton(startup));
             return builder;

@@ -76,7 +76,7 @@ namespace Google.Cloud.Functions.Testing
         /// assembly containing the function target.</param>
         /// <returns>The same test server builder, for method chaining.</returns>
         public FunctionTestServerBuilder UseFunctionsStartups(params FunctionsStartup[] startups) =>
-            UseFunctionsStartups((IEnumerable<FunctionsStartup>) startups);
+            UseFunctionsStartups((IEnumerable<FunctionsStartup>)startups);
 
         /// <summary>
         /// Specifies whether or not to use Functions Framework console logging in addition to the

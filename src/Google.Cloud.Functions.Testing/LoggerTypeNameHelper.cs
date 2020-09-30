@@ -28,7 +28,7 @@ namespace Google.Cloud.Functions.Testing
         internal static string GetCategoryNameForType<T>()
         {
             var wrapper = new Logger<T>(NoOpLoggerFactory.Instance);
-            return ((NoOpLogger) wrapper.BeginScope(null)).CategoryName;
+            return ((NoOpLogger)wrapper.BeginScope(null)).CategoryName;
         }
 
         internal static string GetCategoryNameForType(Type type)
@@ -38,7 +38,7 @@ namespace Google.Cloud.Functions.Testing
                 nameof(GetCategoryNameForType), 1, BindingFlags.NonPublic | BindingFlags.Static,
                 binder: null, Type.EmptyTypes, modifiers: null);
             method = method!.MakeGenericMethod(type);
-            return (string?) method!.Invoke(null, null) ?? throw new InvalidOperationException("Method returned null");
+            return (string?)method!.Invoke(null, null) ?? throw new InvalidOperationException("Method returned null");
         }
 
         private class NoOpLoggerFactory : ILoggerFactory
