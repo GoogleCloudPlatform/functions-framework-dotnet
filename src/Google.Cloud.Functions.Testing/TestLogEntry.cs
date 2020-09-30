@@ -73,7 +73,7 @@ namespace Google.Cloud.Functions.Testing
                     scopes = new List<object>();
                 }
                 scopes.Add(scope);
-            }, state: (object?)null);
+            }, state: (object?) null);
 
             return new TestLogEntry(categoryName, logLevel, eventId, message, exception, scopes?.AsReadOnly() ?? EmptyScopeList);
         }

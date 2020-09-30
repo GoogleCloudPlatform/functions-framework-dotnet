@@ -177,7 +177,7 @@ namespace Google.Cloud.Functions.Hosting.Tests
             {
                 if (context.Request.Path == "/fail")
                 {
-                    context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                    context.Response.StatusCode = (int) HttpStatusCode.BadRequest;
                     return;
                 }
 

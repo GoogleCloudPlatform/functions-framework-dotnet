@@ -30,7 +30,7 @@ public class UntypedCloudEventFunction : ICloudEventFunction
         // comes to Data. Is it "pre-serialized" or not? We prevent parsing date/time values,
         // so that we can get as close to the original JSON as possible.
         var settings = new JsonSerializerSettings { DateParseHandling = DateParseHandling.None };
-        cloudEvent.Data = JsonConvert.DeserializeObject<JObject>((string)cloudEvent.Data, settings);
+        cloudEvent.Data = JsonConvert.DeserializeObject<JObject>((string) cloudEvent.Data, settings);
 
         // Work around https://github.com/cloudevents/sdk-csharp/issues/59
         var attributes = cloudEvent.GetAttributes();

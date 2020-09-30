@@ -71,8 +71,8 @@ namespace Google.Cloud.Functions.Framework.Tests.GcfEvents
             Assert.Equal(10, fields.Count);
             Assert.Equal(new object[] { 1L, 2L }, fields["arrayValue"]);
             Assert.Equal(true, fields["booleanValue"]);
-            Assert.Equal(51.4543, ((LatLng)fields["geoPointValue"]!).Latitude);
-            Assert.Equal(-0.9781, ((LatLng)fields["geoPointValue"]!).Longitude);
+            Assert.Equal(51.4543, ((LatLng) fields["geoPointValue"]!).Latitude);
+            Assert.Equal(-0.9781, ((LatLng) fields["geoPointValue"]!).Longitude);
             Assert.Equal(50L, fields["intValue"]);
             Assert.Equal(5.5, fields["doubleValue"]);
             Assert.Null(fields["nullValue"]);
@@ -80,7 +80,7 @@ namespace Google.Cloud.Functions.Framework.Tests.GcfEvents
             Assert.Equal("text", fields["stringValue"]);
             Assert.Equal(new DateTimeOffset(2020, 4, 23, 14, 23, 53, 241, TimeSpan.Zero), fields["timestampValue"]);
 
-            var map = (IDictionary<string, object?>)fields["mapValue"]!;
+            var map = (IDictionary<string, object?>) fields["mapValue"]!;
             Assert.Equal(2, map.Count);
             Assert.Equal("x", map["field1"]);
             Assert.Equal(new object[] { "x", 1L }, map["field2"]);

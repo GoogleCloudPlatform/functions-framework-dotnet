@@ -79,7 +79,7 @@ namespace Google.Cloud.Functions.Hosting
             static void ReturnNotFound(IApplicationBuilder app) =>
                 app.Run(context =>
                 {
-                    context.Response.StatusCode = (int)HttpStatusCode.NotFound;
+                    context.Response.StatusCode = (int) HttpStatusCode.NotFound;
                     return Task.CompletedTask;
                 });
         }
