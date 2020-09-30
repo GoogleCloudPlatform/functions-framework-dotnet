@@ -88,7 +88,7 @@ namespace Google.Cloud.Functions.Testing
         /// <returns>A list of log entries for the given category name.</returns>
         public List<TestLogEntry> GetLogEntries(string categoryName) =>
             _testLoggerProvider.GetLogEntries(Preconditions.CheckNotNull(categoryName, nameof(categoryName)));
-        
+
         /// <summary>
         /// Disposes of the test server.
         /// </summary>

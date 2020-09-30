@@ -127,7 +127,7 @@ namespace Google.Cloud.Functions.Framework.Tests.GcfEvents
             var storageEvent = await ConvertAndDeserialize<StorageObjectData>("legacy_storage_change.json");
             Assert.Equal("sample-bucket", storageEvent.Bucket);
         }
-        
+
         [Theory]
         [InlineData("firebase-db1.json")]
         [InlineData("firebase-db2.json")]

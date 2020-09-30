@@ -136,7 +136,7 @@ namespace Google.Cloud.Functions.Framework.GcfEvents
                 // but keeping in the ConversionException is useful for debugging purposes.
                 throw new CloudEventConverter.ConversionException($"Error parsing GCF event: {e.Message}", e);
             }
-            
+
             parsedRequest.NormalizeContext();
             if (parsedRequest.Data is null ||
                 string.IsNullOrEmpty(parsedRequest.Context.Id) ||

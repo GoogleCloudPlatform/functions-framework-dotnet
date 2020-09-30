@@ -97,7 +97,7 @@ namespace Google.Cloud.Functions.Hosting
             builder.ConfigureAppConfiguration(startup.ConfigureAppConfiguration);
             builder.ConfigureLogging(startup.ConfigureLogging);
             builder.ConfigureServices(startup.ConfigureServices);
-            
+
             // Remember the startup for application configuration time as well.
             builder.ConfigureServices(services => services.AddSingleton(startup));
             return builder;
