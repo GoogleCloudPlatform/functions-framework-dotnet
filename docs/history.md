@@ -1,5 +1,10 @@
 # Version History
 
+## 1.0.0-alpha13 (released 2020-10-01)
+
+- Modify the Hosting package MSBuild targets to only create an entry point for
+  consuming projects with an output type of Exe.
+
 ## 1.0.0-alpha12 (released 2020-09-25)
 
 Just package renaming:
