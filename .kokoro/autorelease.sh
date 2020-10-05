@@ -42,15 +42,21 @@ source /tmp/publisher-script
 COMMITTISH=$COMMITTISH_OVERRIDE
 if [[ $COMMITTISH_OVERRIDE = "" ]]
 then
-  COMMITTISH=$(git rev-parse HEAD)
-else
-  COMMITTISH=$COMMITTISH_OVERRIDE
+  COMMITTISH=HEAD
 fi
 
-echo "Building with commit $COMMITTISH"
+TAG=$(git tag --points-at $COMMITTISH | head -n 1)
+
+if [[ $TAG = "" ]]
+then
+  echo "Committish $COMMITTISH does not point at a tag. Aborting."
+  exit 1
+fi
+
+echo "Building with tag $TAG"
 
 # Build the release and run the tests.
-./build-release.sh $COMMITTISH
+./build-release.sh $TAG
 
 if [[ $SKIP_NUGET_PUSH = "" ]]
 then
