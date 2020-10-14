@@ -43,13 +43,6 @@ ENV FUNCTION_TARGET HelloFunctions.Function
 
 ## Deploying to Google Cloud Functions
 
-> **NOTE:**  
-> The `dotnet3` runtime is currently available on an "allow
-> list" basis. Deployment will fail unless your project has been
-> specifically included in the list. Please fill in [this
-> form](https://docs.google.com/forms/d/e/1FAIpQLSe7qB5vNrgFtZZ3ZUfIwkbsDMGsA1fXY52GzmGmnhwdReHuOQ/viewform)
-> to register your interest in being part of the public alpha.
-
 Deployment to Google Cloud Functions is easy with the `gcloud`
 command line. See the [general deployment
 documentation](https://cloud.google.com/functions/docs/deploying/filesystem)
