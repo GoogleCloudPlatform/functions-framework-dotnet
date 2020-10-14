@@ -1,5 +1,9 @@
 # Version History
 
+## 1.0.0-beta01 (released 2020-10-14)
+
+No API changes; just dependencies, and first beta release.
+
 ## 1.0.0-alpha13 (released 2020-10-01)
 
 - Modify the Hosting package MSBuild targets to only create an entry point for

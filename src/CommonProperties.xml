@@ -3,7 +3,7 @@
 
   <!-- Version information -->
   <PropertyGroup>
-    <Version>1.0.0-alpha13</Version>
+    <Version>1.0.0-beta01</Version>
   </PropertyGroup>
 
   <!-- Build information -->
