@@ -159,7 +159,25 @@ how we can provide a more familiar F# experience is welcome.
 
 ### Google Cloud Functions
 
-Google Cloud Function does not currently support .NET functions.
+You can use the [Google Cloud SDK](https://cloud.google.com/sdk) to
+deploy to Google Cloud Functions from the command line with the
+`gcloud` tool.
+
+Once you have created and configured a Google Cloud project (as
+described in the [Google Cloud Functions
+Quickstarts](https://cloud.google.com/functions/docs/quickstarts)
+and [installed the Google Cloud
+SDK](https://cloud.google.com/sdk/docs/install), open a command line
+and navigate to the function directory. Use the `gcloud functions
+deploy` command to deploy the function. For the quickstart HTTP function
+described above, you could run:
+
+```
+gcloud functions deploy hello-functions --runtime dotnet3 --trigger-http --entry-point HelloFunctions.Function
+```
+
+Other function types require different command line options. See the
+[deployment documentation](docs/deployment.md) for more details.
 
 ### Cloud Run/Cloud Run on GKE
 
