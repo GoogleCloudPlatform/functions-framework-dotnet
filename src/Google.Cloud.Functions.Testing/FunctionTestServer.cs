@@ -122,6 +122,9 @@ namespace Google.Cloud.Functions.Testing
         {
         }
 
+        // Note: it would be nice to make the constructor below public, but that means it can't be used in an
+        // xUnit test fixture via constructor dependency injection.
+
         /// <summary>
         /// Constructs a new instance serving <typeparamref name="TFunction"/>, with an optional
         /// type to inspect for <see cref="FunctionTestStartupAttribute"/> attributes.
@@ -129,7 +132,7 @@ namespace Google.Cloud.Functions.Testing
         /// <param name="attributedStartupType">A type to examine for <see cref="FunctionTestStartupAttribute"/> attributes to provide further customization.
         /// If this is null, or no attributes are specified in the type (or its base class hierarchy) the startup classes in the
         /// function assembly are used.</param>
-        public FunctionTestServer(Type? attributedStartupType) : base(typeof(TFunction), attributedStartupType)
+        internal FunctionTestServer(Type? attributedStartupType) : base(typeof(TFunction), attributedStartupType)
         {
         }
     }
