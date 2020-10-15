@@ -5,7 +5,9 @@ namespace Google.Cloud.Functions.Testing
 {
     /// <summary>
     /// Class attribute to specify a <see cref="FunctionsStartup"/> to use
-    /// for a test server 
+    /// for a test server. These are configured using <see cref="FunctionTestServerBuilder.MaybeUseFunctionsStartupsFromAttributes(Type?)"/>,
+    /// which is automatically called by <see cref="FunctionTestServer{TFunction}"/>, so test classes
+    /// annotated with this attribute automatically use a test server with the specified Functions Startup.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = true, Inherited = true)]
     public class FunctionTestStartupAttribute : Attribute
