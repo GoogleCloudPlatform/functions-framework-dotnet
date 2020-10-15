@@ -21,12 +21,16 @@ using Xunit;
 
 namespace Google.Cloud.Functions.Examples.IntegrationTests
 {
+    /// <summary>
+    /// By default, the test server will use the same Functions Startup classes
+    /// as normal. The TestFunctionStartup attribute specifies Functions Startup classes that
+    /// should be used for this test class, so that it can inject test dependencies instead of the production ones.
+    /// An alternative is to declare a parameterless constructor that creates a FunctionTestServer
+    /// to pass into the base class constructor.
+    /// </summary>
+    [FunctionTestStartup(typeof(TestStartup))]
     public class TestableDependenciesTest : FunctionTestBase<TestableDependencies.Function>
     {
-        public TestableDependenciesTest() : base(CreateServer())
-        {
-        }
-
         [Fact]
         public async Task FunctionOutputDoesNotReferToProduction()
         {
@@ -35,16 +39,8 @@ namespace Google.Cloud.Functions.Examples.IntegrationTests
             Assert.Contains("Test dependency", text);
         }
 
-        /// <summary>
-        /// By default, the test server will use the same Functions Startup classes
-        /// as normal. This method creates a test server that creates a test-oriented Functions Startup
-        /// so that it can inject test dependencies instead of the production ones.
-        /// </summary>
-        private static FunctionTestServer CreateServer() =>
-            FunctionTestServerBuilder.Create<TestableDependencies.Function>()
-                .UseFunctionsStartups(new TestStartup())
-                .Build();
-
+        // Functions Startup class specified in the FunctionTestStartup attribute on the test class,
+        // so that test-only dependencies can be used.
         private class TestStartup : FunctionsStartup
         {
             public override void ConfigureServices(WebHostBuilderContext context, IServiceCollection services) =>

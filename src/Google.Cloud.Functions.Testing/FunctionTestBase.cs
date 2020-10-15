@@ -56,10 +56,13 @@ namespace Google.Cloud.Functions.Testing
         }
 
         /// <summary>
-        /// Constructs a new instance using a new server constructed with default settings.
+        /// Constructs a new instance using a new server constructed with default settings,
+        /// with startup classes specified by <see cref="FunctionTestStartupAttribute"/> attributes
+        /// within the class hierarchy of the actual test class.
         /// </summary>
-        protected FunctionTestBase() : this(new FunctionTestServer<TFunction>())
+        protected FunctionTestBase()
         {
+            Server = new FunctionTestServer<TFunction>(GetType());
         }
 
         /// <summary>

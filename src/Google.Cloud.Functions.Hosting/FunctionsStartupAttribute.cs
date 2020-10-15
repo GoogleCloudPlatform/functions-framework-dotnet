@@ -25,7 +25,7 @@ namespace Google.Cloud.Functions.Hosting
     public class FunctionsStartupAttribute : Attribute
     {
         /// <summary>
-        /// 
+        /// The Type of the <see cref="FunctionsStartup"/> class to register.
         /// </summary>
         public Type StartupType { get; set; }
 
