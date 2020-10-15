@@ -20,6 +20,9 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlTypes;
+using System.Linq;
+using System.Reflection;
 
 namespace Google.Cloud.Functions.Testing
 {
@@ -66,6 +69,33 @@ namespace Google.Cloud.Functions.Testing
         {
             _startups = startups;
             return this;
+        }
+
+        /// <summary>
+        /// Examines <paramref name="attributedType"/> (and its base class hierarchy) for <see cref="FunctionTestStartupAttribute" />
+        /// annotations. If any such attributes are found, the startup classes specified by the attributes are used
+        /// instead of the startup classes specified in the assembly containing the function target. If no attributes
+        /// are found, or if <paramref name="attributedType"/> is null, this method has no effect.
+        /// </summary>
+        /// <remarks>
+        /// This method is automatically called by the parameterless constructor of <see cref="FunctionTestBase{TFunction}"/>,
+        /// with the test class type.
+        /// </remarks>
+        /// <param name="attributedType">The type to examine (including base class hierarchy) for attributes.</param>
+        /// <returns>The same test server builder, for method chaining.</returns>
+        public FunctionTestServerBuilder MaybeUseFunctionsStartupsFromAttributes(Type? attributedType)
+        {
+            if (attributedType is null)
+            {
+                return this;
+            }
+            var startups = attributedType.GetCustomAttributes<FunctionTestStartupAttribute>(true)
+                .OrderBy(attr => attr.Order)
+                .ThenBy(attr => attr.StartupType.FullName)
+                .Select(attr => Activator.CreateInstance(attr.StartupType))
+                .Cast<FunctionsStartup>()
+                .ToList();
+            return startups.Count > 0 ? UseFunctionsStartups(startups) : this;
         }
 
         /// <summary>

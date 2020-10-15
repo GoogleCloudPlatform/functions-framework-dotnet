@@ -81,7 +81,7 @@ test frameworks that automatically dispose of test classes. (This
 includes NUnit and xUnit.) The `Dispose` implementation disposes of
 the test server that is owned by the test class.
 
-The parameterless constructor of `FunctionTestbase<TFunction>`
+The parameterless constructor of `FunctionTestBase<TFunction>`
 automatically creates a `FunctionTestServer<TFunction>`, or you can
 pass the test server into the constructor if you want to customize it.
 
@@ -121,6 +121,15 @@ After that, just call the
 the complete set of startup instances, or `null` to use the
 production behavior of using assembly attributes. The method returns
 the same builder it's called on, so you can chain method calls easily.
+
+Alternatively, you can decorate a type with the
+`FunctionTestStartupAttribute` to specify the startup classes to
+use, and call `FunctionTestServerBuilder.MaybeUseFunctionsStartupsFromAttributes`
+to apply the startup classes. This is called automatically in the
+`FunctionTestBase<TFunction>` parameterless constructor, using the
+test class itself - so adding the `FunctionTestStartupAttribute` to
+the test class is the simplest way of configuring startups in those
+tests.
 
 The `FunctionTestServerBuilder.UseFunctionsFrameworkConsoleLogging`
 method can be used to enable console logging in addition to the
