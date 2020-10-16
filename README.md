@@ -2,6 +2,14 @@
 
 [![Build Status](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2FGoogleCloudPlatform%2Ffunctions-framework-dotnet%2Fbadge&style=flat)](https://actions-badge.atrox.dev/GoogleCloudPlatform/functions-framework-dotnet/goto)
 
+[![Google.Cloud.Functions.Framework](https://img.shields.io/nuget/vpre/Google.Cloud.Functions.Framework?label=Google.Cloud.Functions.Framework)](https://nuget.org/packages/Google.Cloud.Functions.Framework)
+
+[![Google.Cloud.Functions.Hosting](https://img.shields.io/nuget/vpre/Google.Cloud.Functions.Hosting?label=Google.Cloud.Functions.Hosting)](https://nuget.org/packages/Google.Cloud.Functions.Hosting)
+
+[![Google.Cloud.Functions.Templates](https://img.shields.io/nuget/vpre/Google.Cloud.Functions.Templates?label=Google.Cloud.Functions.Templates)](https://nuget.org/packages/Google.Cloud.Functions.Templates)
+
+[![Google.Cloud.Functions.Testing](https://img.shields.io/nuget/vpre/Google.Cloud.Functions.Testing?label=Google.Cloud.Functions.Testing)](https://nuget.org/packages/Google.Cloud.Functions.Testing)
+
 An open source FaaS (Function as a service) framework for writing portable
 .NET functions -- brought to you by the Google Cloud Functions team.
 
