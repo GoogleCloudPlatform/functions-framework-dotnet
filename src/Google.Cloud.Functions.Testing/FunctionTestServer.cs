@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Google.Cloud.Functions.Hosting;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -47,12 +48,12 @@ namespace Google.Cloud.Functions.Testing
 
         /// <summary>
         /// Creates a FunctionTestServer for the specified function type, with an optional
-        /// type to inspect for <see cref="FunctionTestStartupAttribute"/> attributes.
+        /// type to inspect for <see cref="FunctionsStartupAttribute"/> attributes.
         /// </summary>
         /// <param name="functionTarget">The function type to host in the server.</param>
-        /// <param name="attributedStartupType">A type to examine for <see cref="FunctionTestStartupAttribute"/> attributes to provide further customization.
-        /// If this is null, or no attributes are specified in the type (or its base class hierarchy) the startup classes in the
-        /// function assembly are used.</param>
+        /// <param name="attributedStartupType">A type to examine for <see cref="FunctionsStartupAttribute"/> attributes to provide further customization.
+        /// If this is null, or no attributes are specified in the type (or its base class hierarchy) or the assembly it's declared in,
+        /// the startup classes in the function assembly are used.</param>
         public FunctionTestServer(Type functionTarget, Type? attributedStartupType)
             : this(FunctionTestServerBuilder.Create(functionTarget).MaybeUseFunctionsStartupsFromAttributes(attributedStartupType).BuildTestServer(), functionTarget)
         {
@@ -127,11 +128,11 @@ namespace Google.Cloud.Functions.Testing
 
         /// <summary>
         /// Constructs a new instance serving <typeparamref name="TFunction"/>, with an optional
-        /// type to inspect for <see cref="FunctionTestStartupAttribute"/> attributes.
+        /// type to inspect for <see cref="FunctionsStartupAttribute"/> attributes.
         /// </summary>
-        /// <param name="attributedStartupType">A type to examine for <see cref="FunctionTestStartupAttribute"/> attributes to provide further customization.
-        /// If this is null, or no attributes are specified in the type (or its base class hierarchy) the startup classes in the
-        /// function assembly are used.</param>
+        /// <param name="attributedStartupType">A type to examine for <see cref="FunctionsStartupAttribute"/> attributes to provide further customization.
+        /// If this is null, or no attributes are specified in the type (or its base class hierarchy) or the assembly it's declared in,
+        /// the startup classes in the function assembly are used.</param>
         internal FunctionTestServer(Type? attributedStartupType) : base(typeof(TFunction), attributedStartupType)
         {
         }

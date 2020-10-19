@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using CloudNative.CloudEvents;
+using Google.Cloud.Functions.Hosting;
 using Google.Events;
 using System;
 using System.Collections.Generic;
@@ -57,8 +58,8 @@ namespace Google.Cloud.Functions.Testing
 
         /// <summary>
         /// Constructs a new instance using a new server constructed with default settings,
-        /// with startup classes specified by <see cref="FunctionTestStartupAttribute"/> attributes
-        /// within the class hierarchy of the actual test class.
+        /// with startup classes specified by <see cref="FunctionsStartupAttribute"/> attributes
+        /// within the class hierarchy of the actual test class, or the test assembly.
         /// </summary>
         protected FunctionTestBase()
         {

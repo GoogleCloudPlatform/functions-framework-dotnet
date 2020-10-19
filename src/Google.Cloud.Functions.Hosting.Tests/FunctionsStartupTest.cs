@@ -13,7 +13,6 @@
 // limitations under the License.
 
 using Google.Cloud.Functions.Framework;
-using Google.Cloud.Functions.Hosting;
 using Google.Cloud.Functions.Testing;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -24,13 +23,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Xunit;
-
-[assembly: FunctionsStartup(typeof(Google.Cloud.Functions.Hosting.Tests.FunctionsStartupTest.TestStartup1), Order = 3)]
-[assembly: FunctionsStartup(typeof(Google.Cloud.Functions.Hosting.Tests.FunctionsStartupTest.TestStartup2), Order = 2)]
 
 namespace Google.Cloud.Functions.Hosting.Tests
 {
@@ -39,22 +34,6 @@ namespace Google.Cloud.Functions.Hosting.Tests
     /// </summary>
     public partial class FunctionsStartupTest
     {
-        // Startups used for assembly attribute detection.
-        public class TestStartup1 : FunctionsStartup { }
-        public class TestStartup2 : FunctionsStartup { }
-
-        // This is the only test that uses the assembly attribute detection.
-        // Everything else specifies the startups explicitly.
-        [Fact]
-        public void GetStartups()
-        {
-            var startups = HostingInternals.GetStartups(typeof(FunctionsStartupTest).Assembly);
-            var actualTypes = startups.Select(startup => startup.GetType()).ToArray();
-            // TestStartup2 comes before TestStartup1 due to the Order properties.
-            var expectedTypes = new[] { typeof(TestStartup2), typeof(TestStartup1) };
-            Assert.Equal(expectedTypes, actualTypes);
-        }
-
         /// <summary>
         /// This is just an overall test of how things hang together.
         /// </summary>

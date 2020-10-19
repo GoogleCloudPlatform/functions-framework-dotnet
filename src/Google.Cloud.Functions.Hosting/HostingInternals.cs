@@ -84,14 +84,6 @@ namespace Google.Cloud.Functions.Hosting
                 });
         }
 
-        internal static IEnumerable<FunctionsStartup> GetStartups(Assembly assembly) =>
-            assembly
-                .GetCustomAttributes<FunctionsStartupAttribute>()
-                .OrderBy(attr => attr.Order)
-                .ThenBy(attr => attr.StartupType.FullName)
-                .Select(attr => Activator.CreateInstance(attr.StartupType))
-                .Cast<FunctionsStartup>();
-
         internal static IWebHostBuilder AddStartup(IWebHostBuilder builder, FunctionsStartup startup)
         {
             builder.ConfigureAppConfiguration(startup.ConfigureAppConfiguration);
@@ -113,12 +105,21 @@ namespace Google.Cloud.Functions.Hosting
             await function.HandleAsync(context);
         }
 
-        internal static Type GetFunctionTarget(WebHostBuilderContext context, Assembly assembly)
+        internal static Type GetFunctionTarget(IConfiguration configuration, Assembly assembly)
         {
-            var options = FunctionsFrameworkOptions.FromConfiguration(context.Configuration);
+            var options = FunctionsFrameworkOptions.FromConfiguration(configuration);
             string? target = options.FunctionTarget;
             return target is null
                 ? FindDefaultFunctionType(assembly.GetTypes())
+                : assembly.GetType(target) ?? throw new InvalidOperationException($"Can't load specified function type '{target}'");
+        }
+
+        internal static Type? TryGetFunctionTarget(IConfiguration configuration, Assembly assembly)
+        {
+            var options = FunctionsFrameworkOptions.FromConfiguration(configuration);
+            string? target = options.FunctionTarget;
+            return target is null
+                ? TryFindDefaultFunctionType(assembly.GetTypes())
                 : assembly.GetType(target) ?? throw new InvalidOperationException($"Can't load specified function type '{target}'");
         }
 
@@ -156,14 +157,14 @@ namespace Google.Cloud.Functions.Hosting
         /// discover problems there easily enough anyway.)
         /// </summary>
         /// <remarks>
-        /// This method is internal and in this class rather than being private and in Builder for the sake of testability.
+        /// This method is internal rather private for the sake of testability.
         /// </remarks>
         /// <param name="types">The types to search through.</param>
         /// <returns>The function type to use by default</returns>
         /// <exception cref="ArgumentException">There isn't a single valid function type.</exception>
         internal static Type FindDefaultFunctionType(params Type[] types)
         {
-            var validTypes = types.Where(IsFunctionClass).ToList();
+            var validTypes = FindValidFunctionTypes(types);
             return validTypes.Count switch
             {
                 0 => throw new ArgumentException("No valid Cloud Function types found."),
@@ -172,7 +173,33 @@ namespace Google.Cloud.Functions.Hosting
                     $"Multiple Cloud Function types found. Please specify the function to run via the command line or the {EntryPoint.FunctionTargetEnvironmentVariable} environment variable."),
             };
 
-            bool IsFunctionClass(Type t) =>
+        }
+
+        /// <summary>
+        /// Attempts to find a single valid non-abstract function class within the given set of types, but returns
+        /// null (instead of failing) if there isn't exactly one such class.
+        /// </summary>
+        /// <param name="types"></param>
+        /// <returns></returns>
+        internal static Type? TryFindDefaultFunctionType(params Type[] types)
+        {
+            var validTypes = FindValidFunctionTypes(types);
+            return validTypes.Count switch
+            {
+                0 => null,
+                1 => validTypes[0],
+                _ => null
+            };
+        }
+
+        /// <summary>
+        /// Returns a list of valid function types. Designed to be used by <see cref="FindDefaultFunctionType(Type[])"/>
+        /// and <see cref="TryFindDefaultFunctionType(Type[])"/>; think carefully before using in a different context.
+        /// </summary>
+        private static List<Type> FindValidFunctionTypes(params Type[] types)
+        {
+            return types.Where(IsFunctionClass).ToList();
+            static bool IsFunctionClass(Type t) =>
                 t.IsClass && !t.IsAbstract && !t.IsGenericType &&
                 (typeof(IHttpFunction).IsAssignableFrom(t) ||
                 typeof(ICloudEventFunction).IsAssignableFrom(t) ||
