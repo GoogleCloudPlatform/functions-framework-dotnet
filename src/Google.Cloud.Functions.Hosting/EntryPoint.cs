@@ -56,6 +56,12 @@ namespace Google.Cloud.Functions.Hosting
             // default, I suspect that would be tricky.
             Environment.SetEnvironmentVariable("ASPNETCORE_URLS", null);
 
+            // Guess the function type by creating a configuration with just the environment variables and command line
+            // arguments in it. We do this so we can work out the function startup classes to use - and then validate that
+            // when we've used those functions startups and worked out the actual function target, the set of
+            // function startups is still valid.
+            var expectedFunctionTarget = GuessFunctionTarget();
+
             // TODO: Catch exceptions and return 1, or just let the exception propagate? It probably
             // doesn't matter much. Potentially catch exceptions during configuration, but let any
             // during web server execution propagate.
@@ -64,13 +70,21 @@ namespace Google.Cloud.Functions.Hosting
                     .ConfigureAppConfiguration(builder => builder.AddFunctionsEnvironment().AddFunctionsCommandLine(args))
                     .ConfigureLogging((context, logging) => logging.ClearProviders().AddFunctionsConsoleLogging(context))
                     .ConfigureKestrelForFunctionsFramework()
-                    .ConfigureServices((context, services) => services
-                    .AddFunctionTarget(context, functionAssembly))
-                    .UseFunctionsStartups(functionAssembly)
+                    .ConfigureServices((context, services) => services.AddFunctionTarget(context, functionAssembly))
+                    .UseFunctionsStartups(functionAssembly, expectedFunctionTarget)
                     .Configure((context, app) => app.UseFunctionsFramework(context)))
                 .Build();
             await host.RunAsync();
             return 0;
+
+            Type? GuessFunctionTarget()
+            {
+                var configuration = new ConfigurationBuilder()
+                    .AddFunctionsEnvironment()
+                    .AddFunctionsCommandLine(args)
+                    .Build();
+                return HostingInternals.TryGetFunctionTarget(configuration, functionAssembly);
+            }
         }
     }
 }

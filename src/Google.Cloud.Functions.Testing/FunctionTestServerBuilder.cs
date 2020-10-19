@@ -72,8 +72,9 @@ namespace Google.Cloud.Functions.Testing
         }
 
         /// <summary>
-        /// Examines <paramref name="attributedType"/> (and its base class hierarchy) for <see cref="FunctionTestStartupAttribute" />
-        /// annotations. If any such attributes are found, the startup classes specified by the attributes are used
+        /// Examines <paramref name="attributedType"/> (and its base class hierarchy, and the assembly in which it's declared)
+        /// for <see cref="FunctionsStartupAttribute" /> annotations.
+        /// If any such attributes are found, the startup classes specified by the attributes are used
         /// instead of the startup classes specified in the assembly containing the function target. If no attributes
         /// are found, or if <paramref name="attributedType"/> is null, this method has no effect.
         /// </summary>
@@ -89,10 +90,8 @@ namespace Google.Cloud.Functions.Testing
             {
                 return this;
             }
-            var startups = attributedType.GetCustomAttributes<FunctionTestStartupAttribute>(true)
-                .OrderBy(attr => attr.Order)
-                .ThenBy(attr => attr.StartupType.FullName)
-                .Select(attr => Activator.CreateInstance(attr.StartupType))
+            var startups = FunctionsStartupAttribute.GetStartupTypes(attributedType.Assembly, attributedType)
+                .Select(type => Activator.CreateInstance(type))
                 .Cast<FunctionsStartup>()
                 .ToList();
             return startups.Count > 0 ? UseFunctionsStartups(startups) : this;
@@ -141,7 +140,7 @@ namespace Google.Cloud.Functions.Testing
                     // Configuration based on builder state.
                     if (_startups is null)
                     {
-                        webHostBuilder.UseFunctionsStartups(FunctionTarget.Assembly);
+                        webHostBuilder.UseFunctionsStartups(FunctionTarget.Assembly, FunctionTarget);
                     }
                     else
                     {

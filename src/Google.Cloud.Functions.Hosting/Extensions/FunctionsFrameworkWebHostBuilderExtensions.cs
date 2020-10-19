@@ -12,12 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Cloud.Functions.Framework;
 using Google.Cloud.Functions.Hosting;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
+using System;
 using System.Reflection;
 
 // Namespace by convention
@@ -46,11 +42,13 @@ namespace Microsoft.AspNetCore.Hosting
         /// </summary>
         /// <param name="webHostBuilder">The web host builder to configure.</param>
         /// <param name="assembly">The assembly to query for attributes specifying startup classes.</param>
+        /// <param name="functionType">The function type to query for attributes specifying startup classes, or null to skip this query.</param>
         /// <returns>The original builder, for method chaining.</returns>
-        public static IWebHostBuilder UseFunctionsStartups(this IWebHostBuilder webHostBuilder, Assembly assembly)
+        public static IWebHostBuilder UseFunctionsStartups(this IWebHostBuilder webHostBuilder, Assembly assembly, Type? functionType)
         {
-            foreach (var startup in HostingInternals.GetStartups(assembly))
+            foreach (var startupClass in FunctionsStartupAttribute.GetStartupTypes(assembly, functionType))
             {
+                var startup = (FunctionsStartup) Activator.CreateInstance(startupClass)!;
                 webHostBuilder.UseFunctionsStartup(startup);
             }
             return webHostBuilder;
@@ -67,6 +65,5 @@ namespace Microsoft.AspNetCore.Hosting
         public static IWebHostBuilder UseFunctionsStartup(
             this IWebHostBuilder webHostBuilder, FunctionsStartup startup) =>
             HostingInternals.AddStartup(webHostBuilder, startup);
-
     }
 }

@@ -13,15 +13,20 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 
 namespace Google.Cloud.Functions.Hosting
 {
     /// <summary>
-    /// Assembly attribute to specify a <see cref="FunctionsStartup"/> to use
+    /// Assembly and class attribute to specify a <see cref="FunctionsStartup"/> to use
     /// for additional configuration in the Functions Framework. To use multiple
-    /// startup classes, specify this attribute multiple times.
+    /// startup classes, specify this attribute multiple times. Both the assembly and
+    /// the function type are queried for this attribute when determining the functions startup
+    /// classes to use.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true)]
+    [AttributeUsage(AttributeTargets.Assembly | AttributeTargets.Class, AllowMultiple = true)]
     public class FunctionsStartupAttribute : Attribute
     {
         /// <summary>
@@ -43,5 +48,25 @@ namespace Google.Cloud.Functions.Hosting
         /// <param name="startupType">The Type of the <see cref="FunctionsStartup"/> class to register.</param>
         public FunctionsStartupAttribute(Type startupType) =>
             StartupType = startupType;
+
+        /// <summary>
+        /// Returns the functions startup classes found in the attributes of <paramref name="assembly"/> and
+        /// <paramref name="target"/>, ordered by <see cref="Order"/> and then by the full name of the type.
+        /// </summary>
+        /// <param name="assembly">The assembly to inspect for attributes.</param>
+        /// <param name="target">Optional type to query for attributes. If this is null, only
+        /// startup classes from <paramref name="assembly"/> are returned.
+        /// </param>
+        /// <returns>A (possibly empty) sequence of the startup types detected via attributes.</returns>
+        public static IEnumerable<Type> GetStartupTypes(Assembly assembly, Type? target)
+        {
+            var fromAssembly = assembly.GetCustomAttributes<FunctionsStartupAttribute>();
+            var fromType = target?.GetCustomAttributes<FunctionsStartupAttribute>(inherit: true) ?? Enumerable.Empty<FunctionsStartupAttribute>();
+            return fromAssembly.Concat(fromType)
+                .OrderBy(attr => attr.Order)
+                .ThenBy(attr => attr.StartupType.FullName)
+                .Select(attr => attr.StartupType)
+                .ToList();
+        }
     }
 }

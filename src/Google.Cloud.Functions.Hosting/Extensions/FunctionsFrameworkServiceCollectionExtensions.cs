@@ -42,7 +42,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="assembly">The assembly expected to contain the Functions Framework target function.</param>
         /// <returns>The original builder, for method chaining.</returns>
         public static IServiceCollection AddFunctionTarget(this IServiceCollection services, WebHostBuilderContext context, Assembly assembly) =>
-            HostingInternals.AddServicesForFunctionTarget(services, HostingInternals.GetFunctionTarget(context, assembly));
+            AddFunctionTarget(services, HostingInternals.GetFunctionTarget(context.Configuration, assembly));
 
         /// <summary>
         /// Adds services required for the Functions Framework to use the function target type specified by the
