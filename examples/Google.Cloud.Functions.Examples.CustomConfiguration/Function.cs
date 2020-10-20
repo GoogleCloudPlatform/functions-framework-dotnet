@@ -20,13 +20,6 @@ using Microsoft.Extensions.Configuration;
 using Steeltoe.Extensions.Configuration.RandomValue;
 using System.Threading.Tasks;
 
-// FunctionsServiceProviderAttribute is applied to the assembly to tell the Functions Framework which startup class
-// to load. If you have multiple startup classes, you can apply the attribute multiple times, optionally
-// using the Order property to specify ordering.
-// The attribute must be applied to the assembly containing the function, but it can potentially refer
-// to a startup class in a different assembly.
-[assembly: FunctionsStartup(typeof(Google.Cloud.Functions.Examples.CustomConfiguration.Startup))]
-
 namespace Google.Cloud.Functions.Examples.CustomConfiguration
 {
 
@@ -43,6 +36,7 @@ namespace Google.Cloud.Functions.Examples.CustomConfiguration
             configuration.AddRandomValueSource();
     }
 
+    [FunctionsStartup(typeof(Startup))]
     public class Function : IHttpFunction
     {
         private readonly IConfiguration _configuration;

@@ -20,12 +20,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Threading.Tasks;
 
-// FunctionsStartupAttribute is applied to the assembly to tell the Functions Framework which startup
-// types to load. If you have multiple startup classes, you can apply the attribute multiple times.
-// The attribute must be applied to the assembly containing the function, but it can potentially refer
-// to a startup class in a different assembly.
-[assembly: FunctionsStartup(typeof(Google.Cloud.Functions.Examples.Configuration.Startup))]
-
 namespace Google.Cloud.Functions.Examples.Configuration
 {
     /// <summary>
@@ -78,6 +72,7 @@ namespace Google.Cloud.Functions.Examples.Configuration
     /// The actual Cloud Function using the DatabaseService dependency configured in
     /// Startup.
     /// </summary>
+    [FunctionsStartup(typeof(Startup))]
     public class Function : IHttpFunction
     {
         private readonly DatabaseService _database;

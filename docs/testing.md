@@ -111,7 +111,7 @@ dependencies, middleware and so on.
 
 `FunctionTestServerBuilder` allows you to create a test server that
 uses specified `FunctionsStartup` instances instead of detecting the
-Functions Startup classes based on assembly attributes. To create
+Functions Startup classes based on assembly and type attributes. To create
 the builder, start by calling one of the `Create` overloads, either
 specifying the function target as a `Type` reference, or as a generic
 type argument.
@@ -123,13 +123,18 @@ production behavior of using assembly attributes. The method returns
 the same builder it's called on, so you can chain method calls easily.
 
 Alternatively, you can decorate a type with the
-`FunctionTestStartupAttribute` to specify the startup classes to
+`FunctionsStartupAttribute` to specify the startup classes to
 use, and call `FunctionTestServerBuilder.MaybeUseFunctionsStartupsFromAttributes`
 to apply the startup classes. This is called automatically in the
 `FunctionTestBase<TFunction>` parameterless constructor, using the
-test class itself - so adding the `FunctionTestStartupAttribute` to
+test class itself - so adding the `FunctionsStartupAttribute` to
 the test class is the simplest way of configuring startups in those
-tests.
+tests. If all your tests in a test project will need the same set of
+test startup classes, you can specify those startup classes by
+applying `FunctionsStartupAttribute` to the test assembly instead of
+individual tests. Note that if *any* startup classes are detected on
+either the test class or the test assembly, these will replace *all*
+of the startup classes from the production code.
 
 The `FunctionTestServerBuilder.UseFunctionsFrameworkConsoleLogging`
 method can be used to enable console logging in addition to the

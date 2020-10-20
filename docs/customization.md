@@ -36,7 +36,7 @@ Startup classes*.
 
 When the Functions Framework is running normally (either in
 production or locally), Functions Startup classes are discovered via
-the `FunctionsStartupAttribute` assembly attribute. This attribute
+the `FunctionsStartupAttribute` assembly or class attribute. This attribute
 specifies a type to use as a Functions Startup class. The attribute
 can be specified multiple times, so you can separate your
 customization steps cleanly. In most cases the order in which
@@ -51,7 +51,28 @@ override depending on what aspect you wish to customize. Later
 sections of this document demonstrate which methods are used to
 customize which aspect.
 
-Example:
+Example using an attribute on the function type:
+
+```csharp
+using Google.Cloud.Functions.Hosting;
+
+namespace Example
+{
+    public class Startup : FunctionsStartup
+    {
+        // Virtual methods in the base class are overridden
+        // here to perform customization.
+    }
+    
+    [FunctionsStartup(typeof(Startup))]
+    public class Function : IHttpFunction
+    {
+        // Actual funtion implementation
+    }
+}
+```
+
+Example using an assembly attribute:
 
 ```csharp
 using Google.Cloud.Functions.Hosting;
@@ -81,6 +102,15 @@ via dependency injection. The `FunctionTestServerBuilder` makes this
 easy by allowing Functions Startup instances to be specified while
 building the test server. See [the testing
 documentation](testing.md) for more details.
+
+Typically, specifying the attribute on the function class itself is
+the simplest approach. However, if you have multiple functions in
+the same project, you can specify startup classes for common
+configuration as assembly attributes, and then add attributes for
+function-specific startup classes to the individual function types.
+Going even further, the attribute is inherited, so you can create a
+function base class that specifies all the startup classes for
+functions derived from that class.
 
 ## Customizing Dependency Injection using `ConfigureServices`
 
@@ -169,3 +199,40 @@ you genuinely intend to remove the Functions Framework console logging.
 
 Logging for tests is provided automatically in the `FunctionTestServer`; see [the testing
 documentation](testing.md) for more details.
+
+## Startup class mismatches
+
+If you haven't received an error referring you to this section of
+the documentation, you *may* want to skip this section.
+
+It is possible (but very rare) for startup classes to affect which
+type is chosen as the target function type for the server. Given
+that the target function type determines which startup classes are
+used, that creates a chicken and egg situation. The startup class
+associated with `FunctionA` could change the target function type to
+`FunctionB` which needs other startup classes, but those startup
+classes wouldn't have been used during server startup.
+
+While it's entirely normal during testing for "unexpected" startup
+classes to be used, the entry point for running the server in
+production (`Google.Cloud.Functions.Hosting.EntryPoint`) validates
+that the startup classes chosen right at the start are still the
+ones that would be chosen for the finally-selected function target
+type. If that validation fails, an exception is thrown which will
+refer you to this documentation.
+
+The solution to the problem involves working out how you got here in
+the first place. First look at all the startup classes you're
+specifying, and check whether any of them tries to reconfigure the
+target function type. Should it do so? Work out what you *want* to
+happen in terms of which target function type you expect to serve
+requests, and what startup classes it really needs. Ideally, avoid
+reconfiguring the target function type within startup classes
+(because that can be confusing). If you really need to, consider
+specifying all of your startup classes using an assembly-level
+attribute, so that the same startup classes are used regardless of
+which target function type ends up being selected.
+
+If you run into this problem and can't work out why, please [file an
+issue](https://github.com/GoogleCloudPlatform/functions-framework-dotnet/issues/new)
+so we can look into it further.
