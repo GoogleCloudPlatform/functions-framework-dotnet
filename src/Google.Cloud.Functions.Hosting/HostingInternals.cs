@@ -90,9 +90,10 @@ namespace Google.Cloud.Functions.Hosting
 
         /// <summary>
         /// Validates that the startup classes which would be used for the finally-selected function are the
-        /// same as the startup classes we *actually* used. This method is only called when the app is started
-        /// by <see cref="EntryPoint"/>, just to check that nothing really weird has happened (such as a startup
-        /// changing the function target to a different function which needs different startups).
+        /// same (and in the same order) as the startup classes we *actually* used. This method is only called
+        /// when the app is started by <see cref="EntryPoint"/>, just to check that nothing really weird has
+        /// happened (such as a startup changing the function target to a different function which needs
+        /// different startups).
         /// </summary>
         private static IApplicationBuilder ValidateStartupClasses(IApplicationBuilder app)
         {
@@ -128,6 +129,10 @@ namespace Google.Cloud.Functions.Hosting
             await function.HandleAsync(context);
         }
 
+        /// <summary>
+        /// Determines the function target based on a configuration and the function assembly.
+        /// This will throw an exception if it can't determine the right function type.
+        /// </summary>
         internal static Type GetFunctionTarget(IConfiguration configuration, Assembly assembly)
         {
             var options = FunctionsFrameworkOptions.FromConfiguration(configuration);
@@ -137,13 +142,15 @@ namespace Google.Cloud.Functions.Hosting
                 : assembly.GetType(target) ?? throw new InvalidOperationException($"Can't load specified function type '{target}'");
         }
 
+        /// <summary>
+        /// Determines the function target based on a configuration and the function assembly.
+        /// This will return null if it can't determine the right function type.
+        /// </summary>
         internal static Type? TryGetFunctionTarget(IConfiguration configuration, Assembly assembly)
         {
             var options = FunctionsFrameworkOptions.FromConfiguration(configuration);
             string? target = options.FunctionTarget;
-            return target is null
-                ? TryFindDefaultFunctionType(assembly.GetTypes())
-                : assembly.GetType(target) ?? throw new InvalidOperationException($"Can't load specified function type '{target}'");
+            return target is null ? TryFindDefaultFunctionType(assembly.GetTypes()) : assembly.GetType(target);
         }
 
         internal static IServiceCollection AddServicesForFunctionTarget(IServiceCollection services, Type functionType)
@@ -180,7 +187,7 @@ namespace Google.Cloud.Functions.Hosting
         /// discover problems there easily enough anyway.)
         /// </summary>
         /// <remarks>
-        /// This method is internal rather private for the sake of testability.
+        /// This method is internal rather than private for the sake of testability.
         /// </remarks>
         /// <param name="types">The types to search through.</param>
         /// <returns>The function type to use by default</returns>
@@ -202,8 +209,8 @@ namespace Google.Cloud.Functions.Hosting
         /// Attempts to find a single valid non-abstract function class within the given set of types, but returns
         /// null (instead of failing) if there isn't exactly one such class.
         /// </summary>
-        /// <param name="types"></param>
-        /// <returns></returns>
+        /// <param name="types">The types to check for a valid function class.</param>
+        /// <returns>The single valid function class, or null if there are either 0 or more than 1 such classes.</returns>
         internal static Type? TryFindDefaultFunctionType(params Type[] types)
         {
             var validTypes = FindValidFunctionTypes(types);
