@@ -13,10 +13,10 @@
 // limitations under the License.
 
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Configuration;
 using System;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -59,7 +59,10 @@ namespace Google.Cloud.Functions.Hosting
             // Guess the function type by creating a configuration with just the environment variables and command line
             // arguments in it. We do this so we can work out the function startup classes to use - and then validate that
             // when we've used those functions startups and worked out the actual function target, the set of
-            // function startups is still valid.
+            // function startups is still valid. Note that it's possible for this to return null, if an assembly-specified
+            // function startup determines the actual function target. That's valid, so long as the function target doesn't
+            // later require any specific startups. (It would be very, very rare for a startup to affect which function is
+            // used, but I can imagine some scenarios where it's useful.)
             var expectedFunctionTarget = GuessFunctionTarget();
 
             // TODO: Catch exceptions and return 1, or just let the exception propagate? It probably
@@ -72,7 +75,7 @@ namespace Google.Cloud.Functions.Hosting
                     .ConfigureKestrelForFunctionsFramework()
                     .ConfigureServices((context, services) => services.AddFunctionTarget(context, functionAssembly))
                     .UseFunctionsStartups(functionAssembly, expectedFunctionTarget)
-                    .Configure((context, app) => app.UseFunctionsFramework(context)))
+                    .Configure((context, app) => app.UseFunctionsFramework(context, validateStartups: true)))
                 .Build();
             await host.RunAsync();
             return 0;
