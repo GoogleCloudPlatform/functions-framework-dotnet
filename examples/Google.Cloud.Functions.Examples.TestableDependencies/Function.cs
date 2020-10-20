@@ -19,8 +19,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using System.Threading.Tasks;
 
-[assembly: FunctionsStartup(typeof(Google.Cloud.Functions.Examples.TestableDependencies.Startup))]
-
 namespace Google.Cloud.Functions.Examples.TestableDependencies
 {
     // The dependency interface required by the function.
@@ -44,6 +42,7 @@ namespace Google.Cloud.Functions.Examples.TestableDependencies
             services.AddSingleton<IDependency, ProductionDependency>();
     }
 
+    [FunctionsStartup(typeof(Startup))]
     public class Function : IHttpFunction
     {
         private readonly IDependency _dependency;

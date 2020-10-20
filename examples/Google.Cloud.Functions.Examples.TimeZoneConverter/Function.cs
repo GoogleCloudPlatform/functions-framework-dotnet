@@ -13,7 +13,10 @@
 // limitations under the License.
 
 using Google.Cloud.Functions.Framework;
+using Google.Cloud.Functions.Hosting;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 using NodaTime;
 using NodaTime.Text;
 using NodaTime.TimeZones;
@@ -26,6 +29,16 @@ using System.Threading.Tasks;
 namespace Google.Cloud.Functions.Examples.TimeZoneConverter
 {
     /// <summary>
+    /// Startup class to provide the NodaTime built-in TZDB (IANA) date time zone provider
+    /// as a dependency to <see cref="Function"/>.
+    /// </summary>
+    public class Startup : FunctionsStartup
+    {
+        public override void ConfigureServices(WebHostBuilderContext context, IServiceCollection services) =>
+            services.AddSingleton(DateTimeZoneProviders.Tzdb);
+    }
+
+    /// <summary>
     /// Function to convert between two time zones. Query parameters, all required:
     /// <list type="bullet">
     ///   <item><c>fromZone</c>: The ID of the time zone to convert from</item>
@@ -34,6 +47,7 @@ namespace Google.Cloud.Functions.Examples.TimeZoneConverter
     ///   Format: extended ISO yyyy-MM-ddTHH:mm:ss with optional subsecond digits.</item>
     /// </list>
     /// </summary>
+    [FunctionsStartup(typeof(Startup))]
     public sealed class Function : IHttpFunction
     {
         private static readonly JsonSerializerOptions s_serializerOptions = new JsonSerializerOptions

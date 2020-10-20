@@ -21,13 +21,6 @@ using System;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-// FunctionsServiceProviderAttribute is applied to the assembly to tell the Functions Framework which startup class
-// to load. If you have multiple startup classes, you can apply the attribute multiple times, optionally
-// using the Order property to specify ordering.
-// The attribute must be applied to the assembly containing the function, but it can potentially refer
-// to a startup class in a different assembly.
-[assembly: FunctionsStartup(typeof(Google.Cloud.Functions.Examples.AdvancedDependencyInjection.Startup))]
-
 namespace Google.Cloud.Functions.Examples.AdvancedDependencyInjection
 {
     // Dependency interfaces and implementation used in the Microsoft ASP.NET Core dependency injection documentation
@@ -72,6 +65,7 @@ namespace Google.Cloud.Functions.Examples.AdvancedDependencyInjection
     }
 
     /// <summary>
+    /// <para>
     /// The actual Cloud Function using the dependencies.
     /// This uses both IOperationSingleton and IOperationScoped, and outputs the OperationId
     /// from each of them in HandleAsync. The service configuration provided in Startup
@@ -79,7 +73,17 @@ namespace Google.Cloud.Functions.Examples.AdvancedDependencyInjection
     /// ScopedOperationId varies for each request.
     /// (Restarting the server will result in a different SingletonOperationId - nothing is persisted
     /// here.)
+    /// </para>
+    /// <para>
+    /// The FunctionsStartup attribute specifies the startup class to load. If you have multiple
+    /// startup classes, you can apply the attribute multiple times, optionally using the Order property to
+    /// specify ordering. The same attribute can be applied to the assembly containing the function instead
+    /// of the function type, which can be useful if a single project contains multiple functions which need
+    /// some common startup classes (and potentially some different ones, specified on the function types).
+    /// The attribute can potentially refer to a startup class in a different assembly.
+    /// </para>
     /// </summary>
+    [FunctionsStartup(typeof(Startup))]
     public class Function : IHttpFunction
     {
         private static readonly JsonSerializerOptions s_indentedWriterOptions = new JsonSerializerOptions { WriteIndented = true };

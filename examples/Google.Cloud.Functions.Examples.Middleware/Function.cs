@@ -21,13 +21,6 @@ using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
-// FunctionsServiceProviderAttribute is applied to the assembly to tell the Functions Framework which startup class
-// to load. If you have multiple startup classes, you can apply the attribute multiple times, optionally
-// using the Order property to specify ordering.
-// The attribute must be applied to the assembly containing the function, but it can potentially refer
-// to a startup class in a different assembly.
-[assembly: FunctionsStartup(typeof(Google.Cloud.Functions.Examples.Middleware.Startup))]
-
 namespace Google.Cloud.Functions.Examples.Middleware
 {
     /// <summary>
@@ -66,6 +59,7 @@ namespace Google.Cloud.Functions.Examples.Middleware
     /// <summary>
     /// The actual Cloud Function.
     /// </summary>
+    [FunctionsStartup(typeof(Startup))]
     public class Function : IHttpFunction
     {
         public async Task HandleAsync(HttpContext context) =>

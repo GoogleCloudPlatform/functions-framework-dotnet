@@ -14,9 +14,12 @@
 
 using CloudNative.CloudEvents;
 using Google.Cloud.Functions.Framework;
+using Google.Cloud.Functions.Hosting;
 using Google.Cloud.Storage.V1;
 using Google.Cloud.Vision.V1;
 using Google.Events.Protobuf.Cloud.Storage.V1;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -30,10 +33,24 @@ using static Google.Cloud.Vision.V1.Feature.Types.Type;
 namespace Google.Cloud.Functions.Examples.StorageImageAnnotator
 {
     /// <summary>
+    /// Startup class to provide the Storage and Vision API clients via dependency injection.
+    /// We use singleton instances as the clients are thread-safe, and this ensures
+    /// an efficient use of connections.
+    /// </summary>
+    public class Startup : FunctionsStartup
+    {
+        public override void ConfigureServices(WebHostBuilderContext context, IServiceCollection services) =>
+            services
+                .AddSingleton(ImageAnnotatorClient.Create())
+                .AddSingleton(StorageClient.Create());
+    }
+
+    /// <summary>
     /// Function to watch for new image files being added to a storage bucket,
     /// use the Google Cloud Vision API to annotate them, then write a text file
     /// back into the bucket with the information from the Vision API.
     /// </summary>
+    [FunctionsStartup(typeof(Startup))]
     public class Function : ICloudEventFunction<StorageObjectData>
     {
         private const string JpegContentType = "image/jpeg";
