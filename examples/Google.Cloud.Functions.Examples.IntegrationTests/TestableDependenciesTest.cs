@@ -23,10 +23,10 @@ namespace Google.Cloud.Functions.Examples.IntegrationTests
 {
     /// <summary>
     /// By default, the test server will use the same Functions Startup classes
-    /// as normal. Applying the FunctionsStartup attribute to the test class (or the assembly) signals to FunctionTestBase
-    /// which startups should be used to inject test dependencies instead of the production ones.
-    /// An alternative is to declare a parameterless constructor that creates a FunctionTestServer
-    /// to pass into the base class constructor.
+    /// as normal. Applying the FunctionsStartup attribute to the test class (and/or the assembly)
+    /// signals to FunctionTestBase which startups should be used to inject test dependencies
+    /// instead of the production ones. An alternative is to declare a parameterless constructor
+    /// that creates a FunctionTestServer to pass into the base class constructor.
     /// </summary>
     [FunctionsStartup(typeof(TestStartup))]
     public class TestableDependenciesTest : FunctionTestBase<TestableDependencies.Function>

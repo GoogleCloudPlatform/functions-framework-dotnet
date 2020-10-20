@@ -72,25 +72,25 @@ namespace Google.Cloud.Functions.Testing
         }
 
         /// <summary>
-        /// Examines <paramref name="attributedType"/> (and its base class hierarchy, and the assembly in which it's declared)
+        /// Examines <paramref name="startupAttributeSource"/> (and its base class hierarchy, and the assembly in which it's declared)
         /// for <see cref="FunctionsStartupAttribute" /> annotations.
         /// If any such attributes are found, the startup classes specified by the attributes are used
-        /// instead of the startup classes specified in the assembly containing the function target. If no attributes
-        /// are found, or if <paramref name="attributedType"/> is null, this method has no effect.
+        /// instead of the usual startup classes for the target function. If no attributes
+        /// are found, or if <paramref name="startupAttributeSource"/> is null, this method has no effect.
         /// </summary>
         /// <remarks>
         /// This method is automatically called by the parameterless constructor of <see cref="FunctionTestBase{TFunction}"/>,
         /// with the test class type.
         /// </remarks>
-        /// <param name="attributedType">The type to examine (including base class hierarchy) for attributes.</param>
+        /// <param name="startupAttributeSource">The type to examine (including base class hierarchy) for attributes.</param>
         /// <returns>The same test server builder, for method chaining.</returns>
-        public FunctionTestServerBuilder MaybeUseFunctionsStartupsFromAttributes(Type? attributedType)
+        public FunctionTestServerBuilder MaybeUseFunctionsStartupsFromAttributes(Type? startupAttributeSource)
         {
-            if (attributedType is null)
+            if (startupAttributeSource is null)
             {
                 return this;
             }
-            var startups = FunctionsStartupAttribute.GetStartupTypes(attributedType.Assembly, attributedType)
+            var startups = FunctionsStartupAttribute.GetStartupTypes(startupAttributeSource.Assembly, startupAttributeSource)
                 .Select(type => Activator.CreateInstance(type))
                 .Cast<FunctionsStartup>()
                 .ToList();
