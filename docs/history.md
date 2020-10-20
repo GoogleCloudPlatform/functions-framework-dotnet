@@ -1,5 +1,18 @@
 # Version History
 
+## 1.0.0-beta02 (released 2020-10-20)
+
+Changes around startup classes:
+
+- FunctionsStartupAttribute can now be applied to classes as well
+  as assemblies. The Hosting package detects attributes that have
+  been applied to the target function type, and its base types.
+- FunctionsStartupAttribute can now be applied to test assemblies
+  and test classes to specify replacement startup classes;
+  FunctionTestBase will automatically use this to determine
+  startup classes from the test class, making it easier to fake
+  out dependencies.
+
 ## 1.0.0-beta01 (released 2020-10-14)
 
 No API changes; just dependencies, and first beta release.
