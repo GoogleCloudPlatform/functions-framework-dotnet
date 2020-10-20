@@ -54,8 +54,12 @@ namespace Google.Cloud.Functions.Hosting
             return configBuilder;
         }
 
-        internal static IApplicationBuilder ConfigureApplication(WebHostBuilderContext context, IApplicationBuilder app)
+        internal static IApplicationBuilder ConfigureApplication(WebHostBuilderContext context, IApplicationBuilder app, bool validateStartups)
         {
+            if (validateStartups)
+            {
+                ValidateStartupClasses(app);
+            }
             var configurers = app.ApplicationServices.GetServices<FunctionsStartup>();
             foreach (var configurer in configurers)
             {
@@ -82,6 +86,25 @@ namespace Google.Cloud.Functions.Hosting
                     context.Response.StatusCode = (int) HttpStatusCode.NotFound;
                     return Task.CompletedTask;
                 });
+        }
+
+        /// <summary>
+        /// Validates that the startup classes which would be used for the finally-selected function are the
+        /// same as the startup classes we *actually* used. This method is only called when the app is started
+        /// by <see cref="EntryPoint"/>, just to check that nothing really weird has happened (such as a startup
+        /// changing the function target to a different function which needs different startups).
+        /// </summary>
+        private static IApplicationBuilder ValidateStartupClasses(IApplicationBuilder app)
+        {
+            var functionType = app.ApplicationServices.GetRequiredService<FunctionTypeProvider>().FunctionType;
+            var actualStartupClasses = app.ApplicationServices.GetServices<FunctionsStartup>().Select(startup => startup.GetType()).ToList();
+            var startupClassesFromFunctionTarget = FunctionsStartupAttribute.GetStartupTypes(functionType.Assembly, functionType);
+
+            if (!actualStartupClasses.SequenceEqual(startupClassesFromFunctionTarget))
+            {
+                throw new InvalidOperationException("Mismatch in startup classes. See https://github.com/GoogleCloudPlatform/functions-framework-dotnet/blob/master/docs/customization.md#specifying-a-functions-startup-class");
+            }
+            return app;
         }
 
         internal static IWebHostBuilder AddStartup(IWebHostBuilder builder, FunctionsStartup startup)

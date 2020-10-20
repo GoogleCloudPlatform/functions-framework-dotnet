@@ -43,6 +43,13 @@ namespace Microsoft.AspNetCore.Hosting
         /// <param name="context">The context of the web host builder being configured.</param>
         /// <returns>The original builder, for method chaining.</returns>
         public static IApplicationBuilder UseFunctionsFramework(this IApplicationBuilder app, WebHostBuilderContext context) =>
-            HostingInternals.ConfigureApplication(context, app);
+            app.UseFunctionsFramework(context, validateStartups: false);
+
+        /// <summary>
+        /// Internal method called directly by EntryPoint, so that it can validate that the appropriate startup
+        /// classes to use haven't changed as a result of using the startup classes that *have* been executed.
+        /// </summary>        
+        internal static IApplicationBuilder UseFunctionsFramework(this IApplicationBuilder app, WebHostBuilderContext context, bool validateStartups) =>
+            HostingInternals.ConfigureApplication(context, app, validateStartups);
     }
 }
