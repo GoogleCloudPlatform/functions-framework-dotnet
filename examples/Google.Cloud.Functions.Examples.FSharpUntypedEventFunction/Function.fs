@@ -33,7 +33,11 @@ type Function() =
             printfn "Type: %s" cloudEvent.Type
             printfn "Subject: %s" cloudEvent.Subject
             printfn "DataSchema: %A" cloudEvent.DataSchema
-            printfn "DataContentType: %A" cloudEvent.DataContentType
-            printfn "SpecVersion: %A" cloudEvent.SpecVersion
+            printfn "DataContentType: %O" cloudEvent.DataContentType
+            printfn "Time: %s" (cloudEvent.Time |> Option.ofNullable |> Option.map(fun time -> time.ToUniversalTime().ToString "yyyy-MM-dd'T'HH:mm:ss.fff'Z'") |> Option.defaultValue "")
+            printfn "SpecVersion: %O" cloudEvent.SpecVersion
             printfn "Data: %A" cloudEvent.Data
+
+            // In this example, we don't need to perform any asynchronous operations, so we
+            // just return an arbitrary Task to conform to the interface.
             Task.CompletedTask
