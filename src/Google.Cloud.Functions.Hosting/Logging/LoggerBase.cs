@@ -42,7 +42,7 @@ namespace Google.Cloud.Functions.Hosting.Logging
 
         /// <summary>
         /// Performs common filtering and formats the message, before delegating
-        /// to <see cref="LogImpl"/>.
+        /// to <see cref="LogImpl{TState}"/>.
         /// </summary>
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
         {
