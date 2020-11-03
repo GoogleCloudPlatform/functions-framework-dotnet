@@ -358,6 +358,7 @@ gcloud functions deploy configuration-example \
   --runtime dotnet3 \
   --trigger-http \
   --allow-unauthenticated \
+  --set-env-vars ASPNETCORE_ENVIRONMENT=Development \
   --entry-point Google.Cloud.Functions.Examples.Configuration.Function
 ```
 
