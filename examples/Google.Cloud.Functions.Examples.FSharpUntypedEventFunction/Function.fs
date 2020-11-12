@@ -39,5 +39,5 @@ type Function() =
             printfn "Data: %A" cloudEvent.Data
 
             // In this example, we don't need to perform any asynchronous operations, so we
-            // just return an arbitrary Task to conform to the interface.
+            // just return a completed Task to conform to the interface.
             Task.CompletedTask
