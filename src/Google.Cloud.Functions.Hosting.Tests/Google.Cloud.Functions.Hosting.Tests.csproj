@@ -10,7 +10,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Google.Cloud.Functions.Hosting\Google.Cloud.Functions.Hosting.csproj" />
     <ProjectReference Include="..\Google.Cloud.Functions.Testing\Google.Cloud.Functions.Testing.csproj" />
-    <PackageReference Include="Google.Events.Protobuf" Version="1.0.0-beta01" />
+    <PackageReference Include="Google.Events.Protobuf" Version="1.0.0-beta02" />
     <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="3.1.3" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
     <PackageReference Include="xunit" Version="2.4.0" />
