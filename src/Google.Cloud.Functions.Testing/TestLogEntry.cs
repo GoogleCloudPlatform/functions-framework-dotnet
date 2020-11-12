@@ -77,5 +77,12 @@ namespace Google.Cloud.Functions.Testing
 
             return new TestLogEntry(categoryName, logLevel, eventId, message, exception, scopes?.AsReadOnly() ?? EmptyScopeList);
         }
+
+        /// <summary>
+        /// Returns a diagnostic form of the log entry, in the form "[Level]: Message",
+        /// to simplify debugging.
+        /// </summary>
+        /// <returns>A diagnostic form of the log entry.</returns>
+        public override string ToString() => $"[{Level}]: {Message}";
     }
 }
