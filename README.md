@@ -57,6 +57,13 @@ dotnet run
 Once the server is running, browse to http://localhost:8080 to
 invoke the function. Press Ctrl-C in the console to stop the server.
 
+> **Note:**  
+> Visual Studio supports using .NET Core CLI templates from version
+> 16.8.0 onwards. In some versions (including 16.8.0) you first need
+> to enable the feature under Tools / Options / Preview Features /
+> "Show all .NET Core templates in the New project dialog". You will
+> need to restart Visual Studio after enabling this feature.
+
 ### Quickstart: Build a Deployable Container
 
 Here is how to build and run a deployable container on your local machine.
