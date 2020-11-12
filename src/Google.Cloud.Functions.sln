@@ -15,7 +15,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Google.Cloud.Functions.Host
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Google.Cloud.Functions.Testing", "Google.Cloud.Functions.Testing\Google.Cloud.Functions.Testing.csproj", "{970964D0-CA4E-4418-9859-4CA971DAEA90}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Google.Cloud.Functions.ConformanceTests", "Google.Cloud.Functions.ConformanceTests\Google.Cloud.Functions.ConformanceTests.csproj", "{CDD08002-50E2-4964-B597-E80BEF9AE9B3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Google.Cloud.Functions.ConformanceTests", "Google.Cloud.Functions.ConformanceTests\Google.Cloud.Functions.ConformanceTests.csproj", "{CDD08002-50E2-4964-B597-E80BEF9AE9B3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Google.Cloud.Functions.Testing.Tests", "Google.Cloud.Functions.Testing.Tests\Google.Cloud.Functions.Testing.Tests.csproj", "{787F0AC2-8C6F-4E6D-9031-5E8836AC70C7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -111,6 +113,18 @@ Global
 		{CDD08002-50E2-4964-B597-E80BEF9AE9B3}.Release|x64.Build.0 = Release|Any CPU
 		{CDD08002-50E2-4964-B597-E80BEF9AE9B3}.Release|x86.ActiveCfg = Release|Any CPU
 		{CDD08002-50E2-4964-B597-E80BEF9AE9B3}.Release|x86.Build.0 = Release|Any CPU
+		{787F0AC2-8C6F-4E6D-9031-5E8836AC70C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{787F0AC2-8C6F-4E6D-9031-5E8836AC70C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{787F0AC2-8C6F-4E6D-9031-5E8836AC70C7}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{787F0AC2-8C6F-4E6D-9031-5E8836AC70C7}.Debug|x64.Build.0 = Debug|Any CPU
+		{787F0AC2-8C6F-4E6D-9031-5E8836AC70C7}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{787F0AC2-8C6F-4E6D-9031-5E8836AC70C7}.Debug|x86.Build.0 = Debug|Any CPU
+		{787F0AC2-8C6F-4E6D-9031-5E8836AC70C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{787F0AC2-8C6F-4E6D-9031-5E8836AC70C7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{787F0AC2-8C6F-4E6D-9031-5E8836AC70C7}.Release|x64.ActiveCfg = Release|Any CPU
+		{787F0AC2-8C6F-4E6D-9031-5E8836AC70C7}.Release|x64.Build.0 = Release|Any CPU
+		{787F0AC2-8C6F-4E6D-9031-5E8836AC70C7}.Release|x86.ActiveCfg = Release|Any CPU
+		{787F0AC2-8C6F-4E6D-9031-5E8836AC70C7}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

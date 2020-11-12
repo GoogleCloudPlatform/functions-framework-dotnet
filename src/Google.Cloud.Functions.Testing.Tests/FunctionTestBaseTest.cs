@@ -14,7 +14,6 @@
 
 using CloudNative.CloudEvents;
 using Google.Cloud.Functions.Framework;
-using Google.Cloud.Functions.Testing;
 using Google.Events;
 using Google.Events.Protobuf.Cloud.Storage.V1;
 using Microsoft.Extensions.Logging;
