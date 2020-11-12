@@ -1,12 +1,14 @@
 {
   "$schema": "http://json.schemastore.org/template",
   "author": "Google LLC",
-  "classifications": [ "Google", "Cloud", "Functions", "Events" ],
+  "classifications": [ "Google", "Cloud" ],
   "identity": "Google.Cloud.Functions.Templates.CloudEventFunction.VisualBasic",
   "groupIdentity": "Google.Cloud.Functions.CloudEventFunction",
   "name": "Google Cloud Functions CloudEvent Function",
+  "description": "A project template for creating a Google Cloud Function to respond to a specific CloudEvent type.",
   "shortName": "gcf-event",
   "sourceName": "MyFunction",
+  "defaultName": "CloudEventFunction",
   "tags": {
     "language": "VB",
     "type": "project"

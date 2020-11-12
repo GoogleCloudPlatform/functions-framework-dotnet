@@ -8,7 +8,11 @@ VERSION=$REAL_VERSION-$(date -u +%Y%m%d%H%M)
 
 export Configuration=Release
 dotnet pack -p:Version=$VERSION src/Google.Cloud.Functions.Templates
-dotnet new -i Google.Cloud.Functions.Templates::$VERSION \
-  --nuget-source=src/Google.Cloud.Functions.Templates/bin/Release/
+
+NUGET_SOURCE=$PWD/src/Google.Cloud.Functions.Templates/bin/Release/
+
+# Come out of the functions-framework-dotnet directory to use the default SDK,
+# which is what VS uses.
+$(cd .. && dotnet new -i Google.Cloud.Functions.Templates::$VERSION --nuget-source=$NUGET_SOURCE)
 
 echo "Installed local templates as version $VERSION"
