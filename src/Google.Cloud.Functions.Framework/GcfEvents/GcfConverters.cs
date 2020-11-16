@@ -32,7 +32,10 @@ namespace Google.Cloud.Functions.Framework.GcfEvents
     {
         private static class Services
         {
-            internal const string Firebase = "firebase.googleapis.com";
+            internal const string FirebaseDatabase = "firebasedatabase.googleapis.com";
+            internal const string FirebaseAuth = "firebaseauth.googleapis.com";
+            internal const string FirebaseRemoteConfig = "firebaseremoteconfig.googleapis.com";
+            internal const string FirebaseAnalytics = "firebaseanalytics.googleapis.com";
             internal const string Firestore = "firestore.googleapis.com";
             internal const string PubSub = "pubsub.googleapis.com";
             internal const string Storage = "storage.googleapis.com";
@@ -91,22 +94,22 @@ namespace Google.Cloud.Functions.Framework.GcfEvents
             { "providers/cloud.firestore/eventTypes/document.delete",
                 new FirestoreFirebaseDocumentEventAdapter(EventTypes.FirestoreDocumentDeleted, Services.Firestore) },
             { "providers/firebase.auth/eventTypes/user.create",
-                new EventAdapter(EventTypes.FirebaseAuthUserCreated, Services.Firebase) },
+                new FirebaseAuthEventAdapter(EventTypes.FirebaseAuthUserCreated, Services.FirebaseAuth) },
             { "providers/firebase.auth/eventTypes/user.delete",
-                new EventAdapter(EventTypes.FirebaseAuthUserDeleted, Services.Firebase) },
+                new FirebaseAuthEventAdapter(EventTypes.FirebaseAuthUserDeleted, Services.FirebaseAuth) },
             { "providers/google.firebase.analytics/eventTypes/event.log",
-                new EventAdapter(EventTypes.FirebaseAnalyticsLogWritten, Services.Firebase) },
+                new EventAdapter(EventTypes.FirebaseAnalyticsLogWritten, Services.FirebaseAnalytics) },
             { "providers/google.firebase.database/eventTypes/ref.create",
-                new FirestoreFirebaseDocumentEventAdapter(EventTypes.FirebaseDatabaseDocumentCreated, Services.Firebase) },
+                new FirestoreFirebaseDocumentEventAdapter(EventTypes.FirebaseDatabaseDocumentCreated, Services.FirebaseDatabase) },
             { "providers/google.firebase.database/eventTypes/ref.write",
-                new FirestoreFirebaseDocumentEventAdapter(EventTypes.FirebaseDatabaseDocumentWritten, Services.Firebase) },
+                new FirestoreFirebaseDocumentEventAdapter(EventTypes.FirebaseDatabaseDocumentWritten, Services.FirebaseDatabase) },
             { "providers/google.firebase.database/eventTypes/ref.update",
-                new FirestoreFirebaseDocumentEventAdapter(EventTypes.FirebaseDatabaseDocumentUpdated, Services.Firebase) },
+                new FirestoreFirebaseDocumentEventAdapter(EventTypes.FirebaseDatabaseDocumentUpdated, Services.FirebaseDatabase) },
             { "providers/google.firebase.database/eventTypes/ref.delete",
-                new FirestoreFirebaseDocumentEventAdapter(EventTypes.FirebaseDatabaseDocumentDeleted, Services.Firebase) },
+                new FirestoreFirebaseDocumentEventAdapter(EventTypes.FirebaseDatabaseDocumentDeleted, Services.FirebaseDatabase) },
             { "providers/cloud.pubsub/eventTypes/topic.publish", new PubSubEventAdapter(EventTypes.PubSubMessagePublished) },
             { "providers/cloud.storage/eventTypes/object.change", new StorageEventAdapter(EventTypes.StorageObjectChanged) },
-            { "google.firebase.remoteconfig.update", new EventAdapter(EventTypes.FirebaseRemoteConfigUpdated, Services.Firebase) },
+            { "google.firebase.remoteconfig.update", new EventAdapter(EventTypes.FirebaseRemoteConfigUpdated, Services.FirebaseRemoteConfig) },
         };
 
         internal static async ValueTask<CloudEvent> ConvertGcfEventToCloudEvent(HttpRequest request)
@@ -176,7 +179,7 @@ namespace Google.Cloud.Functions.Framework.GcfEvents
                 var resource = context.Resource;
                 var service = ValidateNotNullOrEmpty(resource.Service ?? _defaultService, "service");
                 var resourceName = ValidateNotNullOrEmpty(resource.Name, "resource name");
-                var (source, subject) = ConvertResourceToSourceAndSubject(service, resourceName);
+                var (source, subject) = ConvertSourceAndSubject(service, resourceName, request.Data);
                 var evt = new CloudEvent(_cloudEventType, source, context.Id, context.Timestamp?.UtcDateTime)
                 {
                     Data = JsonSerializer.Serialize(request.Data),
@@ -192,7 +195,7 @@ namespace Google.Cloud.Functions.Framework.GcfEvents
             }
 
             protected virtual void MaybeReshapeData(Request request) { }
-            protected virtual (Uri source, string? subject) ConvertResourceToSourceAndSubject(string service, string resource) =>
+            protected virtual (Uri source, string? subject) ConvertSourceAndSubject(string service, string resource, Dictionary<string, object> data) =>
                 (new Uri($"//{service}/{resource}", UriKind.RelativeOrAbsolute), null);
         }
 
@@ -211,7 +214,7 @@ namespace Google.Cloud.Functions.Framework.GcfEvents
             /// <summary>
             /// Split a Storage object resource name into bucket (in the source) and object (in the subject)
             /// </summary>
-            protected override (Uri source, string? subject) ConvertResourceToSourceAndSubject(string service, string resource)
+            protected override (Uri source, string? subject) ConvertSourceAndSubject(string service, string resource, Dictionary<string, object> data)
             {
                 if (StorageResourcePattern.Match(resource) is { Success: true } match)
                 {
@@ -222,7 +225,7 @@ namespace Google.Cloud.Functions.Framework.GcfEvents
                     return (new Uri($"//{service}/{resource}", UriKind.RelativeOrAbsolute), subject);
                 }
                 // If the resource name didn't match for whatever reason, just use the default behaviour.
-                return base.ConvertResourceToSourceAndSubject(service, resource);
+                return base.ConvertSourceAndSubject(service, resource, data);
             }
         }
 
@@ -245,7 +248,7 @@ namespace Google.Cloud.Functions.Framework.GcfEvents
         /// For example:
         /// "projects/_/instances/my-project-id/refs/gcf-test/xyz" or
         /// "projects/project-id/databases/(default)/documents/gcf-test/IH75dRdeYJKd4uuQiqch".
-        /// We validate that the fifth segment 
+        /// We validate that the fifth segment has the value we expect, and then use that segment onwards as the subject.
         /// </summary>
         private class FirestoreFirebaseDocumentEventAdapter : EventAdapter
         {
@@ -255,24 +258,43 @@ namespace Google.Cloud.Functions.Framework.GcfEvents
             internal FirestoreFirebaseDocumentEventAdapter(string cloudEventType, string defaultService)
                 : base(cloudEventType, defaultService)
             {
-                string expectedSegmentName = defaultService == Services.Firebase ? "refs" : "documents";
+                string expectedSegmentName = defaultService == Services.FirebaseDatabase ? "refs" : "documents";
                 _expectedSubjectPrefix = $"{expectedSegmentName}/";
             }
 
             // Reformat the service/resource so that the part of the resource before "documents" is in the source, but
             // "documents" onwards is in the subject.
-            protected override (Uri source, string? subject) ConvertResourceToSourceAndSubject(string service, string resource)
+            protected override (Uri source, string? subject) ConvertSourceAndSubject(string service, string resource, Dictionary<string, object> data)
             {
                 string[] resourceSegments = resource.Split('/', SubjectStartIndex + 1);
                 if (resourceSegments.Length < SubjectStartIndex ||
                     !resourceSegments[SubjectStartIndex].StartsWith(_expectedSubjectPrefix, StringComparison.Ordinal))
                 {
                     // This is odd... just put everything in the source as normal.
-                    return base.ConvertResourceToSourceAndSubject(service, resource);
+                    return base.ConvertSourceAndSubject(service, resource, data);
                 }
 
                 string sourcePath = string.Join('/', resourceSegments.Take(SubjectStartIndex));
                 return (new Uri($"//{service}/{sourcePath}", UriKind.RelativeOrAbsolute), resourceSegments[SubjectStartIndex]);
+            }
+        }
+
+        private class FirebaseAuthEventAdapter : EventAdapter
+        {
+            internal FirebaseAuthEventAdapter(string cloudEventType, string defaultService)
+                : base(cloudEventType, defaultService)
+            {
+            }
+
+            protected override (Uri source, string? subject) ConvertSourceAndSubject(string service, string resource, Dictionary<string, object> data)
+            {
+                var source = new Uri($"//{service}/{resource}", UriKind.RelativeOrAbsolute);
+                string? subject = null;
+                if (data.TryGetValue("uid", out var uid) && uid is JsonElement uidElement && uidElement.ValueKind == JsonValueKind.String)
+                {
+                    subject = $"users/{uidElement.GetString()}";
+                }
+                return (source, subject);
             }
         }
     }
