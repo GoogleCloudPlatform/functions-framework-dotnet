@@ -81,27 +81,27 @@ namespace Google.Cloud.Functions.Framework.GcfEvents
             { "google.storage.object.archive", new StorageEventAdapter(EventTypes.StorageObjectArchived) },
             { "google.storage.object.metadataUpdate", new StorageEventAdapter(EventTypes.StorageObjectMetadataUpdated) },
             { "providers/cloud.firestore/eventTypes/document.write",
-                new FirestoreFirebaseEventAdapter(EventTypes.FirestoreDocumentWritten, Services.Firestore) },
+                new FirestoreFirebaseDocumentEventAdapter(EventTypes.FirestoreDocumentWritten, Services.Firestore) },
             { "providers/cloud.firestore/eventTypes/document.create",
-                new FirestoreFirebaseEventAdapter(EventTypes.FirestoreDocumentCreated, Services.Firestore) },
+                new FirestoreFirebaseDocumentEventAdapter(EventTypes.FirestoreDocumentCreated, Services.Firestore) },
             { "providers/cloud.firestore/eventTypes/document.update",
-                new FirestoreFirebaseEventAdapter(EventTypes.FirestoreDocumentUpdated, Services.Firestore) },
+                new FirestoreFirebaseDocumentEventAdapter(EventTypes.FirestoreDocumentUpdated, Services.Firestore) },
             { "providers/cloud.firestore/eventTypes/document.delete",
-                new FirestoreFirebaseEventAdapter(EventTypes.FirestoreDocumentDeleted, Services.Firestore) },
+                new FirestoreFirebaseDocumentEventAdapter(EventTypes.FirestoreDocumentDeleted, Services.Firestore) },
             { "providers/firebase.auth/eventTypes/user.create",
-                new FirestoreFirebaseEventAdapter(EventTypes.FirebaseAuthUserCreated, Services.Firebase) },
+                new EventAdapter(EventTypes.FirebaseAuthUserCreated, Services.Firebase) },
             { "providers/firebase.auth/eventTypes/user.delete",
-                new FirestoreFirebaseEventAdapter(EventTypes.FirebaseAuthUserDeleted, Services.Firebase) },
+                new EventAdapter(EventTypes.FirebaseAuthUserDeleted, Services.Firebase) },
             { "providers/google.firebase.analytics/eventTypes/event.log",
-                new FirestoreFirebaseEventAdapter(EventTypes.FirebaseAnalyticsLogWritten, Services.Firebase) },
+                new EventAdapter(EventTypes.FirebaseAnalyticsLogWritten, Services.Firebase) },
             { "providers/google.firebase.database/eventTypes/ref.create",
-                new FirestoreFirebaseEventAdapter(EventTypes.FirebaseDatabaseDocumentCreated, Services.Firebase) },
+                new FirestoreFirebaseDocumentEventAdapter(EventTypes.FirebaseDatabaseDocumentCreated, Services.Firebase) },
             { "providers/google.firebase.database/eventTypes/ref.write",
-                new FirestoreFirebaseEventAdapter(EventTypes.FirebaseDatabaseDocumentWritten, Services.Firebase) },
+                new FirestoreFirebaseDocumentEventAdapter(EventTypes.FirebaseDatabaseDocumentWritten, Services.Firebase) },
             { "providers/google.firebase.database/eventTypes/ref.update",
-                new FirestoreFirebaseEventAdapter(EventTypes.FirebaseDatabaseDocumentUpdated, Services.Firebase) },
+                new FirestoreFirebaseDocumentEventAdapter(EventTypes.FirebaseDatabaseDocumentUpdated, Services.Firebase) },
             { "providers/google.firebase.database/eventTypes/ref.delete",
-                new FirestoreFirebaseEventAdapter(EventTypes.FirebaseDatabaseDocumentDeleted, Services.Firebase) },
+                new FirestoreFirebaseDocumentEventAdapter(EventTypes.FirebaseDatabaseDocumentDeleted, Services.Firebase) },
             { "providers/cloud.pubsub/eventTypes/topic.publish", new PubSubEventAdapter(EventTypes.PubSubMessagePublished) },
             { "providers/cloud.storage/eventTypes/object.change", new StorageEventAdapter(EventTypes.StorageObjectChanged) },
         };
@@ -154,14 +154,15 @@ namespace Google.Cloud.Functions.Framework.GcfEvents
 
         /// <summary>
         /// An event-specific adapter, picked based on the event type from the GCF event.
-        /// This abstract class provides seams for event-specific changes to the data and the source/subject.
+        /// This class provides seams for event-specific changes to the data and the source/subject,
+        /// but the defult implementations of the seams are reasonable for most events.
         /// </summary>
-        private abstract class EventAdapter
+        private class EventAdapter
         {
             private readonly string _cloudEventType;
             private readonly string _defaultService;
 
-            protected EventAdapter(string cloudEventType, string defaultService) =>
+            internal EventAdapter(string cloudEventType, string defaultService) =>
                 (_cloudEventType, _defaultService) = (cloudEventType, defaultService);
 
             internal CloudEvent ConvertToCloudEvent(Request request)
@@ -235,39 +236,40 @@ namespace Google.Cloud.Functions.Framework.GcfEvents
                 request.Data = new Dictionary<string, object> { { "message", request.Data } };
         }
 
-        private class FirestoreFirebaseEventAdapter : EventAdapter
+        /// <summary>
+        /// Adapter for Firebase/Firestore events that need extra source/subject handling.
+        /// The resource names for Firebase and Firestore have "refs" and "documents" as the fifth segment respectively.
+        /// For example:
+        /// "projects/_/instances/my-project-id/refs/gcf-test/xyz" or
+        /// "projects/project-id/databases/(default)/documents/gcf-test/IH75dRdeYJKd4uuQiqch".
+        /// We validate that the fifth segment 
+        /// </summary>
+        private class FirestoreFirebaseDocumentEventAdapter : EventAdapter
         {
-            internal FirestoreFirebaseEventAdapter(string cloudEventType, string defaultService)
+            private const int SubjectStartIndex = 4; // The subject always starts at the 5th segment
+            private readonly string _expectedSubjectPrefix;
+
+            internal FirestoreFirebaseDocumentEventAdapter(string cloudEventType, string defaultService)
                 : base(cloudEventType, defaultService)
             {
-            }
-
-            /// <summary>
-            /// Firestore and Firebase database GCF requests include a "params" element that maps wildcards in the resource
-            /// template to their value in the changed document. We map this to a "wildcards" property in the data.
-            /// </summary>
-            protected override void MaybeReshapeData(Request request)
-            {
-                if (request.Params is object)
-                {
-                    request.Data["wildcards"] = request.Params;
-                }
+                string expectedSegmentName = defaultService == Services.Firebase ? "refs" : "documents";
+                _expectedSubjectPrefix = $"{expectedSegmentName}/";
             }
 
             // Reformat the service/resource so that the part of the resource before "documents" is in the source, but
             // "documents" onwards is in the subject.
             protected override (Uri source, string? subject) ConvertResourceToSourceAndSubject(string service, string resource)
             {
-                string[] resourceSegments = resource.Split('/');
-                int documentsIndex = Array.IndexOf(resourceSegments, "documents");
-                if (documentsIndex == -1)
+                string[] resourceSegments = resource.Split('/', SubjectStartIndex + 1);
+                if (resourceSegments.Length < SubjectStartIndex ||
+                    !resourceSegments[SubjectStartIndex].StartsWith(_expectedSubjectPrefix, StringComparison.Ordinal))
                 {
                     // This is odd... just put everything in the source as normal.
                     return base.ConvertResourceToSourceAndSubject(service, resource);
                 }
-                string sourcePath = string.Join('/', resourceSegments.Take(documentsIndex));
-                string subject = string.Join('/', resourceSegments.Skip(documentsIndex));
-                return (new Uri($"//{service}/{sourcePath}", UriKind.RelativeOrAbsolute), subject);
+
+                string sourcePath = string.Join('/', resourceSegments.Take(SubjectStartIndex));
+                return (new Uri($"//{service}/{sourcePath}", UriKind.RelativeOrAbsolute), resourceSegments[SubjectStartIndex]);
             }
         }
     }

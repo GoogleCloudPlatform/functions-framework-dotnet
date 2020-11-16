@@ -32,7 +32,7 @@ namespace Google.Cloud.Functions.Framework.Tests.GcfEvents
         [InlineData("firestore_simple.json", "google.cloud.firestore.document.v1.written", "//firestore.googleapis.com/projects/project-id/databases/(default)", "documents/gcf-test/2Vm2mI1d0wIaK2Waj5to")]
         [InlineData("pubsub_text.json", "google.cloud.pubsub.topic.v1.messagePublished", "//pubsub.googleapis.com/projects/sample-project/topics/gcf-test", null)]
         [InlineData("legacy_pubsub.json", "google.cloud.pubsub.topic.v1.messagePublished", "//pubsub.googleapis.com/projects/sample-project/topics/gcf-test", null)]
-        [InlineData("firebase-db1.json", "google.firebase.database.document.v1.written", "//firebase.googleapis.com/projects/_/instances/my-project-id/refs/gcf-test/xyz", null)]
+        [InlineData("firebase-db1.json", "google.firebase.database.document.v1.written", "//firebase.googleapis.com/projects/_/instances/my-project-id", "refs/gcf-test/xyz")]
         [InlineData("firebase-auth1.json", "google.firebase.auth.user.v1.created", "//firebase.googleapis.com/projects/my-project-id", null)]
         [InlineData("firebase-auth2.json", "google.firebase.auth.user.v1.deleted", "//firebase.googleapis.com/projects/my-project-id", null)]
         public async Task ConvertGcfEvent(string resourceName, string expectedType, string expectedSource, string expectedSubject)
