@@ -56,6 +56,8 @@ namespace Google.Cloud.Functions.Framework.GcfEvents
             internal const string FirebaseAuthUserCreated = FirebaseAuthUserV1 + ".created";
             internal const string FirebaseAuthUserDeleted = FirebaseAuthUserV1 + ".deleted";
 
+            internal const string FirebaseRemoteConfigUpdated = "google.firebase.remoteconfig.remoteConfig.v1.updated";
+
             internal const string FirebaseAnalyticsLogWritten = "google.firebase.analytics.log.v1.written";
 
             internal const string PubSubMessagePublished = "google.cloud.pubsub.topic.v1.messagePublished";
@@ -104,6 +106,7 @@ namespace Google.Cloud.Functions.Framework.GcfEvents
                 new FirestoreFirebaseDocumentEventAdapter(EventTypes.FirebaseDatabaseDocumentDeleted, Services.Firebase) },
             { "providers/cloud.pubsub/eventTypes/topic.publish", new PubSubEventAdapter(EventTypes.PubSubMessagePublished) },
             { "providers/cloud.storage/eventTypes/object.change", new StorageEventAdapter(EventTypes.StorageObjectChanged) },
+            { "google.firebase.remoteconfig.update", new EventAdapter(EventTypes.FirebaseRemoteConfigUpdated, Services.Firebase) },
         };
 
         internal static async ValueTask<CloudEvent> ConvertGcfEventToCloudEvent(HttpRequest request)

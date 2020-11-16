@@ -1,0 +1,20 @@
+{
+   "context":{
+      "eventId":"4087a7d9-4c27-42f1-8a06-1f17b2d5fe49",
+      "eventType":"google.firebase.remoteconfig.update",
+      "resource":{
+         "name":"projects/sample-project",
+         "service":"firebaseremoteconfig.googleapis.com"
+      },
+      "timestamp":"2020-11-16T16:35:33.592Z"
+   },
+   "data":{
+      "updateOrigin":"CONSOLE",
+      "updateTime":"2020-11-16T16:35:33.569229Z",
+      "updateType":"INCREMENTAL_UPDATE",
+      "updateUser":{
+         "email":"test@nowhere.com"
+      },
+      "versionNumber":"5"
+   }
+}
