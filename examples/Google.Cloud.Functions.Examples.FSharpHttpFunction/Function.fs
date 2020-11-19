@@ -26,5 +26,5 @@ type Function() =
         /// <returns>A task representing the asynchronous operation.</returns>
         member this.HandleAsync context =
             async {
-                do! context.Response.WriteAsync "Hello, Functions Framework." |> Async.AwaitTask
+                context.Response.WriteAsync "Hello, Functions Framework." |> Async.AwaitTask |> ignore
             } |> Async.StartAsTask :> _
