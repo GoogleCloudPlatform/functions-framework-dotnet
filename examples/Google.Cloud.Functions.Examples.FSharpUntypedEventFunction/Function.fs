@@ -43,5 +43,3 @@ type Function() =
             // In this example, we don't need to perform any asynchronous operations, so we
             // just return a completed Task to conform to the interface.
             Task.CompletedTask
-
-let x = Nullable 10
