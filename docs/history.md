@@ -1,5 +1,14 @@
 # Version History
 
+## 1.0.0-beta03 (released 2020-11-19)
+
+- Improvements to F# templates
+- Improved Firebase event conversions. (There will be more changes, but these are going in the right direction.)
+- Support for Firebase RemoteConfig update events
+- Improved templates for Visual Studio (from version 16.8.0 onwards, with the feature enabled in options)
+- TestLogEntry now overrides ToString() in a useful way
+- All assemblies are now signed (due to dependency updates, particularly to use CloudNative.CloudEvents 2.0.0-beta.1)
+
 ## 1.0.0-beta02 (released 2020-10-20)
 
 Changes around startup classes:
