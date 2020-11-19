@@ -26,14 +26,20 @@ type Function() =
             printfn "Storage object information:"
             printfn "  Name: %s" data.Name
             printfn "  Bucket: %s" data.Bucket
-            printfn "  Size: %A" data.Size
+            printfn "  Size: %i" data.Size
             printfn "  Content type: %s" data.ContentType
             printfn "Cloud event information:"
             printfn "  ID: %s" cloudEvent.Id
-            printfn "  Source: %A" cloudEvent.Source
+            printfn "  Source: %O" cloudEvent.Source
             printfn "  Type: %s" cloudEvent.Type
             printfn "  Subject: %s" cloudEvent.Subject
-            printfn "  DataSchema: %A" cloudEvent.DataSchema
-            printfn "  DataContentType: %A" cloudEvent.DataContentType
-            printfn "  SpecVersion: %A" cloudEvent.SpecVersion
+            printfn "  DataSchema: %O" cloudEvent.DataSchema
+            printfn "  DataContentType: %O" cloudEvent.DataContentType
+            printfn "  Time: %s" (match Option.ofNullable cloudEvent.Time with
+                                  | Some time -> time.ToUniversalTime().ToString "yyyy-MM-dd'T'HH:mm:ss.fff'Z'"
+                                  | None -> "")
+            printfn "  SpecVersion: %O" cloudEvent.SpecVersion
+
+            // In this example, we don't need to perform any asynchronous operations, so we
+            // just return an completed Task to conform to the interface.
             Task.CompletedTask
