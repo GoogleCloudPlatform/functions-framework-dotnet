@@ -1,5 +1,12 @@
 # Version History
 
+## 1.0.0-beta04 (released 2020-11-19)
+
+- Actually improve the F# templates.
+
+Release 1.0.0-beta03 did not include the new F# templates as
+expected, due to confusion between templates and examples.
+
 ## 1.0.0-beta03 (released 2020-11-19)
 
 - Improvements to F# templates
