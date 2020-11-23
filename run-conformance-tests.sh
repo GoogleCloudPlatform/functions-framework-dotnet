@@ -12,10 +12,16 @@
 
 set -e
 
+# Path to the root of the conformance repository. By default this
+# is the submodule under functions-framework-dotnet, but it can be
+# easily tweaked to simplify testing of local changes to the conformance
+# tests.
+CONFORMANCE_REPO=functions-framework-conformance
+
 rm -rf tmp/conformance-test-output
 mkdir -p tmp/conformance-test-output
 
-if [[ ! -f functions-framework-conformance/README.md ]]
+if [[ ! -f $CONFORMANCE_REPO/README.md ]]
 then
   echo "Conformance test repo not found. Init and update submodules."
   exit 1
@@ -23,13 +29,17 @@ fi
 
 # Build the conformance test framework
 echo "Building conformance test framework"
-(cd functions-framework-conformance/client && go build)
+# Regenerate the events - normally a no-op, but it makes it
+# simpler to update the events.
+(cd $CONFORMANCE_REPO && go generate ./...)
+# Build the conformance test client itself
+(cd $CONFORMANCE_REPO/client && go build)
 
 # Build the conformance functions up-front
 echo "Building conformance functions"
 dotnet build -nologo -clp:NoSummary -v quiet -c Release src/Google.Cloud.Functions.ConformanceTests
 
-CLIENT_BINARY=functions-framework-conformance/client/client
+CLIENT_BINARY=$CONFORMANCE_REPO/client/client
 if [[ $OSTYPE =~ ^win* || $OSTYPE =~ ^msys* || $OSTYPE =~ ^cygwin* ]]
 then
   CLIENT_BINARY=${CLIENT_BINARY}.exe
