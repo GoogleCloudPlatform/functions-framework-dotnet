@@ -36,6 +36,7 @@ namespace Google.Cloud.Functions.Framework.Tests.GcfEvents
         [InlineData("firebase-auth1.json", "google.firebase.auth.user.v1.created", "//firebaseauth.googleapis.com/projects/my-project-id", "users/UUpby3s4spZre6kHsgVSPetzQ8l2")]
         [InlineData("firebase-auth2.json", "google.firebase.auth.user.v1.deleted", "//firebaseauth.googleapis.com/projects/my-project-id", "users/UUpby3s4spZre6kHsgVSPetzQ8l2")]
         [InlineData("firebase-remote-config.json", "google.firebase.remoteconfig.remoteConfig.v1.updated", "//firebaseremoteconfig.googleapis.com/projects/sample-project", null)]
+        [InlineData("firebase-analytics.json", "google.firebase.analytics.log.v1.written", "//firebaseanalytics.googleapis.com/projects/my-project-id/apps/com.example.exampleapp", "events/session_start")]
         public async Task ConvertGcfEvent(string resourceName, string expectedType, string expectedSource, string expectedSubject)
         {
             var context = GcfEventResources.CreateHttpContext(resourceName);
@@ -91,6 +92,15 @@ namespace Google.Cloud.Functions.Framework.Tests.GcfEvents
         [Fact]
         public Task InvalidRequest_NoResourceName() =>
             AssertInvalidRequest("{'data':{}, 'context':{'eventId':'xyz', 'eventType': 'google.pubsub.topic.publish', 'resource':{'service': 'svc'}}}");
+
+        [Theory]
+        [InlineData("firebase-analytics-no-app-id.json")]
+        [InlineData("firebase-analytics-no-event-name.json")]
+        public async Task InvalidRequest_FirebaseAnalytics(string resourceName)
+        {
+            var context = GcfEventResources.CreateHttpContext(resourceName);
+            await Assert.ThrowsAsync<CloudEventConverter.ConversionException>(() => GcfConverters.ConvertGcfEventToCloudEvent(context.Request).AsTask());
+        }
 
         private static async Task AssertInvalidRequest(string json, string? contentType = null) =>
             await Assert.ThrowsAsync<CloudEventConverter.ConversionException>(() => ConvertJson(json, contentType));

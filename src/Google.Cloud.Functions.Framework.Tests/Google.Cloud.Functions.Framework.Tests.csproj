@@ -16,4 +16,5 @@
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.0" />
     <EmbeddedResource Include="**/*.json" Exclude="bin/**;obj/**" />
   </ItemGroup>
+
 </Project>
