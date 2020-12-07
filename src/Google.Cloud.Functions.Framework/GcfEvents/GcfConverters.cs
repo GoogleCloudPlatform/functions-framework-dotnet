@@ -98,7 +98,7 @@ namespace Google.Cloud.Functions.Framework.GcfEvents
             { "providers/firebase.auth/eventTypes/user.delete",
                 new FirebaseAuthEventAdapter(EventTypes.FirebaseAuthUserDeleted, Services.FirebaseAuth) },
             { "providers/google.firebase.analytics/eventTypes/event.log",
-                new EventAdapter(EventTypes.FirebaseAnalyticsLogWritten, Services.FirebaseAnalytics) },
+                new FirebaseAnalyticsEventAdapter(EventTypes.FirebaseAnalyticsLogWritten, Services.FirebaseAnalytics) },
             { "providers/google.firebase.database/eventTypes/ref.create",
                 new FirestoreFirebaseDocumentEventAdapter(EventTypes.FirebaseDatabaseDocumentCreated, Services.FirebaseDatabase) },
             { "providers/google.firebase.database/eventTypes/ref.write",
@@ -295,6 +295,44 @@ namespace Google.Cloud.Functions.Framework.GcfEvents
                     subject = $"users/{uidElement.GetString()}";
                 }
                 return (source, subject);
+            }
+        }
+
+        private class FirebaseAnalyticsEventAdapter : EventAdapter
+        {
+            internal FirebaseAnalyticsEventAdapter(string cloudEventType, string defaultService)
+                : base(cloudEventType, defaultService)
+            {
+            }
+
+            protected override (Uri source, string? subject) ConvertSourceAndSubject(string service, string resource, Dictionary<string, object> data)
+            {
+                // We need the event name and the app ID in order to create subject and source like this:
+                // Subject://firebaseanalytics.googleapis.com/projects/{project}/apps/{app}
+                // Source: events/{eventName}
+                // The eventName is available in the resource, which is of the form projects/{project-id}/events/{event-name}
+                // The app name is available via the data, via userDim -> appInfo -> appId
+                // If either of these isn't where we expect, we throw a ConversionException
+
+                string[] splitResource = resource.Split('/');
+                string? eventName = splitResource.Length == 4 && splitResource[0] == "projects" && splitResource[2] == "events" ? splitResource[3] : null;
+                string? appId = data.TryGetValue("userDim", out var userDim) && userDim is JsonElement userDimElement &&
+                    userDimElement.TryGetProperty("appInfo", out var appInfoElement) &&
+                    appInfoElement.TryGetProperty("appId", out var appIdElement) &&
+                    appIdElement.ValueKind == JsonValueKind.String
+                    ? appIdElement.GetString() : null;
+
+                if (eventName is object && appId is object)
+                {
+                    string projectId = splitResource[1]; // Definitely valid, given that we got the event name.
+                    var source = new Uri($"//{service}/projects/{projectId}/apps/{appId}", UriKind.RelativeOrAbsolute);
+                    var subject = $"events/{eventName}";
+                    return (source, subject);
+                }
+                else
+                {
+                    throw new CloudEventConverter.ConversionException("Firebase Analytics event does not contain expected data");
+                }
             }
         }
     }

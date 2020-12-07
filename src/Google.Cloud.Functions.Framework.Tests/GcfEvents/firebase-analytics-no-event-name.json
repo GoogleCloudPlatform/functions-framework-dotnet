@@ -1,0 +1,78 @@
+{
+  "eventId": "analytics-1606955191246909-14239195990770746-5322866668684751502",
+  "eventType": "providers/google.firebase.analytics/eventTypes/event.log",
+  "resource": "projects/my-project-id/events",
+  "timestamp": "2020-12-03T00:26:41.321623382Z",
+  "data": {
+    "eventDim": [
+      {
+        "date": "20201202",
+        "name": "session_start",
+        "params": {
+          "engaged_session_event": { "intValue": "1" },
+          "firebase_conversion": { "intValue": "1" },
+          "firebase_event_origin": { "stringValue": "auto" },
+          "firebase_screen": { "stringValue": "app_menu" },
+          "firebase_screen_class": { "stringValue": "AppActivity" },
+          "firebase_screen_id": { "intValue": "-2415111648950109400" },
+          "ga_session_id": { "intValue": "1606965190" },
+          "ga_session_number": { "intValue": "7" },
+          "session_engaged": { "intValue": "1" }
+        },
+        "previousTimestampMicros": "1606951997533000",
+        "timestampMicros": "1606955191246909"
+      }
+    ],
+    "userDim": {
+      "appInfo": {
+        "appId": "com.example.exampleapp",
+        "appInstanceId": "aaabbb11122233344455566677788899",
+        "appPlatform": "ANDROID",
+        "appStore": "com.android.vending",
+        "appVersion": "1.67"
+      },
+      "bundleInfo": {
+        "bundleSequenceId": 58,
+        "serverTimestampOffsetMicros": "875910"
+      },
+      "deviceInfo": {
+        "deviceCategory": "mobile",
+        "deviceModel": "SM-A307G",
+        "deviceTimeZoneOffsetSeconds": -10800,
+        "mobileBrandName": "Samsung",
+        "mobileMarketingName": "Galaxy A30s",
+        "mobileModelName": "SM-A307G",
+        "platformVersion": "10",
+        "resettableDeviceId": "aaaaaa-1111-bbbb-2222-dddddddddddd",
+        "userDefaultLanguage": "es-us"
+      },
+      "firstOpenTimestampMicros": "1606882687506000",
+      "geoInfo": {
+        "city": "Burzaco",
+        "continent": "005",
+        "country": "Argentina",
+        "region": "Buenos Aires Province"
+      },
+      "userId": "0123456789abcdef0123456789abcdef",
+      "userProperties": {
+        "completed_tutorial": {
+          "setTimestampUsec": "1606948068187909",
+          "value": { "stringValue": "true" }
+        },
+        "first_open_time": {
+          "setTimestampUsec": "1606882688381909",
+          "value": { "intValue": "1606885200000" }
+        },
+        "last_level": {
+          "index": 10,
+          "setTimestampUsec": "1606952210498909",
+          "value": { "stringValue": "school" }
+        },
+        "user_id": {
+          "setTimestampUsec": "1606955180040909",
+          "value": { "stringValue": "abcdef0123456789abcdef0123456789" }
+        }
+      }
+    }
+  }
+}

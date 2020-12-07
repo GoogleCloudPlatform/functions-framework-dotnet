@@ -17,6 +17,7 @@ using Google.Events;
 using Google.Events.Protobuf;
 using Google.Events.Protobuf.Cloud.PubSub.V1;
 using Google.Events.Protobuf.Cloud.Storage.V1;
+using Google.Events.Protobuf.Firebase.Analytics.V1;
 using Google.Events.Protobuf.Firebase.Database.V1;
 using Google.Protobuf.WellKnownTypes;
 using Google.Type;
@@ -172,6 +173,25 @@ namespace Google.Cloud.Functions.Framework.Tests.GcfEvents
             var data = firebaseEvent.Data;
             Assert.Equal(Value.KindOneofCase.NumberValue, data.KindCase);
             Assert.Equal(10, data.NumberValue);
+        }
+
+        [Fact]
+        public async Task FirebaseAnalytics()
+        {
+            var firebaseEvent = await ConvertAndDeserialize<AnalyticsLogData>("firebase-analytics.json");
+            // Test a small subset of the data
+            var eventDim = Assert.Single(firebaseEvent.EventDim);
+            Assert.Equal(1606955191246909L, eventDim.TimestampMicros);
+            Assert.Equal(1606951997533000, eventDim.PreviousTimestampMicros);
+
+            var userDim = firebaseEvent.UserDim;
+            Assert.Equal("aaabbb11122233344455566677788899", userDim.AppInfo.AppInstanceId);
+            Assert.Equal("ANDROID", userDim.AppInfo.AppPlatform);
+
+            Assert.Equal("Galaxy A30s", userDim.DeviceInfo.MobileMarketingName);
+
+            Assert.Equal(4, userDim.UserProperties.Count);
+            Assert.Equal("true", userDim.UserProperties["completed_tutorial"].Value.StringValue);
         }
 
         private static async Task<T> ConvertAndDeserialize<T>(string resourceName) where T : class
