@@ -174,6 +174,12 @@ namespace Google.Cloud.Functions.Hosting
                     .AddScoped(typeof(IHttpFunction), typeof(CloudEventAdapter<>).MakeGenericType(payloadType))
                     .AddScoped(typeof(ICloudEventFunction<>).MakeGenericType(payloadType), functionType);
             }
+            else if (typeof(IDynamicFunction).IsAssignableFrom(functionType))
+            {
+                services
+                    .AddScoped<IHttpFunction, DynamicFunctionAdapter>()
+                    .AddScoped(typeof(IDynamicFunction), functionType);
+            }
             else
             {
                 throw new InvalidOperationException($"Function type '{functionType.FullName}' doesn't support any known function interfaces.");
@@ -233,7 +239,8 @@ namespace Google.Cloud.Functions.Hosting
                 t.IsClass && !t.IsAbstract && !t.IsGenericType &&
                 (typeof(IHttpFunction).IsAssignableFrom(t) ||
                 typeof(ICloudEventFunction).IsAssignableFrom(t) ||
-                GetGenericInterfaceImplementationTypeArgument(t, typeof(ICloudEventFunction<>)) is object);
+                GetGenericInterfaceImplementationTypeArgument(t, typeof(ICloudEventFunction<>)) is object) ||
+                typeof(IDynamicFunction).IsAssignableFrom(t);
         }
 
         /// <summary>
