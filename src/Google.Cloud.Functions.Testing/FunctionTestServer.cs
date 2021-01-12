@@ -15,6 +15,7 @@
 using Google.Cloud.Functions.Hosting;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -30,6 +31,11 @@ namespace Google.Cloud.Functions.Testing
         /// The underlying <see cref="TestServer"/> hosting the function.
         /// </summary>
         public TestServer Server { get; }
+
+        /// <summary>
+        /// The host containing the test server.
+        /// </summary>
+        public IHost Host { get; }
 
         /// <summary>
         /// The function type executed by the server.
@@ -55,15 +61,16 @@ namespace Google.Cloud.Functions.Testing
         /// If this is null, or no attributes are specified in the type (or its base class hierarchy) or the assembly it's declared in,
         /// the startup classes in the function assembly are used.</param>
         public FunctionTestServer(Type functionTarget, Type? startupAttributeSource)
-            : this(FunctionTestServerBuilder.Create(functionTarget).MaybeUseFunctionsStartupsFromAttributes(startupAttributeSource).BuildTestServer(), functionTarget)
+            : this(FunctionTestServerBuilder.Create(functionTarget).MaybeUseFunctionsStartupsFromAttributes(startupAttributeSource).BuildHost(), functionTarget)
         {
         }
 
-        internal FunctionTestServer(TestServer server, Type functionTarget)
+        internal FunctionTestServer(IHost host, Type functionTarget)
         {
-            Server = server;
+            Host = host;
+            Server = host.GetTestServer();
             FunctionTarget = functionTarget;
-            _testLoggerProvider = server.Services.GetRequiredService<MemoryLoggerProvider>();
+            _testLoggerProvider = host.Services.GetRequiredService<MemoryLoggerProvider>();
         }
 
         /// <summary>
@@ -104,9 +111,9 @@ namespace Google.Cloud.Functions.Testing
             _testLoggerProvider.GetLogEntries(Preconditions.CheckNotNull(categoryName, nameof(categoryName)));
 
         /// <summary>
-        /// Disposes of the test server.
+        /// Disposes of the host of the test server.
         /// </summary>
-        public void Dispose() => Server.Dispose();
+        public void Dispose() => Host.Dispose();
     }
 
     /// <summary>
