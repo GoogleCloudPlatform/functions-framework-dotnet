@@ -123,9 +123,9 @@ namespace Google.Cloud.Functions.Testing
         /// Builds a <see cref="FunctionTestServer"/> representing the configuration of this builder.
         /// </summary>
         /// <returns>A <see cref="FunctionTestServer"/> using the configuration of this builder.</returns>
-        public FunctionTestServer Build() => new FunctionTestServer(BuildTestServer(), FunctionTarget);
+        public FunctionTestServer Build() => new FunctionTestServer(BuildHost(), FunctionTarget);
 
-        internal TestServer BuildTestServer()
+        internal IHost BuildHost()
         {
             var loggerProvider = new MemoryLoggerProvider();
             var host = Host.CreateDefaultBuilder()
@@ -160,7 +160,7 @@ namespace Google.Cloud.Functions.Testing
                 })
                 .Build();
             host.Start();
-            return host.GetTestServer();
+            return host;
         }
     }
 }
