@@ -113,10 +113,6 @@ line flag to specify the `GOOGLE_BUILDABLE` build-time environment
 variable. This tells the Google Cloud Functions deployment process
 which project to build and deploy.
 
-Note that the ability to set build environment variables is
-currently in beta, so you need to use `gcloud beta functions deploy`
-on the command line.
-
 When deploying a function with multiple projects, it's important to
 make sure you have a suitable
 [.gcloudignore](https://cloud.google.com/sdk/gcloud/reference/topic/gcloudignore)
