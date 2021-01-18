@@ -111,7 +111,9 @@ from that top-level directory instead of from the function's project
 directory. You also need to use the `--set-build-env-vars` command
 line flag to specify the `GOOGLE_BUILDABLE` build-time environment
 variable. This tells the Google Cloud Functions deployment process
-which project to build and deploy.
+which project to build and deploy. Note that the `GOOGLE_BUILDABLE`
+environment variable value is case-sensitive, and should match the
+directory and file names used.
 
 When deploying a function with multiple projects, it's important to
 make sure you have a suitable
