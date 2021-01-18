@@ -33,6 +33,9 @@ jobs:
       with:
         go-version: '^1.15.2'
         
+    - name: Clear NuGet cache
+      run: dotnet nuget locals all --clear
+
     - name: Run conformance tests
       shell: bash
       run: ./run-conformance-tests.sh

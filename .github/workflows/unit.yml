@@ -28,6 +28,9 @@ jobs:
       with:
         dotnet-version: ${{ matrix.dotnet }}
 
+    - name: Clear NuGet cache
+      run: dotnet nuget locals all --clear
+
     - name: Build and unit test
       shell: bash
       run: ./build.sh
