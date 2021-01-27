@@ -14,6 +14,7 @@
 
 using Microsoft.Extensions.Logging;
 using System;
+using System.Globalization;
 
 namespace Google.Cloud.Functions.Hosting.Logging
 {
@@ -22,20 +23,22 @@ namespace Google.Cloud.Functions.Hosting.Logging
     /// </summary>
     internal abstract class LoggerBase : ILogger
     {
-        private const string KestrelCategory = "Microsoft.AspNetCore.Server.Kestrel";
+        // Visible for testing.
+        internal const string KestrelCategory = "Microsoft.AspNetCore.Server.Kestrel";
 
         // As defined in https://github.com/dotnet/aspnetcore/blob/master/src/Servers/Kestrel/Core/src/Internal/Infrastructure/KestrelTrace.cs
         // This has been stable since April 2017, so it seems reasonable to rely on it.
-        private const int HeartbeatSlowEventId = 22;
+        // Visible for testing.
+        internal const int HeartbeatSlowEventId = 22;
 
         private readonly bool _isKestrelCategory;
         protected string Category { get; }
+        protected IExternalScopeProvider ScopeProvider { get; } = new LoggerExternalScopeProvider();
 
         protected LoggerBase(string category) =>
             (Category, _isKestrelCategory) = (category, category == KestrelCategory);
 
-        // We don't really support scopes
-        public IDisposable BeginScope<TState>(TState state) => SingletonDisposable.Instance;
+        public IDisposable BeginScope<TState>(TState state) => ScopeProvider.Push(state);
 
         // Note: log level filtering is handled by other logging infrastructure, so we don't do any of it here.
         public bool IsEnabled(LogLevel logLevel) => logLevel != LogLevel.None;
@@ -72,5 +75,11 @@ namespace Google.Cloud.Functions.Hosting.Logging
             private SingletonDisposable() { }
             public void Dispose() { }
         }
+
+        /// <summary>
+        /// Convenience method to convert a value into a string using the invariant
+        /// culture for formatting. Null input is converted into an empty string.
+        /// </summary>
+        protected static string ToInvariantString(object value) => Convert.ToString(value, CultureInfo.InvariantCulture) ?? "";
     }
 }

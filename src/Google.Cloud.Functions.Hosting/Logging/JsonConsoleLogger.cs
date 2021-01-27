@@ -26,9 +26,10 @@ namespace Google.Cloud.Functions.Hosting.Logging
     /// </summary>
     internal class JsonConsoleLogger : LoggerBase
     {
-        internal JsonConsoleLogger(string category) : base(category)
-        {
-        }
+        private readonly TextWriter _console;
+
+        internal JsonConsoleLogger(string category, TextWriter console)
+            : base(category) => _console = console;
 
         protected override void LogImpl<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, string formattedMessage)
         {
@@ -76,12 +77,21 @@ namespace Google.Cloud.Functions.Hosting.Logging
                         key = "_" + key;
                     }
                     writer.WritePropertyName(key);
-                    writer.WriteValue(pair.Value?.ToString() ?? "");
+                    writer.WriteValue(ToInvariantString(pair.Value));
                 }
                 writer.WriteEndObject();
             }
+
+            // Write the scopes as an array property, but only if there are any.            
+            ScopeProvider.ForEachScope(WriteScope, writer);
+            // If there are no scopes, the write state will still be "object". If
+            // we've written at least one scope, the write state will be "array".
+            if (writer.WriteState == WriteState.Array)
+            {
+                writer.WriteEndArray();
+            }
             writer.WriteEndObject();
-            Console.WriteLine(builder);
+            _console.WriteLine(builder);            
 
             // Checks that fields is:
             // - Non-empty
@@ -105,6 +115,37 @@ namespace Google.Cloud.Functions.Hosting.Logging
                     // if and only if there's at least one more entry.
                     return iterator.MoveNext();
                 }
+            }
+        }
+
+        private static void WriteScope(object value, JsonWriter writer)
+        {
+            // Detect "first scope" and start the scopes array property.
+            if (writer.WriteState == WriteState.Object)
+            {
+                writer.WritePropertyName("scopes");
+                writer.WriteStartArray();
+            }
+
+            if (value is IEnumerable<KeyValuePair<string, object>> kvps)
+            {
+                writer.WriteStartObject();
+                foreach (var pair in kvps)
+                {
+                    string key = pair.Key;
+                    if (string.IsNullOrEmpty(key))
+                    {
+                        continue;
+                    }
+                    writer.WritePropertyName(key);
+                    writer.WriteValue(ToInvariantString(pair.Value));
+                }
+                writer.WriteEndObject();
+            }
+            else
+            {
+                // TODO: Consider special casing integers etc.
+                writer.WriteValue(ToInvariantString(value));
             }
         }
     }
