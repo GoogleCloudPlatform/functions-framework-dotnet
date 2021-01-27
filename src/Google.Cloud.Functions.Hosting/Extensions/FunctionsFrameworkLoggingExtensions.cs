@@ -25,7 +25,8 @@ namespace Microsoft.Extensions.Logging
     public static class FunctionsFrameworkLoggingExtensions
     {
         /// <summary>
-        /// Adds a Functions Framework console logger, either using a "single line per log entry" plain text format or a JSON format,
+        /// Adds a Functions Framework console logger, either using a "single line per log entry"
+        /// plain text format (with separate lines for scopes and exceptions, when present) or a JSON format,
         /// depending on the execution environment.
         /// </summary>
         /// <param name="builder">The logging builder to add the logger to.</param>
@@ -35,8 +36,8 @@ namespace Microsoft.Extensions.Logging
         {
             var options = FunctionsFrameworkOptions.FromConfiguration(context.Configuration);
             ILoggerProvider provider = options.JsonLogging
-                ? new FactoryLoggerProvider(category => new JsonConsoleLogger(category))
-                : new FactoryLoggerProvider(category => new SimpleConsoleLogger(category));
+                ? new FactoryLoggerProvider(category => new JsonConsoleLogger(category, System.Console.Out))
+                : new FactoryLoggerProvider(category => new SimpleConsoleLogger(category, System.Console.Out));
             builder.AddProvider(provider);
             return builder;
         }

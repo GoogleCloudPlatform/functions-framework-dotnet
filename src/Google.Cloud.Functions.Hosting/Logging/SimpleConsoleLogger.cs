@@ -14,14 +14,19 @@
 
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Text;
+using static System.FormattableString;
 
 namespace Google.Cloud.Functions.Hosting.Logging
 {
     internal class SimpleConsoleLogger : LoggerBase
     {
-        internal SimpleConsoleLogger(string category) : base(category)
-        {
-        }
+        private readonly TextWriter _console;
+
+        internal SimpleConsoleLogger(string category, TextWriter console)
+            : base(category) => _console = console;
 
         protected override void LogImpl<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, string formattedMessage)
         {
@@ -37,12 +42,54 @@ namespace Google.Cloud.Functions.Hosting.Logging
                 _ => throw new ArgumentOutOfRangeException(nameof(logLevel))
             };
 
-            Console.WriteLine($"{DateTime.UtcNow:yyyy-MM-dd'T'HH:mm:ss.fff'Z'} [{Category}] [{briefLevel}] {formattedMessage}");
-            // Note: it's not ideal to break out of the "one line per log entry" approach here, but there's no particularly
-            // nice way of getting all the relevant information otherwise.
+            StringBuilder scopeBuilder = new StringBuilder();
+            ScopeProvider.ForEachScope(AppendScope, scopeBuilder);
+
+            _console.WriteLine(Invariant($"{DateTime.UtcNow:yyyy-MM-dd'T'HH:mm:ss.fff'Z'} [{Category}] [{briefLevel}] {formattedMessage}"));
+            // Note: it's not ideal to break out of the "one line per log entry" approach for either scopes or exceptions,
+            // but there's no particularly nice way of getting all the relevant information otherwise.
+            if (scopeBuilder.Length != 0)
+            {
+                _console.WriteLine($"Scopes: [{scopeBuilder}]");
+            }
+
             if (exception is object)
             {
-                Console.WriteLine(exception);
+                _console.WriteLine(ToInvariantString(exception));
+            }
+        }
+
+        private void AppendScope(object value, StringBuilder builder)
+        {
+            if (builder.Length != 0)
+            {
+                builder.Append(", ");
+            }
+            // If the scope is a dictionary, format it as key/value pairs
+            if (value is IEnumerable<KeyValuePair<string, object>> kvps)
+            {
+                builder.Append("{ ");
+                bool first = true;
+                foreach (var pair in kvps)
+                {
+                    if (first)
+                    {
+                        first = false;
+                    }
+                    else
+                    {
+                        builder.Append(", ");
+                    }
+                    builder.Append(pair.Key);
+                    builder.Append(": ");
+                    builder.Append(ToInvariantString(pair.Value));
+                }
+                builder.Append(" }");
+            }
+            // Otherwise, format it invariently
+            else
+            {
+                builder.Append(ToInvariantString(value));
             }
         }
     }
