@@ -18,6 +18,7 @@ using Google.Events.Protobuf;
 using Google.Events.Protobuf.Cloud.PubSub.V1;
 using Google.Events.Protobuf.Cloud.Storage.V1;
 using Google.Events.Protobuf.Firebase.Analytics.V1;
+using Google.Events.Protobuf.Firebase.Auth.V1;
 using Google.Events.Protobuf.Firebase.Database.V1;
 using Google.Protobuf.WellKnownTypes;
 using Google.Type;
@@ -192,6 +193,14 @@ namespace Google.Cloud.Functions.Framework.Tests.GcfEvents
 
             Assert.Equal(4, userDim.UserProperties.Count);
             Assert.Equal("true", userDim.UserProperties["completed_tutorial"].Value.StringValue);
+        }
+
+        [Fact]
+        public async Task FirebaseAuth_MetadataNamesAdjusted()
+        {
+            var authData = await ConvertAndDeserialize<AuthEventData>("firebase-auth1.json");
+            Assert.Equal(new System.DateTime(2020, 5, 26, 10, 42, 27), authData.Metadata.CreateTime.ToDateTime());
+            Assert.Equal(new System.DateTime(2020, 5, 29, 11, 00, 00), authData.Metadata.LastSignInTime.ToDateTime());
         }
 
         private static async Task<T> ConvertAndDeserialize<T>(string resourceName) where T : class

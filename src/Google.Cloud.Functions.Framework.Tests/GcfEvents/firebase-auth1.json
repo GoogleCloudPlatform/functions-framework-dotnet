@@ -2,7 +2,8 @@
   "data": {
     "email": "test@nowhere.com",
     "metadata": {
-      "createdAt": "2020-05-26T10:42:27Z"
+      "createdAt": "2020-05-26T10:42:27Z",
+      "lastSignedInAt": "2020-05-29T11:00:00Z"
     },
     "providerData": [
       {
