@@ -16,6 +16,7 @@ using CloudNative.CloudEvents;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Mime;
@@ -295,6 +296,33 @@ namespace Google.Cloud.Functions.Framework.GcfEvents
                     subject = $"users/{uidElement.GetString()}";
                 }
                 return (source, subject);
+            }
+
+            /// <summary>
+            /// Rename fields within metadata: lastSignedInAt => lastSignInTime, and createdAt => createTime.
+            /// </summary>
+            /// <param name="request"></param>
+            protected override void MaybeReshapeData(Request request)
+            {
+                if (request.Data.TryGetValue("metadata", out var metadata) &&
+                    metadata is JsonElement metadataElement &&
+                    metadataElement.ValueKind == JsonValueKind.Object)
+                {
+                    // JsonElement itself is read-only, but we can just replace the value with a
+                    // Dictionary<string, JsonElement> that has the appropriate key/value pairs.
+                    var metadataDict = new Dictionary<string, JsonElement>();
+                    foreach (var item in metadataElement.EnumerateObject())
+                    {
+                        string name = item.Name switch
+                        {
+                            "lastSignedInAt" => "lastSignInTime",
+                            "createdAt" => "createTime",
+                            var x => x
+                        };
+                        metadataDict[name] = item.Value;
+                    }
+                    request.Data["metadata"] = metadataDict;
+                }
             }
         }
 
