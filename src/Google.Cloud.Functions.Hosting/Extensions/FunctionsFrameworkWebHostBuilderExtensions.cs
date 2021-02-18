@@ -13,6 +13,9 @@
 // limitations under the License.
 
 using Google.Cloud.Functions.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Reflection;
 
@@ -24,6 +27,44 @@ namespace Microsoft.AspNetCore.Hosting
     /// </summary>
     public static class FunctionsFrameworkWebHostBuilderExtensions
     {
+        /// <summary>
+        /// Performs all the necessary configuration on an <see cref="IWebHostBuilder"/> so that it can uses the Functions
+        /// Framework. Most users will not need to call this method directly, but it allows for additional customization
+        /// of the host builder.
+        /// </summary>
+        /// <param name="builder">The web host builder to configure.</param>
+        /// <param name="functionAssembly">The assembly containing the function.</param>
+        /// <param name="args">The command line arguments.</param>
+        /// <returns>The original builder, for method chaining.</returns>
+        public static IWebHostBuilder ConfigureFunctionsFramework(this IWebHostBuilder builder, Assembly functionAssembly, string[] args)
+        {
+            // Guess the function type by creating a configuration with just the environment variables and command line
+            // arguments in it. We do this so we can work out the function startup classes to use - and then validate that
+            // when we've used those functions startups and worked out the actual function target, the set of
+            // function startups is still valid. Note that it's possible for this to return null, if an assembly-specified
+            // function startup determines the actual function target. That's valid, so long as the function target doesn't
+            // later require any specific startups. (It would be very, very rare for a startup to affect which function is
+            // used, but I can imagine some scenarios where it's useful.)
+            var expectedFunctionTarget = GuessFunctionTarget();
+
+            var ret = builder.ConfigureAppConfiguration(builder => builder.AddFunctionsEnvironment().AddFunctionsCommandLine(args))
+                .ConfigureLogging((context, logging) => logging.ClearProviders().AddFunctionsConsoleLogging(context))
+                .ConfigureKestrelForFunctionsFramework()
+                .ConfigureServices((context, services) => services.AddFunctionTarget(context, functionAssembly))
+                .UseFunctionsStartups(functionAssembly, expectedFunctionTarget);
+            ret = ret.Configure((context, app) => app.UseFunctionsFramework(context, validateStartups: true));
+            return ret;
+
+            Type? GuessFunctionTarget()
+            {
+                var configuration = new ConfigurationBuilder()
+                    .AddFunctionsEnvironment()
+                    .AddFunctionsCommandLine(args)
+                    .Build();
+                return HostingInternals.TryGetFunctionTarget(configuration, functionAssembly);
+            }
+        }
+
         /// <summary>
         /// Configures Kestrel to listen to the port and address specified in the Functions Framework configuration.
         /// </summary>
