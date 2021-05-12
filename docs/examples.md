@@ -89,7 +89,7 @@ gcloud functions deploy simple-http \
 ## SimpleEventFunction
 
 The [SimpleEventFunction](../examples/Google.Cloud.Functions.Examples.SimpleEventFunction)
-function is the result of creating a new Cloud Event function via the
+function is the result of creating a new CloudEvent function via the
 template using the following command line:
 
 ```sh
@@ -111,7 +111,7 @@ gcloud functions deploy simple-event \
 ## SimpleUntypedEventFunction
 
 The [SimpleUntypedEventFunction](../examples/Google.Cloud.Functions.Examples.SimpleUntypedEventFunction)
-function is the result of creating a new untyped Cloud Event function via the
+function is the result of creating a new untyped CloudEvent function via the
 template using the following command line:
 
 ```sh
@@ -153,7 +153,7 @@ gcloud functions deploy vb-http \
 ## VbEventFunction
 
 The [VbEventFunction](../examples/Google.Cloud.Functions.Examples.VbEventFunction)
-function is the result of creating a new Cloud Event function via the
+function is the result of creating a new CloudEvent function via the
 template using the following command line:
 
 ```sh
@@ -176,7 +176,7 @@ gcloud functions deploy vb-event \
 
 The
 [VbUntypedEventFunction](../examples/Google.Cloud.Functions.Examples.VbUntypedEventFunction)
-function is the result of creating a new untyped Cloud Event function via the
+function is the result of creating a new untyped CloudEvent function via the
 template using the following command line:
 
 ```sh
@@ -218,7 +218,7 @@ gcloud functions deploy fsharp-http \
 ## FSharpEventFunction
 
 The [FSharpEventFunction](../examples/Google.Cloud.Functions.Examples.FSharpEventFunction)
-function is the result of creating a new Cloud Event function via the
+function is the result of creating a new CloudEvent function via the
 template using the following command line:
 
 ```sh
@@ -240,7 +240,7 @@ gcloud functions deploy fsharp-event \
 ## FSharpUntypedEventFunction
 
 The [FSharpUntypedEventFunction](../examples/Google.Cloud.Functions.Examples.FSharpUntypedEventFunction)
-function is the result of creating a new untyped Cloud Event function via the
+function is the result of creating a new untyped CloudEvent function via the
 template using the following command line:
 
 ```sh

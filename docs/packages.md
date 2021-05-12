@@ -58,7 +58,7 @@ contains:
 The framework depends on ASP.NET Core, and also the
 [CloudNative.CloudEvents
 package](https://github.com/cloudevents/sdk-csharp) for
-[CNCF Cloud Events](https://cloudevents.io/).
+[CNCF CloudEvents](https://cloudevents.io/).
 
 Cloud Functions can depend on just the types within this package in
 order to be portable however they're hosted.
@@ -119,6 +119,6 @@ depend on the Google.Cloud.Functions.Framework package. If you
 include the dependency and implement `IHttpFunction`, you can switch
 freely between your custom code and the hosting package. Likewise
 you may wish to use the adapters to perform the boilerplate request
-parsing for Cloud events. But no server-side code will treat your
+parsing for CloudEvents. But no server-side code will treat your
 function differently based on whether or not it happens to depend on
 Google.Cloud.Functions.Framework.

@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 namespace Google.Cloud.Functions.Framework
 {
     /// <summary>
-    /// An adapter to implement an HTTP Function based on a Cloud Event Function, with built-in event deserialization.
+    /// An adapter to implement an HTTP Function based on a CloudEvent Function, with built-in event deserialization.
     /// </summary>
     public sealed class CloudEventAdapter<TData> : IHttpFunction where TData : class
     {
@@ -29,9 +29,9 @@ namespace Google.Cloud.Functions.Framework
         private readonly ILogger _logger;
 
         /// <summary>
-        /// Constructs a new instance based on the given Cloud Event Function.
+        /// Constructs a new instance based on the given CloudEvent Function.
         /// </summary>
-        /// <param name="function">The Cloud Event Function to invoke.</param>
+        /// <param name="function">The CloudEvent Function to invoke.</param>
         /// <param name="logger">The logger to use to report errors.</param>
         public CloudEventAdapter(ICloudEventFunction<TData> function, ILogger<CloudEventAdapter<TData>> logger)
         {
@@ -40,9 +40,9 @@ namespace Google.Cloud.Functions.Framework
         }
 
         /// <summary>
-        /// Handles an HTTP request by extracting the Cloud Event from it, deserializing the data, and passing
-        /// both the event and the data to the original Cloud Event Function.
-        /// The request fails if it does not contain a Cloud Event.
+        /// Handles an HTTP request by extracting the CloudEvent from it, deserializing the data, and passing
+        /// both the event and the data to the original CloudEvent Function.
+        /// The request fails if it does not contain a CloudEvent.
         /// </summary>
         /// <param name="context">The HTTP context containing the request and response.</param>
         /// <returns>A task representing the asynchronous operation.</returns>

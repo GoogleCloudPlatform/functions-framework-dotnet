@@ -87,7 +87,7 @@ Here is how to build and run a deployable container on your local machine.
 
 1. Send a request to this function by navigating to `localhost:8080`. You should see the output `Hello, Functions Framework.`
 
-## Cloud Event Functions
+## CloudEvent Functions
 
 After installing the same template package described above, use the
 `gcf-event` template:
@@ -108,12 +108,12 @@ object to Google Cloud Storage, the sample event will log the
 details of the new event, including some properties of the storage
 object.
 
-The procedure for running a Cloud Event Function is exactly the same
+The procedure for running a CloudEvent Function is exactly the same
 as for an HTTP Function.
 
 The type argument to the generic `ICloudEventFunction<TData>` interface
 expresses the type of data your function expects within the
-Cloud Event. The data type should be annotated with
+CloudEvent. The data type should be annotated with
 [CloudEventDataConverterAttribute](https://github.com/googleapis/google-cloudevents-dotnet/blob/master/src/Google.Events/CloudEventDataConverterAttribute.cs)
 to indicate how to convert from a CloudEvent to the data type.
 Typically this is a type from the
@@ -127,15 +127,15 @@ for more information about these packages.
 > Google Cloud Functions support for events predates the CNCF Cloud
 > Events initiative. The types in the `Google.Cloud.Functions.Framework.GcfEvents`
 > namespace provide payloads for these events. The Functions Framework
-> converts the Google Cloud Functions representation into a Cloud Event
+> converts the Google Cloud Functions representation into a CloudEvent
 > representation transparently, so as a developer you only need to
-> handle Cloud Events.
+> handle CloudEvents.
 
-### Untyped Cloud Event Functions
+### Untyped CloudEvent Functions
 
-If you are experimenting with Cloud Events and don't yet have a
+If you are experimenting with CloudEvents and don't yet have a
 payload data model you wish to commit to, or you want your function
-to be able to handle *any* Cloud Event, you can implement the
+to be able to handle *any* CloudEvent, you can implement the
 non-generic `ICloudEventFunction` interface. Your function's method
 will then just be passed a `CloudEvent`, with no separate data object.
 
@@ -149,7 +149,7 @@ dotnet new gcf-untyped-event
 ```
 
 This will create a function that simply logs the information about
-any Cloud Event it receives.
+any CloudEvent it receives.
 
 ## VB and F# support
 

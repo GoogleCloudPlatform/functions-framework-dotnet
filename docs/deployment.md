@@ -70,7 +70,7 @@ On successful deployment, details of the deployed function will be
 displayed, including the URL. Visit the URL in a browser to invoke
 your function.
 
-### Cloud Event functions
+### CloudEvent functions
 
 When you deploy a function listening for a particular event, you
 have to specify the *event trigger* as part of the deployment
