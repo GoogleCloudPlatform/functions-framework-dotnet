@@ -17,11 +17,11 @@ namespace MyFunction
     public class Function : ICloudEventFunction<StorageObjectData>
     {
         /// <summary>
-        /// Logic for your function goes here. Note that a Cloud Event function just consumes an event;
+        /// Logic for your function goes here. Note that a CloudEvent function just consumes an event;
         /// it doesn't provide any response.
         /// </summary>
-        /// <param name="cloudEvent">The Cloud Event your function should consume.</param>
-        /// <param name="data">The deserialized data within the Cloud Event.</param>
+        /// <param name="cloudEvent">The CloudEvent your function should consume.</param>
+        /// <param name="data">The deserialized data within the CloudEvent.</param>
         /// <param name="cancellationToken">A cancellation token that is notified if the request is aborted.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
         public Task HandleAsync(CloudEvent cloudEvent, StorageObjectData data, CancellationToken cancellationToken)
@@ -31,7 +31,7 @@ namespace MyFunction
             Console.WriteLine($"  Bucket: {data.Bucket}");
             Console.WriteLine($"  Size: {data.Size}");
             Console.WriteLine($"  Content type: {data.ContentType}");
-            Console.WriteLine("Cloud event information:");
+            Console.WriteLine("CloudEvent information:");
             Console.WriteLine($"  ID: {cloudEvent.Id}");
             Console.WriteLine($"  Source: {cloudEvent.Source}");
             Console.WriteLine($"  Type: {cloudEvent.Type}");

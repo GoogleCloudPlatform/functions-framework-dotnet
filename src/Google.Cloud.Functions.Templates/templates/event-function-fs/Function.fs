@@ -15,11 +15,11 @@ open System.Threading.Tasks
 type Function() =
     interface ICloudEventFunction<StorageObjectData> with
         /// <summary>
-        /// Logic for your function goes here. Note that a Cloud Event function just consumes an event;
+        /// Logic for your function goes here. Note that a CloudEvent function just consumes an event;
         /// it doesn't provide any response.
         /// </summary>
-        /// <param name="cloudEvent">The Cloud Event your function should consume.</param>
-        /// <param name="data">The deserialized data within the Cloud Event.</param>
+        /// <param name="cloudEvent">The CloudEvent your function should consume.</param>
+        /// <param name="data">The deserialized data within the CloudEvent.</param>
         /// <param name="cancellationToken">A cancellation token that is notified if the request is aborted.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
         member this.HandleAsync(cloudEvent, data, cancellationToken) =
@@ -28,7 +28,7 @@ type Function() =
             printfn "  Bucket: %s" data.Bucket
             printfn "  Size: %i" data.Size
             printfn "  Content type: %s" data.ContentType
-            printfn "Cloud event information:"
+            printfn "CloudEvent information:"
             printfn "  ID: %s" cloudEvent.Id
             printfn "  Source: %O" cloudEvent.Source
             printfn "  Type: %s" cloudEvent.Type

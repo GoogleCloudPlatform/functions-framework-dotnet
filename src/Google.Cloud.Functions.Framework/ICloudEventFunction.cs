@@ -19,14 +19,14 @@ using System.Threading.Tasks;
 namespace Google.Cloud.Functions.Framework
 {
     /// <summary>
-    /// Function accepting a Cloud Event without performing any kind of data deserialization.
+    /// Function accepting a CloudEvent without performing any type-specific data deserialization.
     /// </summary>
     public interface ICloudEventFunction
     {
         /// <summary>
-        /// Asynchronously handles the specified Cloud Event.
+        /// Asynchronously handles the specified CloudEvent.
         /// </summary>
-        /// <param name="cloudEvent">The Cloud Event extracted from the request.</param>
+        /// <param name="cloudEvent">The CloudEvent extracted from the request.</param>
         /// <param name="cancellationToken">A cancellation token which indicates if the request is aborted.</param>
         /// <returns>A task representing the potentially-asynchronous handling of the event.
         /// If the task completes, the function is deemed to be successful.</returns>
@@ -34,16 +34,17 @@ namespace Google.Cloud.Functions.Framework
     }
 
     /// <summary>
-    /// Function accepting a Cloud Event expecting a particular data type, which is automatically deserialized
+    /// Function accepting a CloudEvent expecting a particular data type, which is automatically deserialized
     /// before function invocation.
     /// </summary>
-    /// <typeparam name="TData"></typeparam>
+    /// <typeparam name="TData">The expected type of the CloudEvent data. This type must be decorated
+    /// with <see cref="CloudEventFormatterAttribute"/> to indicate how to deserialize the CloudEvent.</typeparam>
     public interface ICloudEventFunction<TData> where TData : class
     {
         /// <summary>
-        /// Asynchronously handles the specified Cloud Event.
+        /// Asynchronously handles the specified CloudEvent.
         /// </summary>
-        /// <param name="cloudEvent">The original Cloud Event extracted from the request.</param>
+        /// <param name="cloudEvent">The original CloudEvent extracted from the request.</param>
         /// <param name="data">The deserialized object constructed from the data.</param>
         /// <param name="cancellationToken">A cancellation token which indicates if the request is aborted.</param>
         /// <returns>A task representing the potentially-asynchronous handling of the event.
