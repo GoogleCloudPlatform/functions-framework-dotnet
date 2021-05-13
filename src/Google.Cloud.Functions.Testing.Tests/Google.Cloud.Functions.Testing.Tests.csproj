@@ -9,7 +9,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Google.Cloud.Functions.Testing\Google.Cloud.Functions.Testing.csproj" />
-    <PackageReference Include="Google.Events.Protobuf" Version="1.0.0-beta03" />
+    <PackageReference Include="Google.Events.Protobuf" Version="1.0.0-beta04" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
     <PackageReference Include="xunit" Version="2.4.0" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.0" />

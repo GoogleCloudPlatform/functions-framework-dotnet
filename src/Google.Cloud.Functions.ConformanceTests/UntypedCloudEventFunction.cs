@@ -13,11 +13,9 @@
 // limitations under the License.
 
 using CloudNative.CloudEvents;
+using CloudNative.CloudEvents.SystemTextJson;
 using Google.Cloud.Functions.Framework;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System.IO;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -26,26 +24,9 @@ public class UntypedCloudEventFunction : ICloudEventFunction
 {
     public async Task HandleAsync(CloudEvent cloudEvent, CancellationToken cancellationToken)
     {
-        // This is an example of how CloudEvents are unfortunately inconsistent when it
-        // comes to Data. Is it "pre-serialized" or not? We prevent parsing date/time values,
-        // so that we can get as close to the original JSON as possible.
-        var settings = new JsonSerializerSettings { DateParseHandling = DateParseHandling.None };
-        cloudEvent.Data = JsonConvert.DeserializeObject<JObject>((string) cloudEvent.Data, settings);
-
-        // Work around https://github.com/cloudevents/sdk-csharp/issues/59
-        var attributes = cloudEvent.GetAttributes();
-        var attributeKeys = attributes.Keys.ToList();
-        foreach (var key in attributeKeys)
-        {
-            var lowerKey = key.ToLowerInvariant();
-            var value = attributes[key];
-            attributes.Remove(key);
-            attributes[lowerKey] = value;
-        }
-
         // Write out a structured JSON representation of the CloudEvent
         var formatter = new JsonEventFormatter();
-        var bytes = formatter.EncodeStructuredEvent(cloudEvent, out var contentType);
+        var bytes = formatter.EncodeStructuredModeMessage(cloudEvent, out var contentType);
         await File.WriteAllBytesAsync("function_output.json", bytes);
     }
 }

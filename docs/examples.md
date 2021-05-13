@@ -295,6 +295,33 @@ gcloud functions deploy advanced-dependency-injection \
   --entry-point Google.Cloud.Functions.Examples.AdvancedDependencyInjection.Function
 ```
 
+## CustomEventDataFunction
+
+
+The [CustomEventDataFunction](../examples/Google.Cloud.Functions.Examples.CustomEventDataFunction)
+example demonstrates how a CloudEvent function can specify a
+CloudEventFormatter to use when deserializing the CloudEvent. If the
+target data type for the CloudEvent function is annotated with the
+`CloudEventFormatterAttribute` type, the formatter specified by that
+attribute is used automatically. Otherwise, a `CloudEventFormatter`
+must be added as a dependency via a Functions Startup class. 
+
+The same approach can be used for untyped CloudEvent functions.
+Those use
+`CloudNative.CloudEvents.SystemTextJson.JsonEventFormatter` by
+default, but injecting a different `CloudEventFormatter` in a
+startup class will instruct the framework to use that formatter.
+
+```sh
+gcloud functions deploy advanced-dependency-injection \
+  --runtime dotnet3 \
+  --trigger-http \
+  --allow-unauthenticated \
+```
+
+(Note that this deployment example specified `--trigger-http` as it
+doesn't correspond to any Google CloudEvent type.)
+
 ## TestableDependencies
 
 The [TestableDependencies](../examples/Google.Cloud.Functions.Examples.TestableDependencies)
@@ -445,7 +472,7 @@ for more details.
 Sample deployment, from the `examples` directory:
 
 ```sh
-gcloud beta functions deploy multi-project \
+gcloud functions deploy multi-project \
   --runtime dotnet3 \
   --trigger-http \
   --entry-point=Google.Cloud.Functions.Examples.MultiProjectFunction.Function

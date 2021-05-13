@@ -13,8 +13,12 @@
 // limitations under the License.
 
 using CloudNative.CloudEvents;
+using CloudNative.CloudEvents.AspNetCore;
+using CloudNative.CloudEvents.Http;
+using Google.Cloud.Functions.Framework.GcfEvents;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Threading.Tasks;
 
 namespace Google.Cloud.Functions.Framework
@@ -25,16 +29,19 @@ namespace Google.Cloud.Functions.Framework
     public sealed class CloudEventAdapter : IHttpFunction
     {
         private readonly ICloudEventFunction _function;
+        private readonly CloudEventFormatter _formatter;
         private readonly ILogger _logger;
 
         /// <summary>
         /// Constructs a new instance based on the given CloudEvent Function.
         /// </summary>
         /// <param name="function">The CloudEvent Function to invoke.</param>
+        /// <param name="formatter">The CloudEvent formatter to use when deserializing requests.</param>
         /// <param name="logger">The logger to use to report errors.</param>
-        public CloudEventAdapter(ICloudEventFunction function, ILogger<CloudEventAdapter> logger)
+        public CloudEventAdapter(ICloudEventFunction function, CloudEventFormatter formatter, ILogger<CloudEventAdapter> logger)
         {
             _function = Preconditions.CheckNotNull(function, nameof(function));
+            _formatter = Preconditions.CheckNotNull(formatter, nameof(formatter));
             _logger = Preconditions.CheckNotNull(logger, nameof(logger));
         }
 
@@ -50,9 +57,9 @@ namespace Google.Cloud.Functions.Framework
 
             try
             {
-                cloudEvent = await CloudEventConverter.ConvertRequest(context.Request);
+                cloudEvent = await ConvertRequestAsync(context.Request, _formatter);
             }
-            catch (CloudEventConverter.ConversionException e)
+            catch (Exception e)
             {
                 context.Response.StatusCode = 400;
                 _logger.LogError(e.Message);
@@ -60,5 +67,17 @@ namespace Google.Cloud.Functions.Framework
             }
             await _function.HandleAsync(cloudEvent, context.RequestAborted);
         }
+
+        /// <summary>
+        /// Converts an HTTP request into a CloudEvent, either using regular CloudEvent parsing,
+        /// or GCF event conversion if necessary.
+        /// </summary>
+        /// <param name="request">The request to convert.</param>
+        /// <param name="formatter">The formatter to use for conversion.</param>
+        /// <returns>A valid CloudEvent</returns>
+        internal static Task<CloudEvent> ConvertRequestAsync(HttpRequest request, CloudEventFormatter formatter) =>
+            request.IsCloudEvent()
+            ? request.ToCloudEventAsync(formatter)
+            : GcfConverters.ConvertGcfEventToCloudEvent(request, formatter);
     }
 }

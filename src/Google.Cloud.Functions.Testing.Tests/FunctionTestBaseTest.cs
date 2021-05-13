@@ -29,11 +29,13 @@ namespace Google.Cloud.Functions.Testing.Tests
         [Fact]
         public async Task ExecuteCloudEventAsync_CloudEvent()
         {
-            var cloudEvent = new CloudEvent(
-                StorageObjectData.FinalizedCloudEventType,
-                new Uri("//storage", UriKind.RelativeOrAbsolute));
-            var data = new StorageObjectData { Name = "test1" };
-            CloudEventConverters.PopulateCloudEvent(cloudEvent, data);
+            var cloudEvent = new CloudEvent
+            {
+                Id = "event-id",
+                Type = StorageObjectData.FinalizedCloudEventType,
+                Source = new Uri("//storage", UriKind.RelativeOrAbsolute),
+                Data = new StorageObjectData { Name = "test1" }
+            };
 
             using var test = new Test<StorageObjectFunction>();
             await test.ExecuteCloudEventRequestAsync(cloudEvent);

@@ -114,14 +114,13 @@ as for an HTTP Function.
 The type argument to the generic `ICloudEventFunction<TData>` interface
 expresses the type of data your function expects within the
 CloudEvent. The data type should be annotated with
-[CloudEventDataConverterAttribute](https://github.com/googleapis/google-cloudevents-dotnet/blob/master/src/Google.Events/CloudEventDataConverterAttribute.cs)
-to indicate how to convert from a CloudEvent to the data type.
+[CloudEventFormatterAttribute](https://github.com/cloudevents/sdk-csharp/blob/master/src/CloudNative.CloudEvents/CloudEventFormatterAttribute.cs)
+to indicate an appropriate `CloudEventFormatter` which knows how to parse the CloudEvent, including its data.
 Typically this is a type from the
-[Google.Events.Protobuf](https://www.nuget.org/packages/Google.Events.Protobuf) or
-[Google.Events.SystemTextJson](https://www.nuget.org/packages/Google.Events.SystemTextJson)
+[Google.Events.Protobuf](https://www.nuget.org/packages/Google.Events.Protobuf)
 package. See the [google-cloudevents-dotnet
 README](https://github.com/googleapis/google-cloudevents-dotnet/blob/master/README.md)
-for more information about these packages.
+for more information about this package.
 
 > **Note:**  
 > Google Cloud Functions support for events predates the CNCF Cloud

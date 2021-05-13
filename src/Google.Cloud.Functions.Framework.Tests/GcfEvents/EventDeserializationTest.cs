@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using CloudNative.CloudEvents;
 using Google.Cloud.Functions.Framework.GcfEvents;
 using Google.Events;
 using Google.Events.Protobuf;
@@ -206,8 +207,10 @@ namespace Google.Cloud.Functions.Framework.Tests.GcfEvents
         private static async Task<T> ConvertAndDeserialize<T>(string resourceName) where T : class
         {
             var context = GcfEventResources.CreateHttpContext(resourceName);
-            var cloudEvent = await GcfConverters.ConvertGcfEventToCloudEvent(context.Request);
-            return CloudEventConverters.ConvertCloudEventData<T>(cloudEvent);
+            var formatter = CloudEventFormatterAttribute.CreateFormatter(typeof(T))
+                ?? throw new InvalidOperationException("No formatter available");
+            var cloudEvent = await GcfConverters.ConvertGcfEventToCloudEvent(context.Request, formatter);
+            return (T) cloudEvent.Data;
         }
     }
 }

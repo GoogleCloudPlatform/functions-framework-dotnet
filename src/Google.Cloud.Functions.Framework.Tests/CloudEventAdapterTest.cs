@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using CloudNative.CloudEvents;
+using CloudNative.CloudEvents.SystemTextJson;
 using Google.Cloud.Functions.Framework.Tests.GcfEvents;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -29,7 +30,7 @@ namespace Google.Cloud.Functions.Framework.Tests
         public async Task InvalidRequest_FunctionNotCalled()
         {
             var function = new TestCloudEventFunction();
-            var adapter = new CloudEventAdapter(function, new NullLogger<CloudEventAdapter>());
+            var adapter = new CloudEventAdapter(function, new JsonEventFormatter(), new NullLogger<CloudEventAdapter>());
             var context = new DefaultHttpContext();
             await adapter.HandleAsync(context);
             Assert.Equal(400, context.Response.StatusCode);
@@ -40,7 +41,7 @@ namespace Google.Cloud.Functions.Framework.Tests
         public async Task ValidRequest_FunctionCalled()
         {
             var function = new TestCloudEventFunction();
-            var adapter = new CloudEventAdapter(function, new NullLogger<CloudEventAdapter>());
+            var adapter = new CloudEventAdapter(function, new JsonEventFormatter(), new NullLogger<CloudEventAdapter>());
             string eventId = Guid.NewGuid().ToString();
             var context = new DefaultHttpContext
             {
@@ -66,7 +67,7 @@ namespace Google.Cloud.Functions.Framework.Tests
         public async Task ValidRequest_GcfEventIsConverted()
         {
             var function = new TestCloudEventFunction();
-            var adapter = new CloudEventAdapter(function, new NullLogger<CloudEventAdapter>());
+            var adapter = new CloudEventAdapter(function, new JsonEventFormatter(), new NullLogger<CloudEventAdapter>());
             var context = GcfEventResources.CreateHttpContext("storage.json");
             await adapter.HandleAsync(context);
             Assert.Equal(200, context.Response.StatusCode);

@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
@@ -6,6 +6,6 @@
 
   <ItemGroup>
     <PackageReference Include="Google.Cloud.Functions.Hosting" Version="1.0.0-beta04" />
-    <PackageReference Include="Google.Events.Protobuf" Version="1.0.0-beta04" />
+    <PackageReference Include="CloudNative.CloudEvents.NewtonsoftJson" Version="2.0.0-beta.3" />
   </ItemGroup>
 </Project>
