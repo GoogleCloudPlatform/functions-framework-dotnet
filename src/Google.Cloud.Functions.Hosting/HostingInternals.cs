@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using CloudNative.CloudEvents;
+using CloudNative.CloudEvents.SystemTextJson;
 using Google.Cloud.Functions.Framework;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -166,13 +168,21 @@ namespace Google.Cloud.Functions.Hosting
             {
                 services
                     .AddScoped<IHttpFunction, CloudEventAdapter>()
+                    .AddSingleton<CloudEventFormatter>(new JsonEventFormatter())
                     .AddScoped(typeof(ICloudEventFunction), functionType);
             }
             else if (GetGenericInterfaceImplementationTypeArgument(functionType, typeof(ICloudEventFunction<>)) is Type payloadType)
             {
+                // Note: the formatter may be null, but that may be okay. We add it to dependency injection anyway,
+                // so that if the user hasn't configured a formatter themselves, we can give a helpful error message
+                // in the CloudEventAdatper<TData> constructor.
+                var formatter = CloudEventFormatterAttribute.CreateFormatter(payloadType);
                 services
                     .AddScoped(typeof(IHttpFunction), typeof(CloudEventAdapter<>).MakeGenericType(payloadType))
-                    .AddScoped(typeof(ICloudEventFunction<>).MakeGenericType(payloadType), functionType);
+                    .AddScoped(typeof(ICloudEventFunction<>).MakeGenericType(payloadType), functionType)
+                    // Note: we can't just add formatter, as that might be null, which throws.
+                    // A dependency function is allowed to return null though.
+                    .AddSingleton(provider => formatter);
             }
             else
             {

@@ -13,11 +13,13 @@
 // limitations under the License.
 
 using CloudNative.CloudEvents;
+using CloudNative.CloudEvents.SystemTextJson;
 using Google.Cloud.Functions.Framework.GcfEvents;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.IO;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -25,6 +27,8 @@ namespace Google.Cloud.Functions.Framework.Tests.GcfEvents
 {
     public class GcfConvertersTest
     {
+        private static readonly CloudEventFormatter s_jsonFormatter = new JsonEventFormatter();
+
         // Checks a basic mapping for each event source
         [Theory]
         [InlineData("storage.json", "google.cloud.storage.object.v1.finalized", "//storage.googleapis.com/projects/_/buckets/some-bucket", "objects/folder/Test.cs")]
@@ -40,7 +44,7 @@ namespace Google.Cloud.Functions.Framework.Tests.GcfEvents
         public async Task ConvertGcfEvent(string resourceName, string expectedType, string expectedSource, string expectedSubject)
         {
             var context = GcfEventResources.CreateHttpContext(resourceName);
-            var cloudEvent = await GcfConverters.ConvertGcfEventToCloudEvent(context.Request);
+            var cloudEvent = await GcfConverters.ConvertGcfEventToCloudEvent(context.Request, s_jsonFormatter);
             Assert.Equal(expectedType, cloudEvent.Type);
             Assert.Equal(expectedSource, cloudEvent.Source.ToString());
             Assert.Equal(expectedSubject, cloudEvent.Subject);
@@ -51,16 +55,16 @@ namespace Google.Cloud.Functions.Framework.Tests.GcfEvents
         public async Task CheckAllProperties()
         {
             var context = GcfEventResources.CreateHttpContext("storage.json");
-            var cloudEvent = await GcfConverters.ConvertGcfEventToCloudEvent(context.Request);
-            Assert.Equal("application/json", cloudEvent.DataContentType.MediaType);
+            var cloudEvent = await GcfConverters.ConvertGcfEventToCloudEvent(context.Request, s_jsonFormatter);
+            Assert.Equal("application/json", cloudEvent.DataContentType);
             Assert.Equal("1147091835525187", cloudEvent.Id);
             Assert.Equal("google.cloud.storage.object.v1.finalized", cloudEvent.Type);
-            Assert.Equal(new DateTime(2020, 4, 23, 7, 38, 57, 772), cloudEvent.Time);
+            Assert.Equal(new DateTimeOffset(2020, 4, 23, 7, 38, 57, 772, TimeSpan.Zero), cloudEvent.Time);
             Assert.Equal("//storage.googleapis.com/projects/_/buckets/some-bucket", cloudEvent.Source.ToString());
             Assert.Equal("objects/folder/Test.cs", cloudEvent.Subject);
             Assert.Equal(CloudEventsSpecVersion.V1_0, cloudEvent.SpecVersion);
             Assert.Null(cloudEvent.DataSchema);
-            Assert.IsType<string>(cloudEvent.Data);
+            Assert.IsType<JsonElement>(cloudEvent.Data);
         }
 
         // Minimal valid JSON, so all the subsequent invalid tests can be "this JSON with something removed"
@@ -99,11 +103,11 @@ namespace Google.Cloud.Functions.Framework.Tests.GcfEvents
         public async Task InvalidRequest_FirebaseAnalytics(string resourceName)
         {
             var context = GcfEventResources.CreateHttpContext(resourceName);
-            await Assert.ThrowsAsync<CloudEventConverter.ConversionException>(() => GcfConverters.ConvertGcfEventToCloudEvent(context.Request).AsTask());
+            await Assert.ThrowsAsync<GcfConverters.ConversionException>(() => GcfConverters.ConvertGcfEventToCloudEvent(context.Request, s_jsonFormatter));
         }
 
         private static async Task AssertInvalidRequest(string json, string? contentType = null) =>
-            await Assert.ThrowsAsync<CloudEventConverter.ConversionException>(() => ConvertJson(json, contentType));
+            await Assert.ThrowsAsync<GcfConverters.ConversionException>(() => ConvertJson(json, contentType));
 
         private static async Task<CloudEvent> ConvertJson(string json, string? contentType = null)
         {
@@ -115,7 +119,7 @@ namespace Google.Cloud.Functions.Framework.Tests.GcfEvents
                     ContentType = contentType ?? "application/json"
                 }
             }.Request;
-            return await GcfConverters.ConvertGcfEventToCloudEvent(request);
+            return await GcfConverters.ConvertGcfEventToCloudEvent(request, s_jsonFormatter);
         }
     }
 }

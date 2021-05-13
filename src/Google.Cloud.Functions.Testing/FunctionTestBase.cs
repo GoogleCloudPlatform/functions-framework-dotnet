@@ -13,8 +13,8 @@
 // limitations under the License.
 
 using CloudNative.CloudEvents;
+using CloudNative.CloudEvents.SystemTextJson;
 using Google.Cloud.Functions.Hosting;
-using Google.Events;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -35,7 +35,7 @@ namespace Google.Cloud.Functions.Testing
     /// </summary>
     public abstract class FunctionTestBase<TFunction> : IDisposable
     {
-        private static readonly ICloudEventFormatter s_eventFormatter = new JsonEventFormatter();
+        private static readonly CloudEventFormatter s_defaultEventFormatter = new JsonEventFormatter();
         private static readonly ContentType s_applicationJsonContentType = new ContentType("application/json");
 
         /// <summary>
@@ -102,12 +102,15 @@ namespace Google.Cloud.Functions.Testing
 
         /// <summary>
         /// Executes the function with the specified CloudEvent, which is converted
-        /// to an HTTP POST request using structured encoding. This method asserts that the
-        /// request completed successfully.
+        /// to an HTTP POST request using structured encoding and the specified event formatter,
+        /// or a default formatter if <paramref name="formatter"/> is null.
+        /// This method asserts that the request completed successfully.
         /// </summary>
-        public async Task ExecuteCloudEventRequestAsync(CloudEvent cloudEvent)
+        public async Task ExecuteCloudEventRequestAsync(CloudEvent cloudEvent, CloudEventFormatter? formatter = null)
         {
-            var bytes = s_eventFormatter.EncodeStructuredEvent(cloudEvent, out var contentType);
+            var dataFormatter = cloudEvent.Data is null ? null : CloudEventFormatterAttribute.CreateFormatter(cloudEvent.Data.GetType());
+            formatter = formatter ?? dataFormatter ?? s_defaultEventFormatter;
+            var bytes = formatter.EncodeStructuredModeMessage(cloudEvent, out var contentType);
             contentType ??= s_applicationJsonContentType;
             var mediaContentType = new MediaTypeHeaderValue(contentType.MediaType) { CharSet = contentType.CharSet };
             var request = new HttpRequestMessage
@@ -127,30 +130,28 @@ namespace Google.Cloud.Functions.Testing
         /// <summary>
         /// Convenience method to test CloudEvents by supplying only the most important aspects.
         /// This method simply constructs a CloudEvent from the parameters and delegates to
-        /// <see cref="ExecuteCloudEventRequestAsync(CloudEvent)"/>.
+        /// <see cref="ExecuteCloudEventRequestAsync(CloudEvent, CloudEventFormatter)"/>.
         /// </summary>
         /// <param name="eventType">The CloudEvent type.</param>
-        /// <param name="data">The data to populate the CloudEvent with. The data should be convertible
-        /// via <see cref="CloudEventConverters"/>.</param>
+        /// <param name="data">The data to populate the CloudEvent with. If the type of the event data
+        /// has <see cref="CloudEventFormatterAttribute"/> applied to it, the corresponding formatter will be used.
+        /// </param>
         /// <param name="source">The source URI for the CloudEvent, or null to use a default of "//test-source".</param>
         /// <param name="subject">The subject of the CloudEvent, or null if no subject is required.</param>
-        /// <typeparam name="T">The type of the event data. This is used to find the appropriate data converter.</typeparam>
+        /// <typeparam name="T">The type of the event data. This is used to find the appropriate event formatter.</typeparam>
         public Task ExecuteCloudEventRequestAsync<T>(string eventType, T? data, Uri? source = null, string? subject = null)
             where T : class
         {
-            var cloudEvent = new CloudEvent(
-                eventType,
-                source ?? new Uri("//test-source", UriKind.RelativeOrAbsolute),
-                id: Guid.NewGuid().ToString());
-            if (data is object)
+            var formatter = CloudEventFormatterAttribute.CreateFormatter(typeof(T));
+            var cloudEvent = new CloudEvent
             {
-                CloudEventConverters.PopulateCloudEvent(cloudEvent, data);
-            }
-            if (subject is object)
-            {
-                cloudEvent.Subject = subject;
-            }
-            return ExecuteCloudEventRequestAsync(cloudEvent);
+                Type = eventType,
+                Source = source ?? new Uri("//test-source", UriKind.RelativeOrAbsolute),
+                Id = Guid.NewGuid().ToString(),
+                Subject = subject,
+                Data = data
+            };
+            return ExecuteCloudEventRequestAsync(cloudEvent, formatter);
         }
 
         /// <summary>

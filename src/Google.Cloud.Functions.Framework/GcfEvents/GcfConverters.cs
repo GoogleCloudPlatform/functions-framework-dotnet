@@ -16,10 +16,8 @@ using CloudNative.CloudEvents;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Net.Mime;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -76,8 +74,7 @@ namespace Google.Cloud.Functions.Framework.GcfEvents
             internal const string StorageObjectChanged = StorageObjectV1 + ".changed";
         }
 
-        private static readonly string JsonContentTypeText = "application/json";
-        private static readonly ContentType JsonContentType = new ContentType(JsonContentTypeText);
+        private const string JsonContentType = "application/json";
 
         private static readonly Dictionary<string, EventAdapter> s_eventTypeMapping = new Dictionary<string, EventAdapter>
         {
@@ -113,35 +110,35 @@ namespace Google.Cloud.Functions.Framework.GcfEvents
             { "google.firebase.remoteconfig.update", new EventAdapter(EventTypes.FirebaseRemoteConfigUpdated, Services.FirebaseRemoteConfig) },
         };
 
-        internal static async ValueTask<CloudEvent> ConvertGcfEventToCloudEvent(HttpRequest request)
+        internal static async Task<CloudEvent> ConvertGcfEventToCloudEvent(HttpRequest request, CloudEventFormatter formatter)
         {
             var jsonRequest = await ParseRequest(request);
             // Validated as not null or empty in ParseRequest
             string gcfType = jsonRequest.Context.Type!;
             if (!s_eventTypeMapping.TryGetValue(gcfType, out var eventAdapter))
             {
-                throw new CloudEventConverter.ConversionException($"Unexpected event type for function: '{gcfType}'");
+                throw new ConversionException($"Unexpected event type for function: '{gcfType}'");
             }
-            return eventAdapter.ConvertToCloudEvent(jsonRequest);
+            return eventAdapter.ConvertToCloudEvent(jsonRequest, formatter);
         }
 
-        private static async ValueTask<Request> ParseRequest(HttpRequest request)
+        private static async Task<Request> ParseRequest(HttpRequest request)
         {
             Request parsedRequest;
-            if (request.ContentType != JsonContentTypeText)
+            if (request.ContentType != JsonContentType)
             {
-                throw new CloudEventConverter.ConversionException("Unable to convert request to CloudEvent.");
+                throw new ConversionException("Unable to convert request to CloudEvent.");
             }
             try
             {
                 var json = await new StreamReader(request.Body).ReadToEndAsync();
-                parsedRequest = JsonSerializer.Deserialize<Request>(json);
+                parsedRequest = JsonSerializer.Deserialize<Request>(json) ?? throw new ConversionException("Request body parsed to null request");
             }
             catch (JsonException e)
             {
                 // Note: the details of the original exception will be lost in the normal case (where it's just logged)
                 // but keeping in the ConversionException is useful for debugging purposes.
-                throw new CloudEventConverter.ConversionException($"Error parsing GCF event: {e.Message}", e);
+                throw new ConversionException($"Error parsing GCF event: {e.Message}", e);
             }
 
             parsedRequest.NormalizeContext();
@@ -149,14 +146,14 @@ namespace Google.Cloud.Functions.Framework.GcfEvents
                 string.IsNullOrEmpty(parsedRequest.Context.Id) ||
                 string.IsNullOrEmpty(parsedRequest.Context.Type))
             {
-                throw new CloudEventConverter.ConversionException("Event is malformed; does not contain a payload, or the event ID is missing.");
+                throw new ConversionException("Event is malformed; does not contain a payload, or the event ID is missing.");
             }
             return parsedRequest;
         }
 
         private static string ValidateNotNullOrEmpty(string? value, string name) =>
             string.IsNullOrEmpty(value)
-            ? throw new CloudEventConverter.ConversionException($"Event contained no {name}")
+            ? throw new ConversionException($"Event contained no {name}")
             : value;
 
         /// <summary>
@@ -172,7 +169,7 @@ namespace Google.Cloud.Functions.Framework.GcfEvents
             internal EventAdapter(string cloudEventType, string defaultService) =>
                 (_cloudEventType, _defaultService) = (cloudEventType, defaultService);
 
-            internal CloudEvent ConvertToCloudEvent(Request request)
+            internal CloudEvent ConvertToCloudEvent(Request request, CloudEventFormatter formatter)
             {
                 MaybeReshapeData(request);
 
@@ -181,17 +178,18 @@ namespace Google.Cloud.Functions.Framework.GcfEvents
                 var service = ValidateNotNullOrEmpty(resource.Service ?? _defaultService, "service");
                 var resourceName = ValidateNotNullOrEmpty(resource.Name, "resource name");
                 var (source, subject) = ConvertSourceAndSubject(service, resourceName, request.Data);
-                var evt = new CloudEvent(_cloudEventType, source, context.Id, context.Timestamp?.UtcDateTime)
+
+                var evt = new CloudEvent
                 {
-                    Data = JsonSerializer.Serialize(request.Data),
-                    DataContentType = JsonContentType
+                    Type = _cloudEventType,
+                    Source = source,
+                    Id = context.Id,
+                    Time = context.Timestamp,
+                    DataContentType = JsonContentType,
+                    Subject = subject
                 };
-                // CloudEvent.Subject is null by default, but doesn't allow null to be set.
-                // See https://github.com/cloudevents/sdk-csharp/issues/58
-                if (subject is string)
-                {
-                    evt.Subject = subject;
-                }
+                var bytes = JsonSerializer.SerializeToUtf8Bytes(request.Data);
+                formatter.DecodeBinaryModeEventData(bytes, evt);
                 return evt;
             }
 
@@ -359,8 +357,23 @@ namespace Google.Cloud.Functions.Framework.GcfEvents
                 }
                 else
                 {
-                    throw new CloudEventConverter.ConversionException("Firebase Analytics event does not contain expected data");
+                    throw new ConversionException("Firebase Analytics event does not contain expected data");
                 }
+            }
+        }
+
+        /// <summary>
+        /// Exception thrown to indicate that the conversion of an HTTP request
+        /// into a CloudEvent has failed. This is handled within <see cref="CloudEventAdapter{TData}"></see> and <see cref="CloudEventAdapter"/>.
+        /// </summary>
+        internal sealed class ConversionException : Exception
+        {
+            internal ConversionException(string message) : base(message)
+            {
+            }
+
+            internal ConversionException(string message, Exception innerException) : base(message, innerException)
+            {
             }
         }
     }

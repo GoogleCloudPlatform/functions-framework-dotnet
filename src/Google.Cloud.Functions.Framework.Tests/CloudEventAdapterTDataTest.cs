@@ -22,7 +22,6 @@ using Microsoft.Extensions.Logging.Abstractions;
 using System;
 using System.IO;
 using System.Text;
-using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
@@ -121,6 +120,6 @@ namespace Google.Cloud.Functions.Framework.Tests
         }
 
         private static CloudEventAdapter<TData> CreateAdapter<TData>(ICloudEventFunction<TData> function) where TData : class =>
-            new CloudEventAdapter<TData>(function, new NullLogger<CloudEventAdapter<TData>>());
+            new CloudEventAdapter<TData>(function, CloudEventFormatterAttribute.CreateFormatter(typeof(TData)), new NullLogger<CloudEventAdapter<TData>>());
     }
 }

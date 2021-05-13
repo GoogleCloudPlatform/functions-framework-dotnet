@@ -12,10 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 using CloudNative.CloudEvents;
-using Google.Events;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using System.Text.Json;
+using System;
 using System.Threading.Tasks;
 
 namespace Google.Cloud.Functions.Framework
@@ -26,16 +25,28 @@ namespace Google.Cloud.Functions.Framework
     public sealed class CloudEventAdapter<TData> : IHttpFunction where TData : class
     {
         private readonly ICloudEventFunction<TData> _function;
+        private readonly CloudEventFormatter _formatter;
         private readonly ILogger _logger;
 
         /// <summary>
         /// Constructs a new instance based on the given CloudEvent Function.
         /// </summary>
         /// <param name="function">The CloudEvent Function to invoke.</param>
+        /// <param name="formatter">The CloudEvent formatter to use to deserialize the CloudEvent. This is expected to be a single-type formatter,
+        /// targeting <typeparamref name="TData"/>.</param>
         /// <param name="logger">The logger to use to report errors.</param>
-        public CloudEventAdapter(ICloudEventFunction<TData> function, ILogger<CloudEventAdapter<TData>> logger)
+        public CloudEventAdapter(ICloudEventFunction<TData> function, CloudEventFormatter formatter, ILogger<CloudEventAdapter<TData>> logger)
         {
             _function = Preconditions.CheckNotNull(function, nameof(function));
+            if (formatter is null)
+            {
+                throw new ArgumentNullException(nameof(formatter),
+                    "No CloudEventFormatter configured for the CloudEvent function. " + 
+                    "The Functions Framework hosting will provide an event formatter if the target " +
+                    "data type is decorated with CloudEventFormatterAttribute; otherwise, the formatter " +
+                    "should be configured via dependency injection.");
+            }
+            _formatter = Preconditions.CheckNotNull(formatter, nameof(formatter));
             _logger = Preconditions.CheckNotNull(logger, nameof(logger));
         }
 
@@ -52,10 +63,10 @@ namespace Google.Cloud.Functions.Framework
             TData data;
             try
             {
-                cloudEvent = await CloudEventConverter.ConvertRequest(context.Request);
-                data = CloudEventConverters.ConvertCloudEventData<TData>(cloudEvent);
+                cloudEvent = await CloudEventAdapter.ConvertRequestAsync(context.Request, _formatter);
+                data = (TData) cloudEvent.Data;
             }
-            catch (CloudEventConverter.ConversionException e)
+            catch (Exception e)
             {
                 _logger.LogError(e.Message);
                 context.Response.StatusCode = 400;
