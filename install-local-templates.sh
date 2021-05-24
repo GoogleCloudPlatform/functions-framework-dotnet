@@ -13,6 +13,10 @@ NUGET_SOURCE=$PWD/src/Google.Cloud.Functions.Templates/bin/Release/
 
 # Come out of the functions-framework-dotnet directory to use the default SDK,
 # which is what VS uses.
-$(cd .. && dotnet new -i Google.Cloud.Functions.Templates::$VERSION --nuget-source=$NUGET_SOURCE)
+(cd .. && dotnet new -i Google.Cloud.Functions.Templates::$VERSION --nuget-source=$NUGET_SOURCE)
+
+# Also install within functions-framework-dotnet directory so that it will
+# be installed for use in examples/generate.sh
+dotnet new -i Google.Cloud.Functions.Templates::$VERSION --nuget-source=$NUGET_SOURCE
 
 echo "Installed local templates as version $VERSION"

@@ -7,5 +7,6 @@
   <ItemGroup>
     <PackageReference Include="Google.Cloud.Functions.Hosting" Version="1.0.0-beta04" />
     <PackageReference Include="CloudNative.CloudEvents.NewtonsoftJson" Version="2.0.0-beta.3" />
+    <None Include="appsettings*.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>
