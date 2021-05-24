@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <Compile Include="Function.fs" />
+    <None Include="appsettings*.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
   
   <ItemGroup>
