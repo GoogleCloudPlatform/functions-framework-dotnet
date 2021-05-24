@@ -378,15 +378,6 @@ by the `ASPNETCORE_ENVIRONMENT` and `DOTNET_ENVIRONMENT` environment variables.
 > environment variables on a user level, to avoid accidentally attempting to run against the production
 > configuration.
 
-> **Note on AppSettings files**
->
-> Currently, `appsettings.json` files are not copied by default when the project is published using `dotnet publish`.
-> This means that although the function meay run as expected locally, when it is deployed the settings files would be
-> absent. This can be fixed by explicitly including them in the project file, [as shown in this
-> example](../examples/Google.Cloud.Functions.Examples.Configuration/Google.Cloud.Functions.Examples.Configuration.csproj).
-> We hope to do this implicitly in a future release. See [issue
-> 201](https://github.com/GoogleCloudPlatform/functions-framework-dotnet/issues/201) for more information.
-
 Sample deployment:
 
 ```sh
