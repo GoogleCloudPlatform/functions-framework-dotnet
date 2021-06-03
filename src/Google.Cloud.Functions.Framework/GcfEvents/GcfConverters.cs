@@ -246,8 +246,23 @@ namespace Google.Cloud.Functions.Framework.GcfEvents
 
         private class PubSubEventAdapter : EventAdapter
         {
+            private static readonly CloudEventAttribute s_topicAttribute = CloudEventAttribute.CreateExtension("topic", CloudEventAttributeType.String);
+
+            private static readonly Regex PubSubResourcePattern =
+                new Regex(@"^projects/(?<project>[^/]+)/topics/(?<topic>[^/]+)$", RegexOptions.Compiled);
+
             internal PubSubEventAdapter(string cloudEventType) : base(cloudEventType, Services.PubSub)
             {
+            }
+
+            protected override void PopulateAttributes(CloudEvent evt, string service, string resource, Dictionary<string, object> data)
+            {
+                base.PopulateAttributes(evt, service, resource, data);
+                var match = PubSubResourcePattern.Match(resource);
+                if (match.Success)
+                {
+                    evt[s_topicAttribute] = match.Groups["topic"].Value;
+                }
             }
 
             /// <summary>

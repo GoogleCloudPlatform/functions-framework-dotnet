@@ -42,13 +42,26 @@ namespace Google.Cloud.Functions.Framework.Tests.GcfEvents
         [InlineData("firebase-auth2.json", "google.firebase.auth.user.v1.deleted", "//firebaseauth.googleapis.com/projects/my-project-id", "users/UUpby3s4spZre6kHsgVSPetzQ8l2")]
         [InlineData("firebase-remote-config.json", "google.firebase.remoteconfig.remoteConfig.v1.updated", "//firebaseremoteconfig.googleapis.com/projects/sample-project", null)]
         [InlineData("firebase-analytics.json", "google.firebase.analytics.log.v1.written", "//firebaseanalytics.googleapis.com/projects/my-project-id/apps/com.example.exampleapp", "events/session_start")]
-        public async Task ConvertGcfEvent(string resourceName, string expectedType, string expectedSource, string expectedSubject)
+        public async Task ConvertGcfEvent_TypeSourceSubject(string resourceName, string expectedType, string expectedSource, string expectedSubject)
         {
             var context = GcfEventResources.CreateHttpContext(resourceName);
             var cloudEvent = await GcfConverters.ConvertGcfEventToCloudEvent(context.Request, s_jsonFormatter);
             Assert.Equal(expectedType, cloudEvent.Type);
             Assert.Equal(expectedSource, cloudEvent.Source.ToString());
             Assert.Equal(expectedSubject, cloudEvent.Subject);
+        }
+
+        [Theory]
+        [InlineData("storage.json", "bucket", "some-bucket")]
+        [InlineData("legacy_pubsub.json", "topic", "gcf-test")]
+        [InlineData("pubsub_binary.json", "topic", "gcf-test")]
+        [InlineData("pubsub_text.json", "topic", "gcf-test")]
+        public async Task ConvertGcfEvent_ExtensionAttributes(string resourceName, string extensionAttributeName, string expectedValue)
+        {
+            var context = GcfEventResources.CreateHttpContext(resourceName);
+            var cloudEvent = await GcfConverters.ConvertGcfEventToCloudEvent(context.Request, s_jsonFormatter);
+            var attributeValue = (string) cloudEvent[extensionAttributeName];
+            Assert.Equal(expectedValue, attributeValue);
         }
 
         // Checks everything we know about a single event
