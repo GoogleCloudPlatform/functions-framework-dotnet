@@ -17,6 +17,7 @@ using CloudNative.CloudEvents.SystemTextJson;
 using Google.Cloud.Functions.Framework.GcfEvents;
 using Microsoft.AspNetCore.Http;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Text.Json;
@@ -63,6 +64,7 @@ namespace Google.Cloud.Functions.Framework.Tests.GcfEvents
             Assert.Equal("//storage.googleapis.com/projects/_/buckets/some-bucket", cloudEvent.Source.ToString());
             Assert.Equal("objects/folder/Test.cs", cloudEvent.Subject);
             Assert.Equal(CloudEventsSpecVersion.V1_0, cloudEvent.SpecVersion);
+            Assert.Equal("some-bucket", cloudEvent["bucket"]);
             Assert.Null(cloudEvent.DataSchema);
             Assert.IsType<JsonElement>(cloudEvent.Data);
         }
