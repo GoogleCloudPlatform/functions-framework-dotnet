@@ -16,6 +16,7 @@ using CloudNative.CloudEvents;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
@@ -266,10 +267,21 @@ namespace Google.Cloud.Functions.Framework.GcfEvents
             }
 
             /// <summary>
-            /// Wrap the PubSub message for consistency with Cloud Run.
+            /// Wrap the PubSub message and copy the message ID and publication time into
+            /// it, for consistency with Eventarc.
             /// </summary>
-            protected override void MaybeReshapeData(Request request) =>
+            protected override void MaybeReshapeData(Request request)
+            {
+                if (request.Context.Id is string id)
+                {
+                    request.Data["messageId"] = id;
+                }
+                if (request.Context.Timestamp is DateTimeOffset timestamp)
+                {
+                    request.Data["publishTime"] = timestamp.UtcDateTime.ToString("yyyy-MM-dd'T'HH:mm:ss.fffffff'Z'", CultureInfo.InvariantCulture);
+                }
                 request.Data = new Dictionary<string, object> { { "message", request.Data } };
+            }
         }
 
         /// <summary>

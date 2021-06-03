@@ -90,6 +90,17 @@ namespace Google.Cloud.Functions.Framework.Tests.GcfEvents
         }
 
         [Fact]
+        public async Task PubSub_SyntheticData()
+        {
+            var data = await ConvertAndDeserialize<MessagePublishedData>("pubsub_text.json");
+            var message = data.Message!;
+            Assert.NotNull(message);
+            var expectedTimestamp = Timestamp.FromDateTimeOffset(new DateTimeOffset(2020, 5, 6, 7, 33, 34, 556, TimeSpan.Zero));
+            Assert.Equal(expectedTimestamp, message.PublishTime);
+            Assert.Equal("1144231683168617", message.MessageId);
+        }
+
+        [Fact]
         public async Task PubSub_Text()
         {
             var data = await ConvertAndDeserialize<MessagePublishedData>("pubsub_text.json");
