@@ -27,6 +27,6 @@ public class UntypedCloudEventFunction : ICloudEventFunction
         // Write out a structured JSON representation of the CloudEvent
         var formatter = new JsonEventFormatter();
         var bytes = formatter.EncodeStructuredModeMessage(cloudEvent, out var contentType);
-        await File.WriteAllBytesAsync("function_output.json", bytes);
+        await File.WriteAllBytesAsync("function_output.json", bytes.ToArray());
     }
 }
