@@ -13,7 +13,7 @@
 // limitations under the License.
 
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
+using System.Text.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -26,6 +26,12 @@ namespace Google.Cloud.Functions.Hosting.Logging
     /// </summary>
     internal class JsonConsoleLogger : LoggerBase
     {
+        /// <summary>
+        /// We don't get the current state of a Utf8JsonWriter, so when writing out scopes, we need to use current the depth of the writer to
+        /// determine whether or not we've already started writing out the scopes.
+        /// </summary>
+        private const int NoScopesDepth = 1;
+
         private readonly TextWriter _console;
 
         internal JsonConsoleLogger(string category, TextWriter console)
@@ -44,54 +50,63 @@ namespace Google.Cloud.Functions.Hosting.Logging
                 _ => throw new ArgumentOutOfRangeException(nameof(logLevel))
             };
 
-            StringBuilder builder = new StringBuilder();
-            JsonWriter writer = new JsonTextWriter(new StringWriter(builder));
-            writer.WriteStartObject();
-            writer.WritePropertyName("message");
-            writer.WriteValue(formattedMessage);
-            writer.WritePropertyName("category");
-            writer.WriteValue(Category);
-            if (exception != null)
+            var outputStream = new MemoryStream();
+            using (var writer = new Utf8JsonWriter(outputStream))
             {
-                writer.WritePropertyName("exception");
-                writer.WriteValue(exception.ToString());
-            }
-            writer.WritePropertyName("severity");
-            writer.WriteValue(severity);
-
-            // If we have format params and its more than just the original message add them.
-            if (state is IEnumerable<KeyValuePair<string, object>> formatParams &&
-                ContainsFormatParameters(formatParams))
-            {
-                writer.WritePropertyName("format_parameters");
                 writer.WriteStartObject();
-                foreach (var pair in formatParams)
+                writer.WritePropertyName("message");
+                writer.WriteStringValue(formattedMessage);
+                writer.WritePropertyName("category");
+                writer.WriteStringValue(Category);
+                if (exception != null)
                 {
-                    string key = pair.Key;
-                    if (string.IsNullOrEmpty(key))
+                    writer.WritePropertyName("exception");
+                    writer.WriteStringValue(ToInvariantString(exception));
+                }
+                writer.WritePropertyName("severity");
+                writer.WriteStringValue(severity);
+
+                // If we have format params and its more than just the original message add them.
+                if (state is IEnumerable<KeyValuePair<string, object>> formatParams &&
+                    ContainsFormatParameters(formatParams))
+                {
+                    writer.WritePropertyName("format_parameters");
+                    writer.WriteStartObject();
+                    foreach (var pair in formatParams)
                     {
-                        continue;
+                        string key = pair.Key;
+                        if (string.IsNullOrEmpty(key))
+                        {
+                            continue;
+                        }
+                        if (char.IsDigit(key[0]))
+                        {
+                            key = "_" + key;
+                        }
+                        writer.WritePropertyName(key);
+                        writer.WriteStringValue(ToInvariantString(pair.Value));
                     }
-                    if (char.IsDigit(key[0]))
-                    {
-                        key = "_" + key;
-                    }
-                    writer.WritePropertyName(key);
-                    writer.WriteValue(ToInvariantString(pair.Value));
+                    writer.WriteEndObject();
+                }
+
+                // Write the scopes as an array property, but only if there are any.            
+                ScopeProvider.ForEachScope(WriteScope, writer);
+                // If there are no scopes, the write state will still be "object". If
+                // we've written at least one scope, the write state will be "array".
+                if (writer.CurrentDepth != NoScopesDepth)
+                {
+                    writer.WriteEndArray();
                 }
                 writer.WriteEndObject();
             }
 
-            // Write the scopes as an array property, but only if there are any.            
-            ScopeProvider.ForEachScope(WriteScope, writer);
-            // If there are no scopes, the write state will still be "object". If
-            // we've written at least one scope, the write state will be "array".
-            if (writer.WriteState == WriteState.Array)
-            {
-                writer.WriteEndArray();
-            }
-            writer.WriteEndObject();
-            _console.WriteLine(builder);            
+            // It's unfortunate that we need to write to a stream, then convert the result
+            // into a string. We can avoid creating an extra copy of the binary data though,
+            // as we should always be able to get the underlying buffer.
+            var buffer = outputStream.GetBuffer();
+            var text = Encoding.UTF8.GetString(buffer, 0, (int) outputStream.Length);
+
+            _console.WriteLine(text);
 
             // Checks that fields is:
             // - Non-empty
@@ -118,10 +133,10 @@ namespace Google.Cloud.Functions.Hosting.Logging
             }
         }
 
-        private static void WriteScope(object value, JsonWriter writer)
+        private static void WriteScope(object value, Utf8JsonWriter writer)
         {
             // Detect "first scope" and start the scopes array property.
-            if (writer.WriteState == WriteState.Object)
+            if (writer.CurrentDepth == NoScopesDepth)
             {
                 writer.WritePropertyName("scopes");
                 writer.WriteStartArray();
@@ -138,14 +153,14 @@ namespace Google.Cloud.Functions.Hosting.Logging
                         continue;
                     }
                     writer.WritePropertyName(key);
-                    writer.WriteValue(ToInvariantString(pair.Value));
+                    writer.WriteStringValue(ToInvariantString(pair.Value));
                 }
                 writer.WriteEndObject();
             }
             else
             {
                 // TODO: Consider special casing integers etc.
-                writer.WriteValue(ToInvariantString(value));
+                writer.WriteStringValue(ToInvariantString(value));
             }
         }
     }
