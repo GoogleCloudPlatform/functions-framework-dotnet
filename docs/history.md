@@ -1,5 +1,14 @@
 # Version History
 
+## 1.0.0-beta05 (released 2021-06-07)
+
+- Update to release candidate of CloudNative.CloudEvents package,
+  which removes the need for a Google.Events package at all
+- Minor changes to conversions to CloudEvents (with a few more coming)
+- Dispose of the host instead of the TestServer in FunctionTestServer (fixes #182)
+- Templates now include `appsettings*.json` for deployment (fixes #192 and #201)
+- Add support for scopes (fixes #193)
+
 ## 1.0.0-beta04 (released 2020-11-19)
 
 - Actually improve the F# templates.
