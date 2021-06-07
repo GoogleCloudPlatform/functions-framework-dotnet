@@ -118,7 +118,7 @@ namespace Google.Cloud.Functions.Testing
                 // Any URI 
                 RequestUri = new Uri("uri", UriKind.Relative),
                 // CloudEvent headers
-                Content = new ByteArrayContent(bytes) { Headers = { ContentType = mediaContentType } },
+                Content = new ReadOnlyMemoryContent(bytes) { Headers = { ContentType = mediaContentType } },
                 Method = HttpMethod.Post
             };
 
