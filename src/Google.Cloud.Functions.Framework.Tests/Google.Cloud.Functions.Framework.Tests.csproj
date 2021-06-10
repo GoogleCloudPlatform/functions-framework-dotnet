@@ -17,4 +17,8 @@
     <EmbeddedResource Include="**/*.json" Exclude="bin/**;obj/**" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Remove="GcfEvents\pubsub_text_microsecond_precision.json" />
+  </ItemGroup>
+
 </Project>
