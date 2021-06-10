@@ -64,6 +64,18 @@ namespace Google.Cloud.Functions.Framework.Tests.GcfEvents
             Assert.Equal(expectedValue, attributeValue);
         }
 
+        [Theory]
+        [InlineData("pubsub_text_microsecond_precision.json", "2020-05-06T07:33:34.556123Z")]
+        [InlineData("pubsub_text.json", "2020-05-06T07:33:34.556Z")]
+        public async Task PubSubTimeStampPrecision(string resourceName, string expectedPublishTime)
+        {
+            var context = GcfEventResources.CreateHttpContext(resourceName);
+            var cloudEvent = await GcfConverters.ConvertGcfEventToCloudEvent(context.Request, s_jsonFormatter);
+            var data = (JsonElement) cloudEvent.Data;
+            var actualPublishTime = data.GetProperty("message").GetProperty("publishTime").GetString();
+            Assert.Equal(expectedPublishTime, actualPublishTime);
+        }
+
         // Checks everything we know about a single event
         [Fact]
         public async Task CheckAllProperties()

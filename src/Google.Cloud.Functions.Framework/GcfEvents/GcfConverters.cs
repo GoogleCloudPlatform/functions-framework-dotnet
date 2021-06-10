@@ -278,7 +278,12 @@ namespace Google.Cloud.Functions.Framework.GcfEvents
                 }
                 if (request.Context.Timestamp is DateTimeOffset timestamp)
                 {
-                    request.Data["publishTime"] = timestamp.UtcDateTime.ToString("yyyy-MM-dd'T'HH:mm:ss.fffffff'Z'", CultureInfo.InvariantCulture);
+                    // Provide at least millisecond precision, and microsecond precision if sub-millisecond is provided in the input.
+                    // (Currently only millisecond precision is provided, but this approach will be robust in the face of more precision.)
+                    var formatString = timestamp.Ticks % 10_000 == 0
+                        ? "yyyy-MM-dd'T'HH:mm:ss.fff'Z'"
+                        : "yyyy-MM-dd'T'HH:mm:ss.ffffff'Z'";
+                    request.Data["publishTime"] = timestamp.UtcDateTime.ToString(formatString, CultureInfo.InvariantCulture);
                 }
                 request.Data = new Dictionary<string, object> { { "message", request.Data } };
             }
