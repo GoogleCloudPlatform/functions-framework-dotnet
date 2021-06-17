@@ -176,8 +176,9 @@ namespace Google.Cloud.Functions.Framework.GcfEvents
 
                 var context = request.Context;
                 var resource = context.Resource;
-                var service = ValidateNotNullOrEmpty(resource.Service ?? _defaultService, "service");
-                var resourceName = ValidateNotNullOrEmpty(resource.Name, "resource name");
+                // Default the service name if necessary
+                resource.Service = ValidateNotNullOrEmpty(resource.Service ?? _defaultService, "service");
+                ValidateNotNullOrEmpty(resource.Name, "resource name");
 
                 var evt = new CloudEvent
                 {
@@ -186,7 +187,7 @@ namespace Google.Cloud.Functions.Framework.GcfEvents
                     Time = context.Timestamp,
                     DataContentType = JsonContentType
                 };
-                PopulateAttributes(evt, service, resourceName, request.Data);
+                PopulateAttributes(request, evt);
                 var bytes = JsonSerializer.SerializeToUtf8Bytes(request.Data);
                 formatter.DecodeBinaryModeEventData(bytes, evt);
                 return evt;
@@ -199,16 +200,19 @@ namespace Google.Cloud.Functions.Framework.GcfEvents
             /// In particular, this method must populate the Source context attribute,
             /// should populate the Subject context attribute if it's defined for this event type,
             /// and should populate any additional extension attributes to be compatible with Eventarc.
-            /// This base implementation populate the Source based on the service and resource.
+            /// The resource within context of the request will definitely have its Service and Name properties populated.
+            /// This base implementation populates the Source based on the service and resource.
             /// </summary>
+            /// <param name="request">The incoming request.</param>
             /// <param name="evt">The event to populate</param>
-            /// <param name="service">The service in the request (or the default service)</param>
-            /// <param name="resource">The resource name in the request</param>
-            /// <param name="data">The data in the legacy request</param>
-            protected virtual void PopulateAttributes(CloudEvent evt, string service, string resource, Dictionary<string, object> data)
+            protected virtual void PopulateAttributes(Request request, CloudEvent evt)
             {
-                evt.Source = new Uri($"//{service}/{resource}", UriKind.RelativeOrAbsolute);
+                var service = request.Context.Resource.Service!;
+                var resource = request.Context.Resource.Name!;
+                evt.Source = FormatSource(service, resource);
             }
+
+            protected Uri FormatSource(string service, string resource) => new Uri($"//{service}/{resource}", UriKind.RelativeOrAbsolute);
         }
 
         private class StorageEventAdapter : EventAdapter
@@ -228,20 +232,22 @@ namespace Google.Cloud.Functions.Framework.GcfEvents
             /// <summary>
             /// Split a Storage object resource name into bucket (in the source) and object (in the subject)
             /// </summary>
-            protected override void PopulateAttributes(CloudEvent evt, string service, string resource, Dictionary<string, object> data)
+            protected override void PopulateAttributes(Request request, CloudEvent evt)
             {
+                var resource = request.Context.Resource.Name;
                 if (StorageResourcePattern.Match(resource) is { Success: true } match)
                 {
-                    // Resource name up to the bucket
-                    resource = match.Groups["resource"].Value;
+                    // The source includes the resource name up to the bucket
+                    evt.Source = FormatSource(request.Context.Resource.Service!, match.Groups["resource"].Value);
                     // Resource name from "objects" onwards, but without the generation
                     evt.Subject = match.Groups["subject"].Value;
-                    // Use the base implementation to populate the Source.
-                    base.PopulateAttributes(evt, service, resource, data);
                     evt[s_bucketAttribute] = match.Groups["bucket"].Value;
                 }
-                // If the resource name didn't match for whatever reason, just use the default behaviour.
-                base.PopulateAttributes(evt, service, resource, data);
+                else
+                {
+                    // If the resource name didn't match for whatever reason, just use the default behaviour.
+                    base.PopulateAttributes(request, evt);
+                }
             }
         }
 
@@ -256,10 +262,10 @@ namespace Google.Cloud.Functions.Framework.GcfEvents
             {
             }
 
-            protected override void PopulateAttributes(CloudEvent evt, string service, string resource, Dictionary<string, object> data)
+            protected override void PopulateAttributes(Request request, CloudEvent evt)
             {
-                base.PopulateAttributes(evt, service, resource, data);
-                var match = PubSubResourcePattern.Match(resource);
+                base.PopulateAttributes(request, evt);
+                var match = PubSubResourcePattern.Match(request.Context.Resource.Name);
                 if (match.Success)
                 {
                     evt[s_topicAttribute] = match.Groups["topic"].Value;
@@ -311,19 +317,24 @@ namespace Google.Cloud.Functions.Framework.GcfEvents
 
             // Reformat the service/resource so that the part of the resource before "documents" is in the source, but
             // "documents" onwards is in the subject.
-            protected override void PopulateAttributes(CloudEvent evt, string service, string resource, Dictionary<string, object> data)
+            protected override void PopulateAttributes(Request request, CloudEvent evt)
             {
+                string resource = request.Context.Resource.Name!;
+                string service = request.Context.Resource.Service!;
+
                 string[] resourceSegments = resource.Split('/', SubjectStartIndex + 1);
                 if (resourceSegments.Length < SubjectStartIndex ||
                     !resourceSegments[SubjectStartIndex].StartsWith(_expectedSubjectPrefix, StringComparison.Ordinal))
                 {
                     // This is odd... just put everything in the source as normal.
-                    base.PopulateAttributes(evt, service, resource, data);
+                    base.PopulateAttributes(request, evt);
                 }
-
-                string sourcePath = string.Join('/', resourceSegments.Take(SubjectStartIndex));
-                base.PopulateAttributes(evt, service, sourcePath, data);
-                evt.Subject = resourceSegments[SubjectStartIndex];
+                else
+                {
+                    string sourcePath = string.Join('/', resourceSegments.Take(SubjectStartIndex));
+                    evt.Subject = resourceSegments[SubjectStartIndex];
+                    evt.Source = FormatSource(service, sourcePath);
+                }
             }
         }
 
@@ -334,12 +345,12 @@ namespace Google.Cloud.Functions.Framework.GcfEvents
             {
             }
 
-            protected override void PopulateAttributes(CloudEvent evt, string service, string resource, Dictionary<string, object> data)
+            protected override void PopulateAttributes(Request request, CloudEvent evt)
             {
                 // Source is as normal
-                base.PopulateAttributes(evt, service, resource, data);
-                // Obtained the subject from the data if possible.
-                if (data.TryGetValue("uid", out var uid) && uid is JsonElement uidElement && uidElement.ValueKind == JsonValueKind.String)
+                base.PopulateAttributes(request, evt);
+                // Obtain the subject from the data if possible.
+                if (request.Data.TryGetValue("uid", out var uid) && uid is JsonElement uidElement && uidElement.ValueKind == JsonValueKind.String)
                 {
                     evt.Subject = $"users/{uidElement.GetString()}";
                 }
@@ -380,7 +391,7 @@ namespace Google.Cloud.Functions.Framework.GcfEvents
             {
             }
 
-            protected override void PopulateAttributes(CloudEvent evt, string service, string resource, Dictionary<string, object> data)
+            protected override void PopulateAttributes(Request request, CloudEvent evt)
             {
                 // We need the event name and the app ID in order to create subject and source like this:
                 // Subject://firebaseanalytics.googleapis.com/projects/{project}/apps/{app}
@@ -388,6 +399,9 @@ namespace Google.Cloud.Functions.Framework.GcfEvents
                 // The eventName is available in the resource, which is of the form projects/{project-id}/events/{event-name}
                 // The app name is available via the data, via userDim -> appInfo -> appId
                 // If either of these isn't where we expect, we throw a ConversionException
+                string resource = request.Context.Resource.Name!;
+                string service = request.Context.Resource.Service!;
+                var data = request.Data;
 
                 string[] splitResource = resource.Split('/');
                 string? eventName = splitResource.Length == 4 && splitResource[0] == "projects" && splitResource[2] == "events" ? splitResource[3] : null;
