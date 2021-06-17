@@ -85,13 +85,13 @@ namespace Google.Cloud.Functions.Framework.GcfEvents
             { "google.storage.object.archive", new StorageEventAdapter(EventTypes.StorageObjectArchived) },
             { "google.storage.object.metadataUpdate", new StorageEventAdapter(EventTypes.StorageObjectMetadataUpdated) },
             { "providers/cloud.firestore/eventTypes/document.write",
-                new FirestoreFirebaseDocumentEventAdapter(EventTypes.FirestoreDocumentWritten, Services.Firestore) },
+                new FirestoreDocumentEventAdapter(EventTypes.FirestoreDocumentWritten, Services.Firestore) },
             { "providers/cloud.firestore/eventTypes/document.create",
-                new FirestoreFirebaseDocumentEventAdapter(EventTypes.FirestoreDocumentCreated, Services.Firestore) },
+                new FirestoreDocumentEventAdapter(EventTypes.FirestoreDocumentCreated, Services.Firestore) },
             { "providers/cloud.firestore/eventTypes/document.update",
-                new FirestoreFirebaseDocumentEventAdapter(EventTypes.FirestoreDocumentUpdated, Services.Firestore) },
+                new FirestoreDocumentEventAdapter(EventTypes.FirestoreDocumentUpdated, Services.Firestore) },
             { "providers/cloud.firestore/eventTypes/document.delete",
-                new FirestoreFirebaseDocumentEventAdapter(EventTypes.FirestoreDocumentDeleted, Services.Firestore) },
+                new FirestoreDocumentEventAdapter(EventTypes.FirestoreDocumentDeleted, Services.Firestore) },
             { "providers/firebase.auth/eventTypes/user.create",
                 new FirebaseAuthEventAdapter(EventTypes.FirebaseAuthUserCreated, Services.FirebaseAuth) },
             { "providers/firebase.auth/eventTypes/user.delete",
@@ -99,13 +99,13 @@ namespace Google.Cloud.Functions.Framework.GcfEvents
             { "providers/google.firebase.analytics/eventTypes/event.log",
                 new FirebaseAnalyticsEventAdapter(EventTypes.FirebaseAnalyticsLogWritten, Services.FirebaseAnalytics) },
             { "providers/google.firebase.database/eventTypes/ref.create",
-                new FirestoreFirebaseDocumentEventAdapter(EventTypes.FirebaseDatabaseDocumentCreated, Services.FirebaseDatabase) },
+                new FirebaseRtdbEventAdapter(EventTypes.FirebaseDatabaseDocumentCreated, Services.FirebaseDatabase) },
             { "providers/google.firebase.database/eventTypes/ref.write",
-                new FirestoreFirebaseDocumentEventAdapter(EventTypes.FirebaseDatabaseDocumentWritten, Services.FirebaseDatabase) },
+                new FirebaseRtdbEventAdapter(EventTypes.FirebaseDatabaseDocumentWritten, Services.FirebaseDatabase) },
             { "providers/google.firebase.database/eventTypes/ref.update",
-                new FirestoreFirebaseDocumentEventAdapter(EventTypes.FirebaseDatabaseDocumentUpdated, Services.FirebaseDatabase) },
+                new FirebaseRtdbEventAdapter(EventTypes.FirebaseDatabaseDocumentUpdated, Services.FirebaseDatabase) },
             { "providers/google.firebase.database/eventTypes/ref.delete",
-                new FirestoreFirebaseDocumentEventAdapter(EventTypes.FirebaseDatabaseDocumentDeleted, Services.FirebaseDatabase) },
+                new FirebaseRtdbEventAdapter(EventTypes.FirebaseDatabaseDocumentDeleted, Services.FirebaseDatabase) },
             { "providers/cloud.pubsub/eventTypes/topic.publish", new PubSubEventAdapter(EventTypes.PubSubMessagePublished) },
             { "providers/cloud.storage/eventTypes/object.change", new StorageEventAdapter(EventTypes.StorageObjectChanged) },
             { "google.firebase.remoteconfig.update", new EventAdapter(EventTypes.FirebaseRemoteConfigUpdated, Services.FirebaseRemoteConfig) },
@@ -296,23 +296,20 @@ namespace Google.Cloud.Functions.Framework.GcfEvents
         }
 
         /// <summary>
-        /// Adapter for Firebase/Firestore events that need extra source/subject handling.
-        /// The resource names for Firebase and Firestore have "refs" and "documents" as the fifth segment respectively.
+        /// Adapter for Firestore events that need extra source/subject handling.
+        /// The resource names for Firestore have "documents" as the fifth segment.
         /// For example:
-        /// "projects/_/instances/my-project-id/refs/gcf-test/xyz" or
         /// "projects/project-id/databases/(default)/documents/gcf-test/IH75dRdeYJKd4uuQiqch".
         /// We validate that the fifth segment has the value we expect, and then use that segment onwards as the subject.
         /// </summary>
-        private class FirestoreFirebaseDocumentEventAdapter : EventAdapter
+        private class FirestoreDocumentEventAdapter : EventAdapter
         {
             private const int SubjectStartIndex = 4; // The subject always starts at the 5th segment
-            private readonly string _expectedSubjectPrefix;
+            private const string ExpectedSubjectPrefix = "documents";
 
-            internal FirestoreFirebaseDocumentEventAdapter(string cloudEventType, string defaultService)
+            internal FirestoreDocumentEventAdapter(string cloudEventType, string defaultService)
                 : base(cloudEventType, defaultService)
             {
-                string expectedSegmentName = defaultService == Services.FirebaseDatabase ? "refs" : "documents";
-                _expectedSubjectPrefix = $"{expectedSegmentName}/";
             }
 
             // Reformat the service/resource so that the part of the resource before "documents" is in the source, but
@@ -324,7 +321,7 @@ namespace Google.Cloud.Functions.Framework.GcfEvents
 
                 string[] resourceSegments = resource.Split('/', SubjectStartIndex + 1);
                 if (resourceSegments.Length < SubjectStartIndex ||
-                    !resourceSegments[SubjectStartIndex].StartsWith(_expectedSubjectPrefix, StringComparison.Ordinal))
+                    !resourceSegments[SubjectStartIndex].StartsWith(ExpectedSubjectPrefix, StringComparison.Ordinal))
                 {
                     // This is odd... just put everything in the source as normal.
                     base.PopulateAttributes(request, evt);
@@ -332,6 +329,60 @@ namespace Google.Cloud.Functions.Framework.GcfEvents
                 else
                 {
                     string sourcePath = string.Join('/', resourceSegments.Take(SubjectStartIndex));
+                    evt.Source = FormatSource(service, sourcePath);
+                    evt.Subject = resourceSegments[SubjectStartIndex];
+                }
+            }
+        }
+
+        /// <summary>
+        /// Adapter for Firebase RTDB events that need extra source/subject handling.
+        /// The resource names for Firebase have "refs" as the fifth segment.
+        /// For example:
+        /// "projects/_/instances/my-project-id/refs/gcf-test/xyz" or
+        /// We validate that the fifth segment has the value we expect, and then use that segment onwards as the subject.
+        /// Additionally, we add the location, derived from the "domain" part of the context, into the source
+        /// </summary>
+        private class FirebaseRtdbEventAdapter : EventAdapter
+        {
+            private const int SubjectStartIndex = 4; // The subject always starts at the 5th segment
+            private const string ExpectedSubjectPrefix = "refs";
+            private const string FirebaseDefaultDomain = "firebaseio.com";
+            private const string FirebaseDefaultLocation = "us-central1";
+
+            internal FirebaseRtdbEventAdapter(string cloudEventType, string defaultService)
+                : base(cloudEventType, defaultService)
+            {
+            }
+
+            // Reformat the service/resource so that the part of the resource before "refs" is in the source,
+            // with the addition of the location, but "refs" onwards is in the subject.
+            protected override void PopulateAttributes(Request request, CloudEvent evt)
+            {
+                string resource = request.Context.Resource.Name!;
+                string service = request.Context.Resource.Service!;
+
+                string? domain = request.Domain;
+                if (string.IsNullOrEmpty(domain))
+                {
+                    throw new ConversionException("Firebase RTDB event does not contain a domain");
+                }
+                string location = domain == FirebaseDefaultDomain
+                    ? FirebaseDefaultLocation
+                    : domain.Split('.').First();
+
+                string[] resourceSegments = resource.Split('/', SubjectStartIndex + 1);
+                if (resourceSegments.Length < SubjectStartIndex ||
+                    !resourceSegments[SubjectStartIndex].StartsWith(ExpectedSubjectPrefix, StringComparison.Ordinal))
+                {
+                    // This is odd... just put everything in the source as normal.
+                    base.PopulateAttributes(request, evt);
+                }
+                else
+                {
+                    // We need to convert "projects/_/instances/{instance}" to "projects/_/locations/{location}/instances/{instance}".
+                    string sourcePath = string.Join('/',
+                        resourceSegments.Take(2).Concat(new[] { "locations", location }).Concat(resourceSegments.Skip(2).Take(2)));
                     evt.Subject = resourceSegments[SubjectStartIndex];
                     evt.Source = FormatSource(service, sourcePath);
                 }

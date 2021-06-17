@@ -6,6 +6,7 @@
   "auth": {
     "admin": true
   },
+  "domain":"firebaseio.com",
   "data": {
     "data": {
       "deeply": {

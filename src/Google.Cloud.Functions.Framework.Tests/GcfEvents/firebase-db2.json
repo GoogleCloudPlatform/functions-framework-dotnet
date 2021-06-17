@@ -6,6 +6,7 @@
   "auth": {
     "admin": true
   },
+  "domain":"europe-west1.firebasedatabase.app",
   "data": {
     "data": {
       "grandchild": "other"
