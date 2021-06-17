@@ -41,6 +41,9 @@ namespace Google.Cloud.Functions.Framework.GcfEvents
         [JsonPropertyName("params")]
         public dynamic? Params { get; set; }
 
+        [JsonPropertyName("domain")]
+        public string? Domain { get; set; }
+
         public Request()
         {
             Context = null!;

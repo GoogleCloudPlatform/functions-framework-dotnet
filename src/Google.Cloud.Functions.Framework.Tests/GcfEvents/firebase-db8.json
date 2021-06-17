@@ -5,6 +5,7 @@
   "auth": {
     "admin": true
   },
+  "domain":"firebaseio.com",
   "data": {
     "data": {
       "gcf-test": {
