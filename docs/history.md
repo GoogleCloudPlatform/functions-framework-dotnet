@@ -1,5 +1,10 @@
 # Version History
 
+## 1.0.0 (relesaed 2021-06-22)
+
+- Update to Google.Events.Protobuf 1.0.0 and CloudNative.CloudEvents 2.0.0
+- Update the Source CloudEvent attribute for Firebase RTDB events
+
 ## 1.0.0-beta05 (released 2021-06-07)
 
 - Update to release candidate of CloudNative.CloudEvents package,
