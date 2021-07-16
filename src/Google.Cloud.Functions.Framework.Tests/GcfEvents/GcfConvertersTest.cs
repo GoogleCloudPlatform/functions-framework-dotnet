@@ -48,7 +48,7 @@ namespace Google.Cloud.Functions.Framework.Tests.GcfEvents
             var context = GcfEventResources.CreateHttpContext(resourceName);
             var cloudEvent = await GcfConverters.ConvertGcfEventToCloudEvent(context.Request, s_jsonFormatter);
             Assert.Equal(expectedType, cloudEvent.Type);
-            Assert.Equal(expectedSource, cloudEvent.Source.ToString());
+            Assert.Equal(expectedSource, cloudEvent.Source?.ToString());
             Assert.Equal(expectedSubject, cloudEvent.Subject);
         }
 
@@ -61,7 +61,7 @@ namespace Google.Cloud.Functions.Framework.Tests.GcfEvents
         {
             var context = GcfEventResources.CreateHttpContext(resourceName);
             var cloudEvent = await GcfConverters.ConvertGcfEventToCloudEvent(context.Request, s_jsonFormatter);
-            var attributeValue = (string) cloudEvent[extensionAttributeName];
+            var attributeValue = (string) cloudEvent[extensionAttributeName]!;
             Assert.Equal(expectedValue, attributeValue);
         }
 
@@ -72,7 +72,7 @@ namespace Google.Cloud.Functions.Framework.Tests.GcfEvents
         {
             var context = GcfEventResources.CreateHttpContext(resourceName);
             var cloudEvent = await GcfConverters.ConvertGcfEventToCloudEvent(context.Request, s_jsonFormatter);
-            var data = (JsonElement) cloudEvent.Data;
+            var data = (JsonElement) cloudEvent.Data!;
             var actualPublishTime = data.GetProperty("message").GetProperty("publishTime").GetString();
             Assert.Equal(expectedPublishTime, actualPublishTime);
         }
@@ -87,7 +87,7 @@ namespace Google.Cloud.Functions.Framework.Tests.GcfEvents
             Assert.Equal("1147091835525187", cloudEvent.Id);
             Assert.Equal("google.cloud.storage.object.v1.finalized", cloudEvent.Type);
             Assert.Equal(new DateTimeOffset(2020, 4, 23, 7, 38, 57, 772, TimeSpan.Zero), cloudEvent.Time);
-            Assert.Equal("//storage.googleapis.com/projects/_/buckets/some-bucket", cloudEvent.Source.ToString());
+            Assert.Equal("//storage.googleapis.com/projects/_/buckets/some-bucket", cloudEvent.Source?.ToString());
             Assert.Equal("objects/folder/Test.cs", cloudEvent.Subject);
             Assert.Equal(CloudEventsSpecVersion.V1_0, cloudEvent.SpecVersion);
             Assert.Equal("some-bucket", cloudEvent["bucket"]);
@@ -102,7 +102,7 @@ namespace Google.Cloud.Functions.Framework.Tests.GcfEvents
             string json = "{'data':{}, 'context':{'eventId':'xyz', 'eventType': 'google.pubsub.topic.publish', 'resource':{'service': 'svc', 'name': 'resname'}}}";
             var cloudEvent = await ConvertJson(json);
             Assert.Equal("xyz", cloudEvent.Id);
-            Assert.Equal("//svc/resname", cloudEvent.Source.ToString());
+            Assert.Equal("//svc/resname", cloudEvent.Source?.ToString());
         }
 
         [Fact]

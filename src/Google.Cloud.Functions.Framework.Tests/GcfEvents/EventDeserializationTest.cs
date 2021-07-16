@@ -221,7 +221,8 @@ namespace Google.Cloud.Functions.Framework.Tests.GcfEvents
             var formatter = CloudEventFormatterAttribute.CreateFormatter(typeof(T))
                 ?? throw new InvalidOperationException("No formatter available");
             var cloudEvent = await GcfConverters.ConvertGcfEventToCloudEvent(context.Request, formatter);
-            return (T) cloudEvent.Data;
+            // We know that ConvertGcfEventToCloudEvent always populates the Data property.
+            return (T) cloudEvent.Data!;
         }
     }
 }
