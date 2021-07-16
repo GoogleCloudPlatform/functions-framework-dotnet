@@ -120,6 +120,6 @@ namespace Google.Cloud.Functions.Framework.Tests
         }
 
         private static CloudEventAdapter<TData> CreateAdapter<TData>(ICloudEventFunction<TData> function) where TData : class =>
-            new CloudEventAdapter<TData>(function, CloudEventFormatterAttribute.CreateFormatter(typeof(TData)), new NullLogger<CloudEventAdapter<TData>>());
+            new CloudEventAdapter<TData>(function, CloudEventFormatterAttribute.CreateFormatter(typeof(TData))!, new NullLogger<CloudEventAdapter<TData>>());
     }
 }
