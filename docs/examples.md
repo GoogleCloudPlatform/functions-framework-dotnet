@@ -466,7 +466,7 @@ Sample deployment, from the `examples` directory:
 gcloud functions deploy multi-project \
   --runtime dotnet3 \
   --trigger-http \
-  --entry-point=Google.Cloud.Functions.Examples.MultiProjectFunction.Function
+  --entry-point=Google.Cloud.Functions.Examples.MultiProjectFunction.Function \
   --set-build-env-vars=GOOGLE_BUILDABLE=Google.Cloud.Functions.Examples.MultiProjectFunction
 ```
 
