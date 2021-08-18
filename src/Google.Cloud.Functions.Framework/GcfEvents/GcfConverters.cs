@@ -49,7 +49,7 @@ namespace Google.Cloud.Functions.Framework.GcfEvents
             internal const string FirestoreDocumentDeleted = FirestoreDocumentV1 + ".deleted";
             internal const string FirestoreDocumentWritten = FirestoreDocumentV1 + ".written";
 
-            private const string FirebaseDatabaseDocumentV1 = "google.firebase.database.document.v1";
+            private const string FirebaseDatabaseDocumentV1 = "google.firebase.database.ref.v1";
             internal const string FirebaseDatabaseDocumentCreated = FirebaseDatabaseDocumentV1 + ".created";
             internal const string FirebaseDatabaseDocumentUpdated = FirebaseDatabaseDocumentV1 + ".updated";
             internal const string FirebaseDatabaseDocumentDeleted = FirebaseDatabaseDocumentV1 + ".deleted";
