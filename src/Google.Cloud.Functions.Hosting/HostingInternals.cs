@@ -48,7 +48,7 @@ namespace Google.Cloud.Functions.Hosting
             {
                 if (args[0] == "%LAUNCHER_ARGS%")
                 {
-                    throw new InvalidOperationException("Unable to launch Web SDK project with launch settings. Please see https://github.com/GoogleCloudPlatform/functions-framework-dotnet/blob/master/docs/launch-settings.md");
+                    throw new InvalidOperationException("Unable to launch Web SDK project with launch settings. Please see https://github.com/GoogleCloudPlatform/functions-framework-dotnet/blob/main/docs/launch-settings.md");
                 }
                 args = new[] { "--target", args[0] };
             }
@@ -105,7 +105,7 @@ namespace Google.Cloud.Functions.Hosting
 
             if (!actualStartupClasses.SequenceEqual(startupClassesFromFunctionTarget))
             {
-                throw new InvalidOperationException("Mismatch in startup classes. See https://github.com/GoogleCloudPlatform/functions-framework-dotnet/blob/master/docs/customization.md#specifying-a-functions-startup-class");
+                throw new InvalidOperationException("Mismatch in startup classes. See https://github.com/GoogleCloudPlatform/functions-framework-dotnet/blob/main/docs/customization.md#specifying-a-functions-startup-class");
             }
             return app;
         }

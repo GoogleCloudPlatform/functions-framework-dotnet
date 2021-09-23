@@ -119,7 +119,7 @@ to indicate an appropriate `CloudEventFormatter` which knows how to parse the Cl
 Typically this is a type from the
 [Google.Events.Protobuf](https://www.nuget.org/packages/Google.Events.Protobuf)
 package. See the [google-cloudevents-dotnet
-README](https://github.com/googleapis/google-cloudevents-dotnet/blob/master/README.md)
+README](https://github.com/googleapis/google-cloudevents-dotnet/blob/main/README.md)
 for more information about this package.
 
 > **Note:**  
