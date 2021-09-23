@@ -2,7 +2,7 @@ name: .NET Conformance CI
 on:
   push:
     branches:
-    - master
+    - main
   pull_request:
 jobs:
   run-conformance:

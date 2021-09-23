@@ -26,7 +26,7 @@ namespace Google.Cloud.Functions.Hosting.Logging
         // Visible for testing.
         internal const string KestrelCategory = "Microsoft.AspNetCore.Server.Kestrel";
 
-        // As defined in https://github.com/dotnet/aspnetcore/blob/master/src/Servers/Kestrel/Core/src/Internal/Infrastructure/KestrelTrace.cs
+        // As defined in https://github.com/dotnet/aspnetcore/blob/main/src/Servers/Kestrel/Core/src/Internal/Infrastructure/KestrelTrace.cs
         // This has been stable since April 2017, so it seems reasonable to rely on it.
         // Visible for testing.
         internal const int HeartbeatSlowEventId = 22;
