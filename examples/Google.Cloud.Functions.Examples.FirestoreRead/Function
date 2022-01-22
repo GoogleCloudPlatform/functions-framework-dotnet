@@ -1,0 +1,82 @@
+// Copyright 2022, Equalation LTD Co.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+//  This example requires installation of Google.Cloud.Firestore from Nuget.
+//    Below is using Google.Cloud.Firestore v2.5.0
+//   Author is using Visual Studio 2022, WITH "Cloud Tools for Visual Studio"
+//      https://cloud.google.com/tools/visual-studio/docs/quickstart
+//   I am not able to advise on how this may  be added to VS Code
+//   Install via Tools/Nuget Package Manager/Manage Nuget Pacakges for Solution...
+//   Browse for "Google.Cloud.Firestore" (by Google LLC) and Install.
+//  This example was produced using the VisualStudio template... 
+//      "Google Cloud Functions HTTPFunction (Google LLC)" in C#
+
+//    Prerequisits:  Create a Firestore Database 
+
+
+//      READER SHOULD BE AWARE OF https://cloud.google.com/dotnet/docs/reference/Google.Cloud.Firestore/latest/Google.Cloud.Firestore.FirestoreDb
+
+//     Deploy command will look much like below
+// gcloud functions deploy call-me-what-you-want --entry-point CloudHttpToFirestore.Function --runtime dotnet3 --trigger-http --allow-unauthenticated
+
+//     ***REQUIRED***  INCLUDE THIS PAYLOAD IN YOUR TEST CALLS "{  "documentName": "your-document-name" }"  
+
+//   Please be aware that there are MANY ways for this to fail and when testing with a deployed function you will get precious little feedback
+//    If you are having trouble; pleas check that... 
+//    1)    The Firestore DB must be defined and populated CORRECTLY.
+//    2)    The deploy is correctly configured (verify the project-ids between Firestore DB and Function are aligned.
+//    3)    The payload in the function test aligns with the structure of the Firestore document 
+
+//      To avoid continuously needing to reenter the request payload via the GCP Console Function Test page - I recommend using 'Postman' 
+//        Using Postman will allow you to define your request payload in a much more detailed way and will not be cleared everytime you redeploy.
+
+using Google.Cloud.Functions.Framework;
+using Google.Cloud.Firestore;
+using Microsoft.AspNetCore.Http;
+using System.Threading.Tasks;
+using System.Text.Json;
+
+namespace CloudHttpToFirestore {
+
+    public class Function : IHttpFunction {
+
+        //  See https://github.com/googleapis/google-cloud-dotnet/issues/2787
+        //      To be honest I am not abble to explain why we see [FirestoreData]
+        //      and [FirestoreProperty]  but when I remove these decorators
+        //      the function does not work.  So I am happy to leave them in.
+        [FirestoreData]
+        public class Message {
+
+            [FirestoreProperty]
+            public string message { get; set; }
+        }
+
+        public async Task HandleAsync( HttpContext context ) {
+            string documentName = "";
+            var jsonReqBody = await JsonSerializer.DeserializeAsync<JsonElement>(context.Request.Body);
+            if ( jsonReqBody.TryGetProperty( "documentName", out JsonElement docElement ) &&
+                docElement.ValueKind == JsonValueKind.String ) documentName = docElement.GetString();
+
+            FirestoreDb firestoreDb = FirestoreDb.Create("organism-zero");
+
+            DocumentReference reference = firestoreDb.Document("collectionA/documentA/collectionB/" + documentName);
+            DocumentSnapshot messageSnapshot = await reference.GetSnapshotAsync();
+            Message result = messageSnapshot.ConvertTo<Message>();
+
+            await context.Response.WriteAsync( "Hello, this function is running inside project: " + firestoreDb.ProjectId + "\n" );
+            await context.Response.WriteAsync( "Reading from the irestore-message: " + result.message + "\n" +
+                                               "The document name requested: " + documentName + "\n" );
+        }
+    }
+}
