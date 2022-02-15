@@ -95,6 +95,29 @@ Firestore event          | DocumentEventData     | --trigger-event providers/clo
 >   available in the `FirestoreEvent` class via the `Wildcards` property. This is subject to change,
 >   as it's inconsitent with other Functions Frameworks.
 
+### Triggering an HTTP function with a Cloud Pub/Sub push subscription
+
+HTTP functions can work as the endpoints for [Cloud Pub/Sub push
+subscriptions](https://cloud.google.com/pubsub/docs/push). If your
+function implements `ICloudEventFunction` or
+`ICloudEventFunction<MessagePublishedData>`, the Functions Framework
+will adapt the incoming HTTP request to present it to your function
+as a CloudEvent, as if you had deployed via `--trigger-topic`. The
+requests for push subscriptions do not contain topic data, but if
+you create the push subcription with a URL of
+`https://<your-function>/projects/<project-id>/topics/<topic-id>`
+then the Functions Framework will infer the topic name from the path
+of the HTTP request. If the topic name cannot be inferred
+automatically, a topic name of
+`projects/unknown-project!/topics/unknown-topic!` will be used in
+the CloudEvent.
+
+> Note: the Functions Framework code to adapt the incoming HTTP
+> request works with the [Cloud Pub/Sub
+> Emulator](https://cloud.google.com/pubsub/docs/emulator), but
+> some information is not included in emulator push subscription
+> requests.
+
 ### Deploying a function with a local project dependency
 
 Real world functions are often part of a larger application which

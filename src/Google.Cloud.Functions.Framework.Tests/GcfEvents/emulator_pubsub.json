@@ -1,0 +1,10 @@
+﻿{
+  "subscription": "projects\/emulator-project\/subscriptions\/test-subscription",
+  "message": {
+    "data": "VGVzdCBtZXNzYWdlIGZyb20gZW11bGF0b3I=",
+    "messageId": "1",
+    "attributes": {
+      "attr1": "attr-value1"
+    }
+  }
+}

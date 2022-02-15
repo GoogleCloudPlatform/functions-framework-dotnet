@@ -17,8 +17,8 @@ using CloudNative.CloudEvents.SystemTextJson;
 using Google.Cloud.Functions.Framework.GcfEvents;
 using Microsoft.AspNetCore.Http;
 using System;
-using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -37,6 +37,8 @@ namespace Google.Cloud.Functions.Framework.Tests.GcfEvents
         [InlineData("firestore_simple.json", "google.cloud.firestore.document.v1.written", "//firestore.googleapis.com/projects/project-id/databases/(default)", "documents/gcf-test/2Vm2mI1d0wIaK2Waj5to")]
         [InlineData("pubsub_text.json", "google.cloud.pubsub.topic.v1.messagePublished", "//pubsub.googleapis.com/projects/sample-project/topics/gcf-test", null)]
         [InlineData("legacy_pubsub.json", "google.cloud.pubsub.topic.v1.messagePublished", "//pubsub.googleapis.com/projects/sample-project/topics/gcf-test", null)]
+        [InlineData("raw_pubsub.json", "google.cloud.pubsub.topic.v1.messagePublished", "//pubsub.googleapis.com/projects/unknown-project!/topics/unknown-topic!", null)]
+        [InlineData("emulator_pubsub.json", "google.cloud.pubsub.topic.v1.messagePublished", "//pubsub.googleapis.com/projects/unknown-project!/topics/unknown-topic!", null)]
         [InlineData("firebase-db1.json", "google.firebase.database.ref.v1.written", "//firebasedatabase.googleapis.com/projects/_/locations/us-central1/instances/my-project-id", "refs/gcf-test/xyz")]
         [InlineData("firebase-db2.json", "google.firebase.database.ref.v1.written", "//firebasedatabase.googleapis.com/projects/_/locations/europe-west1/instances/my-project-id", "refs/gcf-test/xyz")]
         [InlineData("firebase-auth1.json", "google.firebase.auth.user.v1.created", "//firebaseauth.googleapis.com/projects/my-project-id", "users/UUpby3s4spZre6kHsgVSPetzQ8l2")]
@@ -110,6 +112,10 @@ namespace Google.Cloud.Functions.Framework.Tests.GcfEvents
             AssertInvalidRequest("{INVALIDJSON 'data':{}, 'context':{'eventId':'xyz', 'eventType': 'google.pubsub.topic.publish', 'resource':{'service': 'svc', 'name': 'resname'}}}");
 
         [Fact]
+        public Task InvalidRequest_UnknownType() =>
+            AssertInvalidRequest("{'data':{}, 'context':{'eventId':'xyz', 'eventType': 'google.surprise', 'resource':{'service': 'svc', 'name': 'resname'}}}");
+
+        [Fact]
         public Task InvalidRequest_NoData() =>
             AssertInvalidRequest("{'context':{'eventId':'xyz', 'eventType': 'google.pubsub.topic.publish', 'resource':{'service': 'svc', 'name': 'resname'}}}");
 
@@ -125,6 +131,35 @@ namespace Google.Cloud.Functions.Framework.Tests.GcfEvents
         public Task InvalidRequest_NoResourceName() =>
             AssertInvalidRequest("{'data':{}, 'context':{'eventId':'xyz', 'eventType': 'google.pubsub.topic.publish', 'resource':{'service': 'svc'}}}");
 
+        // Minimal valid JSON for a raw Pub/Sub event, so all the subsequent invalid tests can be "this JSON with something removed" (or added)
+        [Fact]
+        public async Task MinimalValidEvent_RawPubSub()
+        {
+            string json = "{'message':{'messageId':'xyz'}, 'subscription':'projects/x/subscriptions/y'}";
+            var cloudEvent = await ConvertJson(json);
+            Assert.Equal("xyz", cloudEvent.Id);
+        }
+
+        [Fact]
+        public Task InvalidRequest_MissingMessageIdFromRawPubSub() =>
+            AssertInvalidRequest("{'message':{}, 'subscription':'projects/x/subscriptions/y'}");
+
+        [Fact]
+        public Task InvalidRequest_OnlySubscriptionFromRawPubSub() =>
+            AssertInvalidRequest("{'subscription':'projects/x/subscriptions/y'");
+
+        [Fact]
+        public Task InvalidRequest_OnlyMessageFromRawPubSub() =>
+            AssertInvalidRequest("{'message':{'messageId':'1'}}");
+
+        [Fact]
+        public Task InvalidRequest_RawPubSubAndContext() =>
+            AssertInvalidRequest("{'message':{'messageId':'xyz'}, 'subscription':'projects/x/subscriptions/y', 'context':{}}");
+
+        [Fact]
+        public Task InvalidRequest_RawPubSubAndData() =>
+            AssertInvalidRequest("{'message':{'messageId':'xyz'}, 'subscription':'projects/x/subscriptions/y', 'data':{}}");
+
         [Theory]
         [InlineData("firebase-analytics-no-app-id.json")]
         [InlineData("firebase-analytics-no-event-name.json")]
@@ -132,6 +167,37 @@ namespace Google.Cloud.Functions.Framework.Tests.GcfEvents
         {
             var context = GcfEventResources.CreateHttpContext(resourceName);
             await Assert.ThrowsAsync<GcfConverters.ConversionException>(() => GcfConverters.ConvertGcfEventToCloudEvent(context.Request, s_jsonFormatter));
+        }
+
+        [Theory]
+        [InlineData(null, GcfConverters.DefaultRawPubSubTopic)]
+        [InlineData("/not/a/matching/path", GcfConverters.DefaultRawPubSubTopic)]
+        [InlineData("/projects/abc/topics/bcd", "projects/abc/topics/bcd")]
+        public async Task RawPubSubTopic_NoPath(string? path, string expectedTopicResourceName)
+        {
+            var context = GcfEventResources.CreateHttpContext("raw_pubsub.json", path);
+            var cloudEvent = await GcfConverters.ConvertGcfEventToCloudEvent(context.Request, s_jsonFormatter);
+            Assert.Equal($"//pubsub.googleapis.com/{expectedTopicResourceName}", cloudEvent.Source?.ToString());
+            string expectedTopic = expectedTopicResourceName.Split('/').Last();
+            Assert.Equal(expectedTopic, (string) cloudEvent["topic"]!);
+        }
+
+        [Fact]
+        public async Task RawPubSub_SimpleProperties()
+        {
+            var context = GcfEventResources.CreateHttpContext("raw_pubsub.json");
+            var cloudEvent = await GcfConverters.ConvertGcfEventToCloudEvent(context.Request, s_jsonFormatter);
+            Assert.Equal(new DateTimeOffset(2022, 2, 15, 11, 28, 32, 942, TimeSpan.Zero), cloudEvent.Time);
+            Assert.Equal("4102184774039362", cloudEvent.Id);
+        }
+
+        [Fact]
+        public async Task EmulatorPubSub_SimpleProperties()
+        {
+            var context = GcfEventResources.CreateHttpContext("emulator_pubsub.json");
+            var cloudEvent = await GcfConverters.ConvertGcfEventToCloudEvent(context.Request, s_jsonFormatter);
+            Assert.Null(cloudEvent.Time);
+            Assert.Equal("1", cloudEvent.Id);
         }
 
         private static async Task AssertInvalidRequest(string json, string? contentType = null) =>
