@@ -75,6 +75,7 @@ namespace Google.Cloud.Functions.Framework.GcfEvents
             internal const string StorageObjectChanged = StorageObjectV1 + ".changed";
         }
 
+        internal const string DefaultRawPubSubTopic = "projects/unknown-project!/topics/unknown-topic!";
         private const string JsonContentType = "application/json";
 
         private static readonly Dictionary<string, EventAdapter> s_eventTypeMapping = new Dictionary<string, EventAdapter>
@@ -142,12 +143,13 @@ namespace Google.Cloud.Functions.Framework.GcfEvents
                 throw new ConversionException($"Error parsing GCF event: {e.Message}", e);
             }
 
+            PubSubEventAdapter.NormalizeRawRequest(parsedRequest, request.Path.Value);
             parsedRequest.NormalizeContext();
             if (parsedRequest.Data is null ||
                 string.IsNullOrEmpty(parsedRequest.Context.Id) ||
                 string.IsNullOrEmpty(parsedRequest.Context.Type))
             {
-                throw new ConversionException("Event is malformed; does not contain a payload, or the event ID is missing.");
+                throw new ConversionException("Event is malformed; does not contain a payload, or the event ID or type is missing.");
             }
             return parsedRequest;
         }
@@ -292,6 +294,63 @@ namespace Google.Cloud.Functions.Framework.GcfEvents
                     request.Data["publishTime"] = timestamp.UtcDateTime.ToString(formatString, CultureInfo.InvariantCulture);
                 }
                 request.Data = new Dictionary<string, object> { { "message", request.Data } };
+
+                // The subscription is not provided in the legacy format, but *is* provided in
+                // the raw Pub/Sub push notification (including in the emulator) so we should use it if we've got it.
+                if (request.RawPubSubSubscription is string subscription)
+                {
+                    request.Data["subscription"] = subscription;
+                }
+            }
+
+            /// <summary>
+            /// Normalizes a raw Pub/Sub push notification (from either the emulator
+            /// or the real Pub/Sub service) into the existing legacy format.
+            /// </summary>
+            /// <param name="request">The incoming request body, parsed as a <see cref="Request"/> object</param>
+            /// <param name="path">The HTTP request path, from which the topic name will be extracted.</param>
+            internal static void NormalizeRawRequest(Request request, string path)
+            {
+                // Non-raw-Pub/Sub path: just a no-op
+                if (request.RawPubSubMessage is null && request.RawPubSubSubscription is null)
+                {
+                    return;
+                }
+                if (request.RawPubSubMessage is null || request.RawPubSubSubscription is null)
+                {
+                    throw new ConversionException("Request is malformed; it must contain both 'message' and 'subscription' properties or neither.");
+                }
+                if (request.Data is object ||
+                    request.Domain is object ||
+                    request.Context is object ||
+                    request.EventId is object ||
+                    request.EventType is object ||
+                    request.Params is object ||
+                    request.Timestamp is object)
+                {
+                    throw new ConversionException("Request is malformed; raw Pub/Sub request must contain only 'message' and 'subscription' properties.");
+                }
+                if (!request.RawPubSubMessage.TryGetValue("messageId", out var messageIdObj) || !(messageIdObj is JsonElement messageIdElement) ||
+                    messageIdElement.ValueKind != JsonValueKind.String)
+                {
+                    throw new ConversionException("Request is malformed; raw Pub/Sub message must contain a 'message.messageId' string property.");
+                }
+                request.EventId = messageIdElement.GetString();
+                request.EventType = "providers/cloud.pubsub/eventTypes/topic.publish";
+                // Skip the leading / in the path
+                path = path.Length == 0 ? "" : path.Substring(1);
+                var topicPathMatch = PubSubResourcePattern.Match(path);
+                request.Resource = topicPathMatch.Success ? path : DefaultRawPubSubTopic;
+                request.Data = request.RawPubSubMessage;
+                if (request.RawPubSubMessage.TryGetValue("publishTime", out var publishTime) &&
+                    publishTime is JsonElement publishTimeElement &&
+                    publishTimeElement.ValueKind == JsonValueKind.String &&
+                    DateTimeOffset.TryParseExact(publishTimeElement.GetString(), "yyyy-MM-dd'T'HH:mm:ss.FFFFFF'Z'", CultureInfo.InvariantCulture,
+                        DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal,
+                        out var timestamp))
+                {
+                    request.Timestamp = timestamp;
+                }
             }
         }
 

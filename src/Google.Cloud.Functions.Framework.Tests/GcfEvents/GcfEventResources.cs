@@ -21,13 +21,14 @@ namespace Google.Cloud.Functions.Framework.Tests.GcfEvents
     /// </summary>
     internal static class GcfEventResources
     {
-        internal static HttpContext CreateHttpContext(string resourceName) =>
+        internal static HttpContext CreateHttpContext(string resourceName, string? path = null) =>
             new DefaultHttpContext
             {
                 Request =
                 {
                     Body = TestResourceHelper.LoadResource(typeof(GcfEventResources), resourceName),
-                    ContentType = "application/json"
+                    ContentType = "application/json",
+                    Path = path is null ? PathString.Empty : (PathString) path
                 }
             };
     }

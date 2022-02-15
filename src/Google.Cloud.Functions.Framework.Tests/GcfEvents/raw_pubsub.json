@@ -1,0 +1,12 @@
+﻿{
+  "message": {
+    "attributes": { "attr1":"value1" },
+    "data": "VGV4dCBtZXNzYWdl",
+    "messageId":"4102184774039362",
+    "message_id":"4102184774039362",
+    "orderingKey":"orderxyz",
+    "publishTime":"2022-02-15T11:28:32.942Z",
+    "publish_time":"2022-02-15T11:28:32.942Z"
+  },
+  "subscription":"projects/sample-project/subscriptions/sample-subscription"
+}

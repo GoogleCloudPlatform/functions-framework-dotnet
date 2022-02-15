@@ -14,7 +14,6 @@
 
 using CloudNative.CloudEvents;
 using Google.Cloud.Functions.Framework.GcfEvents;
-using Google.Events;
 using Google.Events.Protobuf;
 using Google.Events.Protobuf.Cloud.PubSub.V1;
 using Google.Events.Protobuf.Cloud.Storage.V1;
@@ -132,6 +131,33 @@ namespace Google.Cloud.Functions.Framework.Tests.GcfEvents
         }
 
         [Fact]
+        public async Task RawPubSub()
+        {
+            var data = await ConvertAndDeserialize<MessagePublishedData>("raw_pubsub.json");
+            Assert.Equal("projects/sample-project/subscriptions/sample-subscription", data.Subscription);
+            var message = data.Message!;
+            Assert.NotNull(message);
+            Assert.Equal(new Dictionary<string, string> { { "attr1", "value1" } }, message.Attributes);
+            Assert.Equal("Text message", message.TextData);
+            Assert.Equal("4102184774039362", message.MessageId);
+            Assert.Equal(new DateTimeOffset(2022, 2, 15, 11, 28, 32, 942, TimeSpan.Zero), message.PublishTime.ToDateTimeOffset());
+            Assert.Equal("orderxyz", message.OrderingKey);
+        }
+
+        [Fact]
+        public async Task EmulatorPubSub()
+        {
+            var data = await ConvertAndDeserialize<MessagePublishedData>("emulator_pubsub.json");
+            Assert.Equal("projects/emulator-project/subscriptions/test-subscription", data.Subscription);
+            var message = data.Message!;
+            Assert.NotNull(message);
+            Assert.Equal(new Dictionary<string, string> { { "attr1", "attr-value1" } }, message.Attributes);
+            Assert.Equal("Test message from emulator", message.TextData);
+            Assert.Equal("1", message.MessageId);
+            Assert.Null(message.PublishTime);
+        }
+
+        [Fact]
         public async Task LegacyEvents()
         {
             // Just a quick validation that the legacy events are in the same format.
@@ -215,9 +241,9 @@ namespace Google.Cloud.Functions.Framework.Tests.GcfEvents
             Assert.Equal(new System.DateTime(2020, 5, 29, 11, 00, 00), authData.Metadata.LastSignInTime.ToDateTime());
         }
 
-        private static async Task<T> ConvertAndDeserialize<T>(string resourceName) where T : class
+        private static async Task<T> ConvertAndDeserialize<T>(string resourceName, string? path = null) where T : class
         {
-            var context = GcfEventResources.CreateHttpContext(resourceName);
+            var context = GcfEventResources.CreateHttpContext(resourceName, path);
             var formatter = CloudEventFormatterAttribute.CreateFormatter(typeof(T))
                 ?? throw new InvalidOperationException("No formatter available");
             var cloudEvent = await GcfConverters.ConvertGcfEventToCloudEvent(context.Request, formatter);

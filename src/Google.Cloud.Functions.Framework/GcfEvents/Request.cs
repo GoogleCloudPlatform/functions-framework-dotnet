@@ -44,6 +44,18 @@ namespace Google.Cloud.Functions.Framework.GcfEvents
         [JsonPropertyName("domain")]
         public string? Domain { get; set; }
 
+        /// <summary>
+        /// Raw PubSub only: the subscription triggering the request.
+        /// </summary>
+        [JsonPropertyName("subscription")]
+        public string? RawPubSubSubscription { get; set; }
+
+        /// <summary>
+        /// Raw PubSub only: the PubSub message.
+        /// </summary>
+        [JsonPropertyName("message")]
+        public Dictionary<string, object>? RawPubSubMessage { get; set; }
+
         public Request()
         {
             Context = null!;
