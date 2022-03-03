@@ -15,7 +15,10 @@
 using CloudNative.CloudEvents;
 using CloudNative.CloudEvents.SystemTextJson;
 using Google.Cloud.Functions.Framework.GcfEvents;
+using Google.Cloud.Functions.Testing;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using System;
 using System.IO;
 using System.Linq;
@@ -47,8 +50,7 @@ namespace Google.Cloud.Functions.Framework.Tests.GcfEvents
         [InlineData("firebase-analytics.json", "google.firebase.analytics.log.v1.written", "//firebaseanalytics.googleapis.com/projects/my-project-id/apps/com.example.exampleapp", "events/session_start")]
         public async Task ConvertGcfEvent_TypeSourceSubject(string resourceName, string expectedType, string expectedSource, string expectedSubject)
         {
-            var context = GcfEventResources.CreateHttpContext(resourceName);
-            var cloudEvent = await GcfConverters.ConvertGcfEventToCloudEvent(context.Request, s_jsonFormatter);
+            var cloudEvent = await ConvertResource(resourceName);
             Assert.Equal(expectedType, cloudEvent.Type);
             Assert.Equal(expectedSource, cloudEvent.Source?.ToString());
             Assert.Equal(expectedSubject, cloudEvent.Subject);
@@ -61,8 +63,7 @@ namespace Google.Cloud.Functions.Framework.Tests.GcfEvents
         [InlineData("pubsub_text.json", "topic", "gcf-test")]
         public async Task ConvertGcfEvent_ExtensionAttributes(string resourceName, string extensionAttributeName, string expectedValue)
         {
-            var context = GcfEventResources.CreateHttpContext(resourceName);
-            var cloudEvent = await GcfConverters.ConvertGcfEventToCloudEvent(context.Request, s_jsonFormatter);
+            var cloudEvent = await ConvertResource(resourceName);
             var attributeValue = (string) cloudEvent[extensionAttributeName]!;
             Assert.Equal(expectedValue, attributeValue);
         }
@@ -72,8 +73,7 @@ namespace Google.Cloud.Functions.Framework.Tests.GcfEvents
         [InlineData("pubsub_text.json", "2020-05-06T07:33:34.556Z")]
         public async Task PubSubTimeStampPrecision(string resourceName, string expectedPublishTime)
         {
-            var context = GcfEventResources.CreateHttpContext(resourceName);
-            var cloudEvent = await GcfConverters.ConvertGcfEventToCloudEvent(context.Request, s_jsonFormatter);
+            var cloudEvent = await ConvertResource(resourceName);
             var data = (JsonElement) cloudEvent.Data!;
             var actualPublishTime = data.GetProperty("message").GetProperty("publishTime").GetString();
             Assert.Equal(expectedPublishTime, actualPublishTime);
@@ -83,8 +83,7 @@ namespace Google.Cloud.Functions.Framework.Tests.GcfEvents
         [Fact]
         public async Task CheckAllProperties()
         {
-            var context = GcfEventResources.CreateHttpContext("storage.json");
-            var cloudEvent = await GcfConverters.ConvertGcfEventToCloudEvent(context.Request, s_jsonFormatter);
+            var cloudEvent = await ConvertResource("storage.json");
             Assert.Equal("application/json", cloudEvent.DataContentType);
             Assert.Equal("1147091835525187", cloudEvent.Id);
             Assert.Equal("google.cloud.storage.object.v1.finalized", cloudEvent.Type);
@@ -166,27 +165,28 @@ namespace Google.Cloud.Functions.Framework.Tests.GcfEvents
         public async Task InvalidRequest_FirebaseAnalytics(string resourceName)
         {
             var context = GcfEventResources.CreateHttpContext(resourceName);
-            await Assert.ThrowsAsync<GcfConverters.ConversionException>(() => GcfConverters.ConvertGcfEventToCloudEvent(context.Request, s_jsonFormatter));
+            await Assert.ThrowsAsync<GcfConverters.ConversionException>(() => GcfConverters.ConvertGcfEventToCloudEvent(context.Request, s_jsonFormatter, NullLogger.Instance));
         }
 
         [Theory]
-        [InlineData(null, GcfConverters.DefaultRawPubSubTopic)]
-        [InlineData("/not/a/matching/path", GcfConverters.DefaultRawPubSubTopic)]
-        [InlineData("/projects/abc/topics/bcd", "projects/abc/topics/bcd")]
-        public async Task RawPubSubTopic_NoPath(string? path, string expectedTopicResourceName)
+        [InlineData(null, GcfConverters.DefaultRawPubSubTopic, true)]
+        [InlineData("/not/a/matching/path", GcfConverters.DefaultRawPubSubTopic, true)]
+        [InlineData("/projects/abc/topics/bcd", "projects/abc/topics/bcd", false)]
+        public async Task RawPubSubTopic_NoPath(string? path, string expectedTopicResourceName, bool expectWarning)
         {
+            var logger = new MemoryLogger("converter");
             var context = GcfEventResources.CreateHttpContext("raw_pubsub.json", path);
-            var cloudEvent = await GcfConverters.ConvertGcfEventToCloudEvent(context.Request, s_jsonFormatter);
+            var cloudEvent = await GcfConverters.ConvertGcfEventToCloudEvent(context.Request, s_jsonFormatter, logger);
             Assert.Equal($"//pubsub.googleapis.com/{expectedTopicResourceName}", cloudEvent.Source?.ToString());
             string expectedTopic = expectedTopicResourceName.Split('/').Last();
             Assert.Equal(expectedTopic, (string) cloudEvent["topic"]!);
+            Assert.Equal(expectWarning, logger.ListLogEntries().Any(entry => entry.Level >= LogLevel.Warning));
         }
 
         [Fact]
         public async Task RawPubSub_SimpleProperties()
         {
-            var context = GcfEventResources.CreateHttpContext("raw_pubsub.json");
-            var cloudEvent = await GcfConverters.ConvertGcfEventToCloudEvent(context.Request, s_jsonFormatter);
+            var cloudEvent = await ConvertResource("raw_pubsub.json");
             Assert.Equal(new DateTimeOffset(2022, 2, 15, 11, 28, 32, 942, TimeSpan.Zero), cloudEvent.Time);
             Assert.Equal("4102184774039362", cloudEvent.Id);
         }
@@ -194,8 +194,7 @@ namespace Google.Cloud.Functions.Framework.Tests.GcfEvents
         [Fact]
         public async Task EmulatorPubSub_SimpleProperties()
         {
-            var context = GcfEventResources.CreateHttpContext("emulator_pubsub.json");
-            var cloudEvent = await GcfConverters.ConvertGcfEventToCloudEvent(context.Request, s_jsonFormatter);
+            var cloudEvent = await ConvertResource("emulator_pubsub.json");
             Assert.Null(cloudEvent.Time);
             Assert.Equal("1", cloudEvent.Id);
         }
@@ -213,7 +212,13 @@ namespace Google.Cloud.Functions.Framework.Tests.GcfEvents
                     ContentType = contentType ?? "application/json"
                 }
             }.Request;
-            return await GcfConverters.ConvertGcfEventToCloudEvent(request, s_jsonFormatter);
+            return await GcfConverters.ConvertGcfEventToCloudEvent(request, s_jsonFormatter, NullLogger.Instance);
+        }
+
+        private static async Task<CloudEvent> ConvertResource(string resourceName)
+        {
+            var context = GcfEventResources.CreateHttpContext(resourceName);
+            return await GcfConverters.ConvertGcfEventToCloudEvent(context.Request, s_jsonFormatter, NullLogger.Instance);
         }
     }
 }

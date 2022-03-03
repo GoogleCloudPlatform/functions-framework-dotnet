@@ -57,7 +57,7 @@ namespace Google.Cloud.Functions.Framework
 
             try
             {
-                cloudEvent = await ConvertRequestAsync(context.Request, _formatter);
+                cloudEvent = await ConvertRequestAsync(context.Request, _formatter, _logger);
             }
             catch (Exception e)
             {
@@ -74,10 +74,11 @@ namespace Google.Cloud.Functions.Framework
         /// </summary>
         /// <param name="request">The request to convert.</param>
         /// <param name="formatter">The formatter to use for conversion.</param>
+        /// <param name="logger">The logger to use to report any warnings.</param>
         /// <returns>A valid CloudEvent</returns>
-        internal static Task<CloudEvent> ConvertRequestAsync(HttpRequest request, CloudEventFormatter formatter) =>
+        internal static Task<CloudEvent> ConvertRequestAsync(HttpRequest request, CloudEventFormatter formatter, ILogger logger) =>
             request.IsCloudEvent()
             ? request.ToCloudEventAsync(formatter)
-            : GcfConverters.ConvertGcfEventToCloudEvent(request, formatter);
+            : GcfConverters.ConvertGcfEventToCloudEvent(request, formatter, logger);
     }
 }

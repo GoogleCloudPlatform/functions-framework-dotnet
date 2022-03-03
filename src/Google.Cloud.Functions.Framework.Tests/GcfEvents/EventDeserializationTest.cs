@@ -22,6 +22,7 @@ using Google.Events.Protobuf.Firebase.Auth.V1;
 using Google.Events.Protobuf.Firebase.Database.V1;
 using Google.Protobuf.WellKnownTypes;
 using Google.Type;
+using Microsoft.Extensions.Logging.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -246,7 +247,7 @@ namespace Google.Cloud.Functions.Framework.Tests.GcfEvents
             var context = GcfEventResources.CreateHttpContext(resourceName, path);
             var formatter = CloudEventFormatterAttribute.CreateFormatter(typeof(T))
                 ?? throw new InvalidOperationException("No formatter available");
-            var cloudEvent = await GcfConverters.ConvertGcfEventToCloudEvent(context.Request, formatter);
+            var cloudEvent = await GcfConverters.ConvertGcfEventToCloudEvent(context.Request, formatter, NullLogger.Instance);
             // We know that ConvertGcfEventToCloudEvent always populates the Data property.
             return (T) cloudEvent.Data!;
         }

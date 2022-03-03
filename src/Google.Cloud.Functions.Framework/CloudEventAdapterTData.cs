@@ -63,7 +63,7 @@ namespace Google.Cloud.Functions.Framework
             TData data;
             try
             {
-                cloudEvent = await CloudEventAdapter.ConvertRequestAsync(context.Request, _formatter);
+                cloudEvent = await CloudEventAdapter.ConvertRequestAsync(context.Request, _formatter, _logger);
                 data = (TData) cloudEvent.Data!;
             }
             catch (Exception e)
