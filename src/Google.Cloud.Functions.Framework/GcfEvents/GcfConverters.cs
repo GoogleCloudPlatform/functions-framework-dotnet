@@ -14,6 +14,7 @@
 
 using CloudNative.CloudEvents;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -76,11 +77,12 @@ namespace Google.Cloud.Functions.Framework.GcfEvents
         }
 
         internal const string DefaultRawPubSubTopic = "projects/unknown-project!/topics/unknown-topic!";
+        private const string GcfPubSubTopicPublishType = "google.pubsub.topic.publish";
         private const string JsonContentType = "application/json";
 
         private static readonly Dictionary<string, EventAdapter> s_eventTypeMapping = new Dictionary<string, EventAdapter>
         {
-            { "google.pubsub.topic.publish", new PubSubEventAdapter(EventTypes.PubSubMessagePublished) },
+            { GcfPubSubTopicPublishType, new PubSubEventAdapter(EventTypes.PubSubMessagePublished) },
             { "google.storage.object.finalize", new StorageEventAdapter(EventTypes.StorageObjectFinalized) },
             { "google.storage.object.delete", new StorageEventAdapter(EventTypes.StorageObjectDeleted) },
             { "google.storage.object.archive", new StorageEventAdapter(EventTypes.StorageObjectArchived) },
@@ -112,9 +114,9 @@ namespace Google.Cloud.Functions.Framework.GcfEvents
             { "google.firebase.remoteconfig.update", new EventAdapter(EventTypes.FirebaseRemoteConfigUpdated, Services.FirebaseRemoteConfig) },
         };
 
-        internal static async Task<CloudEvent> ConvertGcfEventToCloudEvent(HttpRequest request, CloudEventFormatter formatter)
+        internal static async Task<CloudEvent> ConvertGcfEventToCloudEvent(HttpRequest request, CloudEventFormatter formatter, ILogger logger)
         {
-            var jsonRequest = await ParseRequest(request);
+            var jsonRequest = await ParseRequest(request, logger);
             // Validated as not null or empty in ParseRequest
             string gcfType = jsonRequest.Context.Type!;
             if (!s_eventTypeMapping.TryGetValue(gcfType, out var eventAdapter))
@@ -124,7 +126,7 @@ namespace Google.Cloud.Functions.Framework.GcfEvents
             return eventAdapter.ConvertToCloudEvent(jsonRequest, formatter);
         }
 
-        private static async Task<Request> ParseRequest(HttpRequest request)
+        private static async Task<Request> ParseRequest(HttpRequest request, ILogger logger)
         {
             Request parsedRequest;
             if (request.ContentType != JsonContentType)
@@ -143,7 +145,7 @@ namespace Google.Cloud.Functions.Framework.GcfEvents
                 throw new ConversionException($"Error parsing GCF event: {e.Message}", e);
             }
 
-            PubSubEventAdapter.NormalizeRawRequest(parsedRequest, request.Path.Value);
+            PubSubEventAdapter.NormalizeRawRequest(parsedRequest, request.Path.Value, logger);
             parsedRequest.NormalizeContext();
             if (parsedRequest.Data is null ||
                 string.IsNullOrEmpty(parsedRequest.Context.Id) ||
@@ -309,7 +311,8 @@ namespace Google.Cloud.Functions.Framework.GcfEvents
             /// </summary>
             /// <param name="request">The incoming request body, parsed as a <see cref="Request"/> object</param>
             /// <param name="path">The HTTP request path, from which the topic name will be extracted.</param>
-            internal static void NormalizeRawRequest(Request request, string path)
+            /// <param name="logger">The logger to use for a warning if the path cannot be used to derive a topic.</param>
+            internal static void NormalizeRawRequest(Request request, string path, ILogger logger)
             {
                 // Non-raw-Pub/Sub path: just a no-op
                 if (request.RawPubSubMessage is null && request.RawPubSubSubscription is null)
@@ -336,11 +339,20 @@ namespace Google.Cloud.Functions.Framework.GcfEvents
                     throw new ConversionException("Request is malformed; raw Pub/Sub message must contain a 'message.messageId' string property.");
                 }
                 request.EventId = messageIdElement.GetString();
-                request.EventType = "providers/cloud.pubsub/eventTypes/topic.publish";
+                request.EventType = GcfPubSubTopicPublishType;
                 // Skip the leading / in the path
                 path = path.Length == 0 ? "" : path.Substring(1);
                 var topicPathMatch = PubSubResourcePattern.Match(path);
-                request.Resource = topicPathMatch.Success ? path : DefaultRawPubSubTopic;
+                if (topicPathMatch.Success)
+                {
+                    request.Resource = path;
+                }
+                else
+                {
+                    // TODO: Is it okay to log a warning on every request, or should we only log once (ever?)
+                    logger.LogWarning("Request path did not represent a Pub/Sub topic name. The event will contain the unknown topic name of '{name}'", DefaultRawPubSubTopic);
+                    request.Resource = DefaultRawPubSubTopic;
+                }
                 request.Data = request.RawPubSubMessage;
                 if (request.RawPubSubMessage.TryGetValue("publishTime", out var publishTime) &&
                     publishTime is JsonElement publishTimeElement &&
