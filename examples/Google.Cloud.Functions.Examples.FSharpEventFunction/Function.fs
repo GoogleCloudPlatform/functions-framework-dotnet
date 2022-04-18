@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Google.Cloud.Functions.Examples.FSharpEventFunction
+namespace OpenFunction.Examples.FSharpEventFunction
 
 open CloudNative.CloudEvents
-open Google.Cloud.Functions.Framework
+open OpenFunction.Framework
 open Google.Events.Protobuf.Cloud.Storage.V1
 open System.Threading.Tasks
 

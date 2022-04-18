@@ -47,10 +47,10 @@ tail -n +4 docs/history.md | sed '/##/q' | head -n -1 >> tmp/commit.txt
 
 # TODO: Automate finding the packages we're releasing
 echo "Packages in this release:" >> tmp/commit.txt
-echo "- Release Google.Cloud.Functions.Framework version $NEW_VERSION" >> tmp/commit.txt
-echo "- Release Google.Cloud.Functions.Hosting version $NEW_VERSION" >> tmp/commit.txt
-echo "- Release Google.Cloud.Functions.Templates version $NEW_VERSION" >> tmp/commit.txt
-echo "- Release Google.Cloud.Functions.Testing version $NEW_VERSION" >> tmp/commit.txt
+echo "- Release OpenFunction.Framework version $NEW_VERSION" >> tmp/commit.txt
+echo "- Release OpenFunction.Hosting version $NEW_VERSION" >> tmp/commit.txt
+echo "- Release OpenFunction.Templates version $NEW_VERSION" >> tmp/commit.txt
+echo "- Release OpenFunction.Testing version $NEW_VERSION" >> tmp/commit.txt
 
 # Commit!
 git commit -a -F tmp/commit.txt

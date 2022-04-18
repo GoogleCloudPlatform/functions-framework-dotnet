@@ -40,8 +40,8 @@ To deploy to Google Cloud Functions or Cloud Run, follow the
 [deployment guide](deployment.md). Every example uses a function
 class called `Function` in a namespace that's the same as the
 directory. For example, the entry point for the function in the
-`Google.Cloud.Functions.Examples.SimpleHttpFuntion` directory is
-`Google.Cloud.Functions.Examples.SimpleHttpFunction.Function`.
+`OpenFunction.Examples.SimpleHttpFuntion` directory is
+`OpenFunction.Examples.SimpleHttpFunction.Function`.
 
 A sample command line is given for each example, but you may need to
 adapt this to specify your own Google Cloud resources such as Pub/Sub
@@ -57,7 +57,7 @@ topics or Storage buckets.
 > command to deploy SimpleHttpFunction would be:
 >
 > ```sh
-> gcloud functions deploy simple-http --runtime dotnet3 --trigger-http --allow-unauthenticated --entry-point Google.Cloud.Functions.Examples.SimpleHttpFunction.Function
+> gcloud functions deploy simple-http --runtime dotnet3 --trigger-http --allow-unauthenticated --entry-point OpenFunction.Examples.SimpleHttpFunction.Function
 > ```
 
 Where environment variables are used in the command line (e.g. `$GCS_BUCKET_NAME`)
@@ -68,7 +68,7 @@ command itself; they're only shown here to indicate a "placeholder" value.
 
 ## SimpleHttpFunction
 
-The [SimpleHttpFunction](../examples/Google.Cloud.Functions.Examples.SimpleHttpFunction)
+The [SimpleHttpFunction](../examples/OpenFunction.Examples.SimpleHttpFunction)
 function is the result of creating a new HTTP function via the
 template using the following command line:
 
@@ -83,12 +83,12 @@ gcloud functions deploy simple-http \
   --runtime dotnet3 \
   --trigger-http \
   --allow-unauthenticated \
-  --entry-point Google.Cloud.Functions.Examples.SimpleHttpFunction.Function
+  --entry-point OpenFunction.Examples.SimpleHttpFunction.Function
 ```
 
 ## SimpleEventFunction
 
-The [SimpleEventFunction](../examples/Google.Cloud.Functions.Examples.SimpleEventFunction)
+The [SimpleEventFunction](../examples/OpenFunction.Examples.SimpleEventFunction)
 function is the result of creating a new CloudEvent function via the
 template using the following command line:
 
@@ -105,12 +105,12 @@ gcloud functions deploy simple-event \
   --runtime dotnet3 \
   --trigger-event google.storage.object.finalize \
   --trigger-resource $GCS_BUCKET_NAME \
-  --entry-point Google.Cloud.Functions.Examples.SimpleEventFunction.Function
+  --entry-point OpenFunction.Examples.SimpleEventFunction.Function
 ```
 
 ## SimpleUntypedEventFunction
 
-The [SimpleUntypedEventFunction](../examples/Google.Cloud.Functions.Examples.SimpleUntypedEventFunction)
+The [SimpleUntypedEventFunction](../examples/OpenFunction.Examples.SimpleUntypedEventFunction)
 function is the result of creating a new untyped CloudEvent function via the
 template using the following command line:
 
@@ -127,12 +127,12 @@ Sample deployment to listen to Pub/Sub events:
 gcloud functions deploy simple-untyped-event \
   --runtime dotnet3 \
   --trigger-topic $PUBSUB_TOPIC_NAME \
-  --entry-point Google.Cloud.Functions.Examples.SimpleUntypedEventFunction.Function
+  --entry-point OpenFunction.Examples.SimpleUntypedEventFunction.Function
 ```
 
 ## VbHttpFunction
 
-The [VbHttpFunction](../examples/Google.Cloud.Functions.Examples.VbHttpFunction)
+The [VbHttpFunction](../examples/OpenFunction.Examples.VbHttpFunction)
 function is the result of creating a new HTTP function via the
 template using the following command line:
 
@@ -147,12 +147,12 @@ gcloud functions deploy vb-http \
   --runtime dotnet3 \
   --trigger-http \
   --allow-unauthenticated \
-  --entry-point Google.Cloud.Functions.Examples.VbHttpFunction.CloudFunction
+  --entry-point OpenFunction.Examples.VbHttpFunction.CloudFunction
 ```
 
 ## VbEventFunction
 
-The [VbEventFunction](../examples/Google.Cloud.Functions.Examples.VbEventFunction)
+The [VbEventFunction](../examples/OpenFunction.Examples.VbEventFunction)
 function is the result of creating a new CloudEvent function via the
 template using the following command line:
 
@@ -169,13 +169,13 @@ gcloud functions deploy vb-event \
   --runtime dotnet3 \
   --trigger-event google.storage.object.finalize \
   --trigger-resource $ \
-  --entry-point Google.Cloud.Functions.Examples.VbEventFunction.CloudFunction
+  --entry-point OpenFunction.Examples.VbEventFunction.CloudFunction
 ```
 
 ## VbUntypedEventFunction
 
 The
-[VbUntypedEventFunction](../examples/Google.Cloud.Functions.Examples.VbUntypedEventFunction)
+[VbUntypedEventFunction](../examples/OpenFunction.Examples.VbUntypedEventFunction)
 function is the result of creating a new untyped CloudEvent function via the
 template using the following command line:
 
@@ -192,12 +192,12 @@ Sample deployment to listen to Pub/Sub events:
 gcloud functions deploy vb-untyped-event \
   --runtime dotnet3 \
   --trigger-topic $PUBSUB_TOPIC_NAME \
-  --entry-point Google.Cloud.Functions.Examples.VbUntypedEventFunction.CloudFunction
+  --entry-point OpenFunction.Examples.VbUntypedEventFunction.CloudFunction
 ```
 
 ## FSharpHttpFunction
 
-The [FSharpHttpFunction](../examples/Google.Cloud.Functions.Examples.FSharpHttpFunction)
+The [FSharpHttpFunction](../examples/OpenFunction.Examples.FSharpHttpFunction)
 function is the result of creating a new HTTP function via the
 template using the following command line:
 
@@ -212,12 +212,12 @@ gcloud functions deploy fsharp-http \
   --runtime dotnet3 \
   --trigger-http \
   --allow-unauthenticated \
-  --entry-point Google.Cloud.Functions.Examples.FSharpHttpFunction.Function
+  --entry-point OpenFunction.Examples.FSharpHttpFunction.Function
 ```
 
 ## FSharpEventFunction
 
-The [FSharpEventFunction](../examples/Google.Cloud.Functions.Examples.FSharpEventFunction)
+The [FSharpEventFunction](../examples/OpenFunction.Examples.FSharpEventFunction)
 function is the result of creating a new CloudEvent function via the
 template using the following command line:
 
@@ -234,12 +234,12 @@ gcloud functions deploy fsharp-event \
   --runtime dotnet3 \
   --trigger-event google.storage.object.finalize \
   --trigger-resource $GCS_BUCKET_NAME \
-  --entry-point Google.Cloud.Functions.Examples.FSharpEventFunction.Function
+  --entry-point OpenFunction.Examples.FSharpEventFunction.Function
 ```
 
 ## FSharpUntypedEventFunction
 
-The [FSharpUntypedEventFunction](../examples/Google.Cloud.Functions.Examples.FSharpUntypedEventFunction)
+The [FSharpUntypedEventFunction](../examples/OpenFunction.Examples.FSharpUntypedEventFunction)
 function is the result of creating a new untyped CloudEvent function via the
 template using the following command line:
 
@@ -256,12 +256,12 @@ Sample deployment to listen to Pub/Sub events:
 gcloud functions deploy fsharp-untyped-event \
   --runtime dotnet3 \
   --trigger-topic $PUBSUB_TOPIC_NAME \
-  --entry-point Google.Cloud.Functions.Examples.FSharpUntypedEventFunction.Function
+  --entry-point OpenFunction.Examples.FSharpUntypedEventFunction.Function
 ```
 
 ## SimpleDependencyInjection
 
-The [SimpleDependencyInjection](../examples/Google.Cloud.Functions.Examples.SimpleDependencyInjection)
+The [SimpleDependencyInjection](../examples/OpenFunction.Examples.SimpleDependencyInjection)
 example demonstrates out-of-the-box dependency injection without
 any additional configuration.
 
@@ -274,12 +274,12 @@ gcloud functions deploy simple-dependency-injection \
   --runtime dotnet3 \
   --trigger-http \
   --allow-unauthenticated \
-  --entry-point Google.Cloud.Functions.Examples.SimpleDependencyInjection.Function
+  --entry-point OpenFunction.Examples.SimpleDependencyInjection.Function
 ```
 
 ## AdvancedDependencyInjection
 
-The [AdvancedDependencyInjection](../examples/Google.Cloud.Functions.Examples.AdvancedDependencyInjection)
+The [AdvancedDependencyInjection](../examples/OpenFunction.Examples.AdvancedDependencyInjection)
 example demonstrates dependency injection with services provided via a Functions Startup class,
 including scoped and singleton dependencies.
 
@@ -292,13 +292,13 @@ gcloud functions deploy advanced-dependency-injection \
   --runtime dotnet3 \
   --trigger-http \
   --allow-unauthenticated \
-  --entry-point Google.Cloud.Functions.Examples.AdvancedDependencyInjection.Function
+  --entry-point OpenFunction.Examples.AdvancedDependencyInjection.Function
 ```
 
 ## CustomEventDataFunction
 
 
-The [CustomEventDataFunction](../examples/Google.Cloud.Functions.Examples.CustomEventDataFunction)
+The [CustomEventDataFunction](../examples/OpenFunction.Examples.CustomEventDataFunction)
 example demonstrates how a CloudEvent function can specify a
 CloudEventFormatter to use when deserializing the CloudEvent. If the
 target data type for the CloudEvent function is annotated with the
@@ -324,9 +324,9 @@ doesn't correspond to any Google CloudEvent type.)
 
 ## TestableDependencies
 
-The [TestableDependencies](../examples/Google.Cloud.Functions.Examples.TestableDependencies)
+The [TestableDependencies](../examples/OpenFunction.Examples.TestableDependencies)
 example demonstrates how a function with dependency injection configured by a Functions Startup class
-can be [tested](../examples/Google.Cloud.Functions.Examples.IntegrationTests.TestableDependenciesTest.cs)
+can be [tested](../examples/OpenFunction.Examples.IntegrationTests.TestableDependenciesTest.cs)
 using test-only dependencies.
 
 See the [testing documentation](testing.md) for more details.
@@ -338,12 +338,12 @@ gcloud functions deploy testable-dependencies \
   --runtime dotnet3 \
   --trigger-http \
   --allow-unauthenticated \
-  --entry-point Google.Cloud.Functions.Examples.TestableDependencies.Function
+  --entry-point OpenFunction.Examples.TestableDependencies.Function
 ```
 
 ## Middleware
 
-The [Middleware](../examples/Google.Cloud.Functions.Examples.Middleware)
+The [Middleware](../examples/OpenFunction.Examples.Middleware)
 example demonstrates adding middleware to the request pipeline using a Functions Startup class.
 
 See the [customization documentation](customization.md) for more details.
@@ -355,19 +355,19 @@ gcloud functions deploy middleware \
   --runtime dotnet3 \
   --trigger-http \
   --allow-unauthenticated \
-  --entry-point Google.Cloud.Functions.Examples.Middleware.Function
+  --entry-point OpenFunction.Examples.Middleware.Function
 ```
 
 ## Standard configuration
 
-The [Configuration](../examples/Google.Cloud.Functions.Examples.Configuration)
+The [Configuration](../examples/OpenFunction.Examples.Configuration)
 example demonstrates using `IConfiguration` to obtain information from
 settings files to configure services.
 
 This example uses three settings files:
-[appsettings.json](../examples/Google.Cloud.Functions.Examples.Configuration/appsettings.json),
-[appsettings.Development.json](../examples/Google.Cloud.Functions.Examples.Configuration/appsettings.Development.json)
-and [appsettings.Production.json](../examples/Google.Cloud.Functions.Examples.Configuration/appsettings.Production.json).
+[appsettings.json](../examples/OpenFunction.Examples.Configuration/appsettings.json),
+[appsettings.Development.json](../examples/OpenFunction.Examples.Configuration/appsettings.Development.json)
+and [appsettings.Production.json](../examples/OpenFunction.Examples.Configuration/appsettings.Production.json).
 The configuration is loaded in the normal way for .NET Core, based on the environment which is determined
 by the `ASPNETCORE_ENVIRONMENT` and `DOTNET_ENVIRONMENT` environment variables.
 
@@ -386,12 +386,12 @@ gcloud functions deploy configuration-example \
   --trigger-http \
   --allow-unauthenticated \
   --set-env-vars ASPNETCORE_ENVIRONMENT=Development \
-  --entry-point Google.Cloud.Functions.Examples.Configuration.Function
+  --entry-point OpenFunction.Examples.Configuration.Function
 ```
 
 ## Additional configuration sources
 
-The [CustomConfiguration](../examples/Google.Cloud.Functions.Examples.CustomConfiguration)
+The [CustomConfiguration](../examples/OpenFunction.Examples.CustomConfiguration)
 example demonstrates adding a custom configuration source using a Functions Startup class.
 
 See the [customization documentation](customization.md) for more details.
@@ -401,17 +401,17 @@ gcloud functions deploy additional-configuration-example \
   --runtime dotnet3 \
   --trigger-http \
   --allow-unauthenticated \
-  --entry-point Google.Cloud.Functions.Examples.CustomConfiguration.Function
+  --entry-point OpenFunction.Examples.CustomConfiguration.Function
 ```
 
 ## TimeZoneConverter
 
-The [TimeZoneConverter](../examples/Google.Cloud.Functions.Examples.TimeZoneConverter)
+The [TimeZoneConverter](../examples/OpenFunction.Examples.TimeZoneConverter)
 example provides a function with more business logic than most simple examples. It uses
 the [Noda Time](https://nodatime.org) library to perform time zone conversions based
 on the [IANA time zone database](https://www.iana.org/time-zones).
 
-See the [README.md file](../examples/Google.Cloud.Functions.Examples.TimeZoneConverter/README.md)
+See the [README.md file](../examples/OpenFunction.Examples.TimeZoneConverter/README.md)
 for more details.
 
 Sample deployment:
@@ -421,18 +421,18 @@ gcloud functions deploy time-zone-converter \
   --runtime dotnet3 \
   --trigger-http \
   --allow-unauthenticated \
-  --entry-point Google.Cloud.Functions.Examples.TimeZoneConverter.Function
+  --entry-point OpenFunction.Examples.TimeZoneConverter.Function
 ```
 
 ## StorageImageAnnotator
 
-The [StorageImageAnnotator](../examples/Google.Cloud.Functions.Examples.StorageImageAnnotator)
+The [StorageImageAnnotator](../examples/OpenFunction.Examples.StorageImageAnnotator)
 example is an event function that's triggered when a file is
 uploaded into a Google Cloud Storage bucket. It uses the Google
 Cloud Vision API to perform various aspects of image recognition,
 then writes the results as a new Storage object.
 
-See the [README.md file](../examples/Google.Cloud.Functions.Examples.StorageImageAnnotator/README.md)
+See the [README.md file](../examples/OpenFunction.Examples.StorageImageAnnotator/README.md)
 for more details.
 
 Sample deployment:
@@ -442,15 +442,15 @@ gcloud functions deploy image-annotator \
   --runtime dotnet3 \
   --trigger-event google.storage.object.finalize \
   --trigger-resource $GCS_BUCKET_NAME \
-  --entry-point=Google.Cloud.Functions.Examples.StorageImageAnnotator.Function
+  --entry-point=OpenFunction.Examples.StorageImageAnnotator.Function
 ```
 
 ## MultiProjectFunction and MultiProjectDependency
 
 All the other examples provided are standalone, but in real world
 projects, often the project containing your function will depend on
-another local project. The [MultiProjectFunction](../examples/Google.Cloud.Functions.Examples.MultiProjectFunction)
-and [MultiProjectDependency](../examples/Google.Cloud.Functions.Examples.MultiProjectDependency)
+another local project. The [MultiProjectFunction](../examples/OpenFunction.Examples.MultiProjectFunction)
+and [MultiProjectDependency](../examples/OpenFunction.Examples.MultiProjectDependency)
 directories provide an example of this: the MultiProjectFunction project depends on the
 MultiProjectDependency project using a `<ProjectReference>` MSBuild element.
 
@@ -466,8 +466,8 @@ Sample deployment, from the `examples` directory:
 gcloud functions deploy multi-project \
   --runtime dotnet3 \
   --trigger-http \
-  --entry-point=Google.Cloud.Functions.Examples.MultiProjectFunction.Function \
-  --set-build-env-vars=GOOGLE_BUILDABLE=Google.Cloud.Functions.Examples.MultiProjectFunction
+  --entry-point=OpenFunction.Examples.MultiProjectFunction.Function \
+  --set-build-env-vars=GOOGLE_BUILDABLE=OpenFunction.Examples.MultiProjectFunction
 ```
 
 This uses the [.gcloudignore
@@ -478,7 +478,7 @@ Note that the ability to set build environment variables is currently in beta.
 
 ## Integration Tests
 
-The [IntegrationTests](../examples/Google.Cloud.Functions.Examples.IntegrationTests)
+The [IntegrationTests](../examples/OpenFunction.Examples.IntegrationTests)
 directory contains integration tests for the example functions.
 These can also be used as examples of how functions can be tested.
 See the [testing documentation](testing.md) for more details.

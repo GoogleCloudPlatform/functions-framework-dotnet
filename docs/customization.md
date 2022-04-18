@@ -54,7 +54,7 @@ customize which aspect.
 Example using an attribute on the function type:
 
 ```csharp
-using Google.Cloud.Functions.Hosting;
+using OpenFunction.Hosting;
 
 namespace Example
 {
@@ -75,7 +75,7 @@ namespace Example
 Example using an assembly attribute:
 
 ```csharp
-using Google.Cloud.Functions.Hosting;
+using OpenFunction.Hosting;
 
 // Specify the Functions Startup class
 [assembly: FunctionsStartup(typeof(Example.Startup))]
@@ -119,7 +119,7 @@ injection](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/dependency-
 when constructing instances of the target function type to handle
 calls.
 
-See [SimpleDependencyInjection.Function](../examples/Google.Cloud.Functions.Examples.SimpleDependencyInjection/Function.cs)
+See [SimpleDependencyInjection.Function](../examples/OpenFunction.Examples.SimpleDependencyInjection/Function.cs)
 for an example of this, where the function constructor has an
 `ILogger<T>` parameter so that a logger can be injected.
 
@@ -133,7 +133,7 @@ public virtual void ConfigureServices(WebHostBuilderContext context, IServiceCol
 
 The dependencies are then applied by ASP.NET Core dependency
 injection in the normal way. See
-[AdvancedDependencyInjection.Function](../examples/Google.Cloud.Functions.Examples.AdvancedDependencyInjection/Function.cs)
+[AdvancedDependencyInjection.Function](../examples/OpenFunction.Examples.AdvancedDependencyInjection/Function.cs)
 for an example of using scoped and singleton services within a single function. Each function invocation uses
 a new instance of its scoped dependency, but uses the same instance of the singleton dependency.
 
@@ -158,13 +158,13 @@ that successful requests will always end up reaching the function.
 an error for certain conditions is fine; installing middleware to
 respond with files from the file system is less conventional.)
 
-See [Middleware.Function](../examples/Google.Cloud.Functions.Examples.Middleware/Function.cs)
+See [Middleware.Function](../examples/OpenFunction.Examples.Middleware/Function.cs)
 for an example of a small piece of middleware providing extra per-request logging.
 
 ## Customizing application configuration sources using `ConfigureAppConfiguration`
 
 As shown in the
-[Configuration](../examples/Google.Cloud.Functions.Examples.Configuration)
+[Configuration](../examples/OpenFunction.Examples.Configuration)
 example, standard ASP.NET Core configuration is available out of the
 box. If you wish to add more configuration sources, this can be
 performed by overriding the `ConfigureAppConfiguration` method in a Functions Startup class:
@@ -173,7 +173,7 @@ performed by overriding the `ConfigureAppConfiguration` method in a Functions St
 public virtual void ConfigureAppConfiguration(WebHostBuilderContext context, IConfigurationBuilder configuration)
 ```
 
-See [CustomConfiguration](../examples/Google.Cloud.Functions.Examplles.CustomConfiguration/Function.cs)
+See [CustomConfiguration](../examples/OpenFunction.Examplles.CustomConfiguration/Function.cs)
 for an example that installs the [Steeltoe](https://steeltoe.io/)
 random value provider to the available configuration sources.
 
@@ -215,7 +215,7 @@ classes wouldn't have been used during server startup.
 
 While it's entirely normal during testing for "unexpected" startup
 classes to be used, the entry point for running the server in
-production (`Google.Cloud.Functions.Hosting.EntryPoint`) validates
+production (`OpenFunction.Hosting.EntryPoint`) validates
 that the startup classes chosen right at the start are still the
 ones that would be chosen for the finally-selected function target
 type. If that validation fails, an exception is thrown which will
@@ -234,5 +234,5 @@ attribute, so that the same startup classes are used regardless of
 which target function type ends up being selected.
 
 If you run into this problem and can't work out why, please [file an
-issue](https://github.com/GoogleCloudPlatform/functions-framework-dotnet/issues/new)
+issue](https://github.com/OpenFunction/functions-framework-dotnet/issues/new)
 so we can look into it further.

@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Cloud.Functions.Framework;
-using Google.Cloud.Functions.Hosting;
+using OpenFunction.Framework;
+using OpenFunction.Hosting;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -21,7 +21,7 @@ using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
-namespace Google.Cloud.Functions.Examples.Middleware
+namespace OpenFunction.Examples.Middleware
 {
     /// <summary>
     /// The startup class can be used to perform additional configuration, including

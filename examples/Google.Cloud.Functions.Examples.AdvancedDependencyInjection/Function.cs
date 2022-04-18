@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Cloud.Functions.Framework;
-using Google.Cloud.Functions.Hosting;
+using OpenFunction.Framework;
+using OpenFunction.Hosting;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,7 +21,7 @@ using System;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace Google.Cloud.Functions.Examples.AdvancedDependencyInjection
+namespace OpenFunction.Examples.AdvancedDependencyInjection
 {
     // Dependency interfaces and implementation used in the Microsoft ASP.NET Core dependency injection documentation
     // at https://docs.microsoft.com/en-us/aspnet/core/fundamentals/dependency-injection

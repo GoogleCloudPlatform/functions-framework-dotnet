@@ -13,8 +13,8 @@
 // limitations under the License.
 
 using CloudNative.CloudEvents;
-using Google.Cloud.Functions.Framework;
-using Google.Cloud.Functions.Hosting;
+using OpenFunction.Framework;
+using OpenFunction.Hosting;
 using Google.Cloud.Storage.V1;
 using Google.Cloud.Vision.V1;
 using Google.Events.Protobuf.Cloud.Storage.V1;
@@ -30,7 +30,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using static Google.Cloud.Vision.V1.Feature.Types.Type;
 
-namespace Google.Cloud.Functions.Examples.StorageImageAnnotator
+namespace OpenFunction.Examples.StorageImageAnnotator
 {
     /// <summary>
     /// Startup class to provide the Storage and Vision API clients via dependency injection.

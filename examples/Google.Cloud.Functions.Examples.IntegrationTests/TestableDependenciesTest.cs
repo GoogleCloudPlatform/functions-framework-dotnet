@@ -12,14 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Cloud.Functions.Hosting;
-using Google.Cloud.Functions.Testing;
+using OpenFunction.Hosting;
+using OpenFunction.Testing;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Google.Cloud.Functions.Examples.IntegrationTests
+namespace OpenFunction.Examples.IntegrationTests
 {
     /// <summary>
     /// By default, the test server will use the same Functions Startup classes

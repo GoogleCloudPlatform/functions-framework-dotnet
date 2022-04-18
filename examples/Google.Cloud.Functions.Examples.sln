@@ -3,47 +3,47 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32407.343
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Google.Cloud.Functions.Examples.SimpleEventFunction", "Google.Cloud.Functions.Examples.SimpleEventFunction\Google.Cloud.Functions.Examples.SimpleEventFunction.csproj", "{31959486-3FA8-4CDF-84E7-109A875C32F6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenFunction.Examples.SimpleEventFunction", "OpenFunction.Examples.SimpleEventFunction\OpenFunction.Examples.SimpleEventFunction.csproj", "{31959486-3FA8-4CDF-84E7-109A875C32F6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Google.Cloud.Functions.Examples.SimpleHttpFunction", "Google.Cloud.Functions.Examples.SimpleHttpFunction\Google.Cloud.Functions.Examples.SimpleHttpFunction.csproj", "{41A3F818-E524-46DF-9EFF-1E92201956AA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenFunction.Examples.SimpleHttpFunction", "OpenFunction.Examples.SimpleHttpFunction\OpenFunction.Examples.SimpleHttpFunction.csproj", "{41A3F818-E524-46DF-9EFF-1E92201956AA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Google.Cloud.Functions.Examples.IntegrationTests", "Google.Cloud.Functions.Examples.IntegrationTests\Google.Cloud.Functions.Examples.IntegrationTests.csproj", "{79F4BB7D-FB15-4B3D-B618-686D3A265834}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenFunction.Examples.IntegrationTests", "OpenFunction.Examples.IntegrationTests\OpenFunction.Examples.IntegrationTests.csproj", "{79F4BB7D-FB15-4B3D-B618-686D3A265834}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Google.Cloud.Functions.Examples.SimpleDependencyInjection", "Google.Cloud.Functions.Examples.SimpleDependencyInjection\Google.Cloud.Functions.Examples.SimpleDependencyInjection.csproj", "{15D388EB-0831-45D1-B276-DF559960E369}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenFunction.Examples.SimpleDependencyInjection", "OpenFunction.Examples.SimpleDependencyInjection\OpenFunction.Examples.SimpleDependencyInjection.csproj", "{15D388EB-0831-45D1-B276-DF559960E369}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Google.Cloud.Functions.Examples.AdvancedDependencyInjection", "Google.Cloud.Functions.Examples.AdvancedDependencyInjection\Google.Cloud.Functions.Examples.AdvancedDependencyInjection.csproj", "{66FE9A41-3495-4FCC-A9E6-1B9EC9721049}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenFunction.Examples.AdvancedDependencyInjection", "OpenFunction.Examples.AdvancedDependencyInjection\OpenFunction.Examples.AdvancedDependencyInjection.csproj", "{66FE9A41-3495-4FCC-A9E6-1B9EC9721049}"
 EndProject
-Project("{778DAE3C-4631-46EA-AA77-85C1314464D9}") = "Google.Cloud.Functions.Examples.VbHttpFunction", "Google.Cloud.Functions.Examples.VbHttpFunction\Google.Cloud.Functions.Examples.VbHttpFunction.vbproj", "{0E59A7FD-E219-4B2C-8084-F7DEE4571783}"
+Project("{778DAE3C-4631-46EA-AA77-85C1314464D9}") = "OpenFunction.Examples.VbHttpFunction", "OpenFunction.Examples.VbHttpFunction\OpenFunction.Examples.VbHttpFunction.vbproj", "{0E59A7FD-E219-4B2C-8084-F7DEE4571783}"
 EndProject
-Project("{778DAE3C-4631-46EA-AA77-85C1314464D9}") = "Google.Cloud.Functions.Examples.VbEventFunction", "Google.Cloud.Functions.Examples.VbEventFunction\Google.Cloud.Functions.Examples.VbEventFunction.vbproj", "{491BBA04-1D7B-420A-8E4A-83A322FBEC5C}"
+Project("{778DAE3C-4631-46EA-AA77-85C1314464D9}") = "OpenFunction.Examples.VbEventFunction", "OpenFunction.Examples.VbEventFunction\OpenFunction.Examples.VbEventFunction.vbproj", "{491BBA04-1D7B-420A-8E4A-83A322FBEC5C}"
 EndProject
-Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Google.Cloud.Functions.Examples.FSharpHttpFunction", "Google.Cloud.Functions.Examples.FSharpHttpFunction\Google.Cloud.Functions.Examples.FSharpHttpFunction.fsproj", "{6B8874A3-E8B5-4ED1-BD58-15213023543C}"
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "OpenFunction.Examples.FSharpHttpFunction", "OpenFunction.Examples.FSharpHttpFunction\OpenFunction.Examples.FSharpHttpFunction.fsproj", "{6B8874A3-E8B5-4ED1-BD58-15213023543C}"
 EndProject
-Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Google.Cloud.Functions.Examples.FSharpEventFunction", "Google.Cloud.Functions.Examples.FSharpEventFunction\Google.Cloud.Functions.Examples.FSharpEventFunction.fsproj", "{8D95AE54-C3BB-41F8-AC1D-7307DBA01BD1}"
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "OpenFunction.Examples.FSharpEventFunction", "OpenFunction.Examples.FSharpEventFunction\OpenFunction.Examples.FSharpEventFunction.fsproj", "{8D95AE54-C3BB-41F8-AC1D-7307DBA01BD1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Google.Cloud.Functions.Examples.TimeZoneConverter", "Google.Cloud.Functions.Examples.TimeZoneConverter\Google.Cloud.Functions.Examples.TimeZoneConverter.csproj", "{A741BB0B-8FA2-4A5F-B62C-169E1E6330FF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenFunction.Examples.TimeZoneConverter", "OpenFunction.Examples.TimeZoneConverter\OpenFunction.Examples.TimeZoneConverter.csproj", "{A741BB0B-8FA2-4A5F-B62C-169E1E6330FF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Google.Cloud.Functions.Examples.StorageImageAnnotator", "Google.Cloud.Functions.Examples.StorageImageAnnotator\Google.Cloud.Functions.Examples.StorageImageAnnotator.csproj", "{145F7CB3-C097-4996-BB04-A10441BAC99D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenFunction.Examples.StorageImageAnnotator", "OpenFunction.Examples.StorageImageAnnotator\OpenFunction.Examples.StorageImageAnnotator.csproj", "{145F7CB3-C097-4996-BB04-A10441BAC99D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Google.Cloud.Functions.Examples.SimpleUntypedEventFunction", "Google.Cloud.Functions.Examples.SimpleUntypedEventFunction\Google.Cloud.Functions.Examples.SimpleUntypedEventFunction.csproj", "{9DBDE0C9-0B1C-43DF-AED7-B7874B0ECC5E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenFunction.Examples.SimpleUntypedEventFunction", "OpenFunction.Examples.SimpleUntypedEventFunction\OpenFunction.Examples.SimpleUntypedEventFunction.csproj", "{9DBDE0C9-0B1C-43DF-AED7-B7874B0ECC5E}"
 EndProject
-Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Google.Cloud.Functions.Examples.FSharpUntypedEventFunction", "Google.Cloud.Functions.Examples.FSharpUntypedEventFunction\Google.Cloud.Functions.Examples.FSharpUntypedEventFunction.fsproj", "{D18C8714-CC8A-4D0C-A151-97D5963FBB53}"
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "OpenFunction.Examples.FSharpUntypedEventFunction", "OpenFunction.Examples.FSharpUntypedEventFunction\OpenFunction.Examples.FSharpUntypedEventFunction.fsproj", "{D18C8714-CC8A-4D0C-A151-97D5963FBB53}"
 EndProject
-Project("{778DAE3C-4631-46EA-AA77-85C1314464D9}") = "Google.Cloud.Functions.Examples.VbUntypedEventFunction", "Google.Cloud.Functions.Examples.VbUntypedEventFunction\Google.Cloud.Functions.Examples.VbUntypedEventFunction.vbproj", "{C82DC952-122D-4260-86AA-A84D3137B42C}"
+Project("{778DAE3C-4631-46EA-AA77-85C1314464D9}") = "OpenFunction.Examples.VbUntypedEventFunction", "OpenFunction.Examples.VbUntypedEventFunction\OpenFunction.Examples.VbUntypedEventFunction.vbproj", "{C82DC952-122D-4260-86AA-A84D3137B42C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Google.Cloud.Functions.Examples.Configuration", "Google.Cloud.Functions.Examples.Configuration\Google.Cloud.Functions.Examples.Configuration.csproj", "{5085BF04-084E-4B52-9381-B23A1DAE268B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenFunction.Examples.Configuration", "OpenFunction.Examples.Configuration\OpenFunction.Examples.Configuration.csproj", "{5085BF04-084E-4B52-9381-B23A1DAE268B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Google.Cloud.Functions.Examples.Middleware", "Google.Cloud.Functions.Examples.Middleware\Google.Cloud.Functions.Examples.Middleware.csproj", "{F72598CE-DE89-4089-9A78-0E7FA9698D49}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenFunction.Examples.Middleware", "OpenFunction.Examples.Middleware\OpenFunction.Examples.Middleware.csproj", "{F72598CE-DE89-4089-9A78-0E7FA9698D49}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Google.Cloud.Functions.Examples.CustomConfiguration", "Google.Cloud.Functions.Examples.CustomConfiguration\Google.Cloud.Functions.Examples.CustomConfiguration.csproj", "{743A84EF-9B19-4E52-9FF1-38DBB54221F3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenFunction.Examples.CustomConfiguration", "OpenFunction.Examples.CustomConfiguration\OpenFunction.Examples.CustomConfiguration.csproj", "{743A84EF-9B19-4E52-9FF1-38DBB54221F3}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Google.Cloud.Functions.Examples.TestableDependencies", "Google.Cloud.Functions.Examples.TestableDependencies\Google.Cloud.Functions.Examples.TestableDependencies.csproj", "{658EC94D-9A70-4078-8CBD-5FA6CFB0E0EF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenFunction.Examples.TestableDependencies", "OpenFunction.Examples.TestableDependencies\OpenFunction.Examples.TestableDependencies.csproj", "{658EC94D-9A70-4078-8CBD-5FA6CFB0E0EF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Google.Cloud.Functions.Examples.MultiProjectDependency", "Google.Cloud.Functions.Examples.MultiProjectDependency\Google.Cloud.Functions.Examples.MultiProjectDependency.csproj", "{B20994E9-89A2-4BF9-8CA5-0EAA7B2607DE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenFunction.Examples.MultiProjectDependency", "OpenFunction.Examples.MultiProjectDependency\OpenFunction.Examples.MultiProjectDependency.csproj", "{B20994E9-89A2-4BF9-8CA5-0EAA7B2607DE}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Google.Cloud.Functions.Examples.MultiProjectFunction", "Google.Cloud.Functions.Examples.MultiProjectFunction\Google.Cloud.Functions.Examples.MultiProjectFunction.csproj", "{EE617CF8-2FC4-4A3B-A1F2-11E940644352}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenFunction.Examples.MultiProjectFunction", "OpenFunction.Examples.MultiProjectFunction\OpenFunction.Examples.MultiProjectFunction.csproj", "{EE617CF8-2FC4-4A3B-A1F2-11E940644352}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Google.Cloud.Functions.Examples.CustomEventDataFunction", "Google.Cloud.Functions.Examples.CustomEventDataFunction\Google.Cloud.Functions.Examples.CustomEventDataFunction.csproj", "{2A82A319-CEDB-4CF4-8EB4-25DD5CCFE0C6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenFunction.Examples.CustomEventDataFunction", "OpenFunction.Examples.CustomEventDataFunction\OpenFunction.Examples.CustomEventDataFunction.csproj", "{2A82A319-CEDB-4CF4-8EB4-25DD5CCFE0C6}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenFunction.Testing", "..\src\OpenFunction.Testing\OpenFunction.Testing.csproj", "{962C4DAF-DFCD-4F44-89F8-892FE9CE3AD3}"
 EndProject

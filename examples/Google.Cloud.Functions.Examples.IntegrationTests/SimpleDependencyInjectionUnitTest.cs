@@ -11,13 +11,13 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-using Google.Cloud.Functions.Testing;
+using OpenFunction.Testing;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Google.Cloud.Functions.Examples.IntegrationTests
+namespace OpenFunction.Examples.IntegrationTests
 {
     /// <summary>
     /// Example of a unit test using a MemoryLogger. Often integration tests are

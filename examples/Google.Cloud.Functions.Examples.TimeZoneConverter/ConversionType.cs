@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Google.Cloud.Functions.Examples.TimeZoneConverter
+namespace OpenFunction.Examples.TimeZoneConverter
 {
     /// <summary>
     /// The type of conversion that was performed as part of a <see cref="ConversionResult"/>.

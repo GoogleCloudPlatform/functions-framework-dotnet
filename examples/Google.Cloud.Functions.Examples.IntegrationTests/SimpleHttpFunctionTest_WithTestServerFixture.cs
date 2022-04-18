@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Cloud.Functions.Testing;
+using OpenFunction.Testing;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Google.Cloud.Functions.Examples.IntegrationTests
+namespace OpenFunction.Examples.IntegrationTests
 {
     /// <summary>
     /// Simple example of an integration test creating a <see cref="FunctionTestServer{TFunction}"/>

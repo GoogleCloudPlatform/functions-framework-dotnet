@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Google.Cloud.Functions.Examples.FSharpHttpFunction
+namespace OpenFunction.Examples.FSharpHttpFunction
 
-open Google.Cloud.Functions.Framework
+open OpenFunction.Framework
 open Microsoft.AspNetCore.Http
 
 type Function() =

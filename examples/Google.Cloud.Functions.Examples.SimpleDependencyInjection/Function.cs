@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Cloud.Functions.Framework;
+using OpenFunction.Framework;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 
-namespace Google.Cloud.Functions.Examples.SimpleDependencyInjection
+namespace OpenFunction.Examples.SimpleDependencyInjection
 {
     /// <summary>
     /// Simple example of dependency injection, with no additional configuration.

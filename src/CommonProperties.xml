@@ -3,7 +3,7 @@
 
   <!-- Version information -->
   <PropertyGroup>
-    <Version>1.0.0</Version>
+    <Version>0.1.0</Version>
   </PropertyGroup>
 
   <!-- Build information -->
@@ -27,7 +27,7 @@
     <Copyright>Copyright 2022 OpenFunction</Copyright>
     <Authors>OpenFunction</Authors>
     <!-- TODO: Find a Functions-specific icon URL. -->
-    <PackageIconUrl>https://cloud.google.com/images/gcp-icon-64x64.png</PackageIconUrl>
+    <PackageIconUrl>https://github.com/OpenFunction/OpenFunction/blob/main/docs/images/openfunction.png</PackageIconUrl>
     <PackageIcon>NuGetIcon.png</PackageIcon>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageProjectUrl>https://github.com/OpenFunction/functions-framework-dotnet</PackageProjectUrl>

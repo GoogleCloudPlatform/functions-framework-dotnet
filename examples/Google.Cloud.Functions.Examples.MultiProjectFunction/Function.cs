@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Cloud.Functions.Examples.MultiProjectDependency;
-using Google.Cloud.Functions.Framework;
+using OpenFunction.Examples.MultiProjectDependency;
+using OpenFunction.Framework;
 using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
 
-namespace Google.Cloud.Functions.Examples.MultiProjectFunction
+namespace OpenFunction.Examples.MultiProjectFunction
 {
     /// <summary>
     /// Function demonstrating how to use a project dependency from the function

@@ -19,11 +19,11 @@ using Microsoft.Extensions.Hosting;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Google.Cloud.Functions.Examples.IntegrationTests
+namespace OpenFunction.Examples.IntegrationTests
 {
     /// <summary>
     /// Simple example of an integration test against a Cloud Function, without using
-    /// the Google.Cloud.Functions.Testing package.
+    /// the OpenFunction.Testing package.
     /// </summary>
     public class SimpleHttpFunctionTest
     {

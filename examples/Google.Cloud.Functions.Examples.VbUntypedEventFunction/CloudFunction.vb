@@ -13,7 +13,7 @@
 ' limitations under the License.
 
 Imports CloudNative.CloudEvents
-Imports Google.Cloud.Functions.Framework
+Imports OpenFunction.Framework
 Imports System.Threading
 
 Public Class CloudFunction

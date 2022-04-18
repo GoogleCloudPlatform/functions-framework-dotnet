@@ -12,14 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Cloud.Functions.Framework;
-using Google.Cloud.Functions.Hosting;
+using OpenFunction.Framework;
+using OpenFunction.Hosting;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using System.Threading.Tasks;
 
-namespace Google.Cloud.Functions.Examples.TestableDependencies
+namespace OpenFunction.Examples.TestableDependencies
 {
     // The dependency interface required by the function.
     public interface IDependency

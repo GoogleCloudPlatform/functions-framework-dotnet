@@ -1,13 +1,13 @@
 # Functions Framework for .NET
 
-[![.NET Unit CI](https://github.com/GoogleCloudPlatform/functions-framework-dotnet/actions/workflows/unit.yml/badge.svg)](https://github.com/GoogleCloudPlatform/functions-framework-dotnet/actions/workflows/unit.yml)
-[![.NET Lint CI](https://github.com/GoogleCloudPlatform/functions-framework-dotnet/actions/workflows/lint.yml/badge.svg)](https://github.com/GoogleCloudPlatform/functions-framework-dotnet/actions/workflows/lint.yml)
-[![.NET Conformance CI](https://github.com/GoogleCloudPlatform/functions-framework-dotnet/actions/workflows/conformance.yml/badge.svg)](https://github.com/GoogleCloudPlatform/functions-framework-dotnet/actions/workflows/conformance.yml)
+[![.NET Unit CI](https://github.com/OpenFunction/functions-framework-dotnet/actions/workflows/unit.yml/badge.svg)](https://github.com/OpenFunction/functions-framework-dotnet/actions/workflows/unit.yml)
+[![.NET Lint CI](https://github.com/OpenFunction/functions-framework-dotnet/actions/workflows/lint.yml/badge.svg)](https://github.com/OpenFunction/functions-framework-dotnet/actions/workflows/lint.yml)
+[![.NET Conformance CI](https://github.com/OpenFunction/functions-framework-dotnet/actions/workflows/conformance.yml/badge.svg)](https://github.com/OpenFunction/functions-framework-dotnet/actions/workflows/conformance.yml)
 
-[![Google.Cloud.Functions.Framework](https://img.shields.io/nuget/vpre/Google.Cloud.Functions.Framework?label=Google.Cloud.Functions.Framework)](https://nuget.org/packages/Google.Cloud.Functions.Framework)
-[![Google.Cloud.Functions.Hosting](https://img.shields.io/nuget/vpre/Google.Cloud.Functions.Hosting?label=Google.Cloud.Functions.Hosting)](https://nuget.org/packages/Google.Cloud.Functions.Hosting)
-[![Google.Cloud.Functions.Templates](https://img.shields.io/nuget/vpre/Google.Cloud.Functions.Templates?label=Google.Cloud.Functions.Templates)](https://nuget.org/packages/Google.Cloud.Functions.Templates)
-[![Google.Cloud.Functions.Testing](https://img.shields.io/nuget/vpre/Google.Cloud.Functions.Testing?label=Google.Cloud.Functions.Testing)](https://nuget.org/packages/Google.Cloud.Functions.Testing)
+[![OpenFunction.Framework](https://img.shields.io/nuget/vpre/OpenFunction.Framework?label=OpenFunction.Framework)](https://nuget.org/packages/OpenFunction.Framework)
+[![OpenFunction.Hosting](https://img.shields.io/nuget/vpre/OpenFunction.Hosting?label=OpenFunction.Hosting)](https://nuget.org/packages/OpenFunction.Hosting)
+[![OpenFunction.Templates](https://img.shields.io/nuget/vpre/OpenFunction.Templates?label=OpenFunction.Templates)](https://nuget.org/packages/OpenFunction.Templates)
+[![OpenFunction.Testing](https://img.shields.io/nuget/vpre/OpenFunction.Testing?label=OpenFunction.Testing)](https://nuget.org/packages/OpenFunction.Testing)
 
 An open source FaaS (Function as a service) framework for writing portable
 .NET functions -- brought to you by the Google Cloud Functions team.
@@ -15,6 +15,7 @@ An open source FaaS (Function as a service) framework for writing portable
 The Functions Framework lets you write lightweight functions that run in many
 different environments, including:
 
+* [OpenFunction](https://github.com/OpenFunction/OpenFunction)
 * [Google Cloud Functions](https://cloud.google.com/functions/)
 * Your local development machine
 * [Cloud Run and Cloud Run on GKE](https://cloud.google.com/run/)
@@ -22,7 +23,7 @@ different environments, including:
 
 ## Prerequisites
 
-The Functions Framework for .NET requires the [.NET Core SDK 3.1](https://dotnet.microsoft.com/download).
+The Functions Framework for .NET requires the [.NET 6.0 SDK](https://dotnet.microsoft.com/download).
 
 ## Quickstarts
 
@@ -31,7 +32,7 @@ The Functions Framework for .NET requires the [.NET Core SDK 3.1](https://dotnet
 First, install the template package into the .NET tooling:
 
 ```sh
-dotnet new -i Google.Cloud.Functions.Templates
+dotnet new -i OpenFunction.Templates
 ```
 
 Next, create a directory for your project, and use `dotnet new` to
@@ -40,7 +41,7 @@ create a new HTTP function:
 ```sh
 mkdir HelloFunctions
 cd HelloFunctions
-dotnet new gcf-http
+dotnet new of-http
 ```
 
 That will create `HelloFunctions.csproj` and `Function.cs` in
@@ -89,12 +90,12 @@ Here is how to build and run a deployable container on your local machine.
 ## CloudEvent Functions
 
 After installing the same template package described above, use the
-`gcf-event` template:
+`of-event` template:
 
 ```sh
 mkdir HelloEvents
 cd HelloEvents
-dotnet new gcf-event
+dotnet new of-event
 ```
 
 That will create the same set of files as before, but the `Function`
@@ -123,7 +124,7 @@ for more information about this package.
 
 > **Note:**  
 > Google Cloud Functions support for events predates the CNCF Cloud
-> Events initiative. The types in the `Google.Cloud.Functions.Framework.GcfEvents`
+> Events initiative. The types in the `OpenFunction.Framework.GcfEvents`
 > namespace provide payloads for these events. The Functions Framework
 > converts the Google Cloud Functions representation into a CloudEvent
 > representation transparently, so as a developer you only need to
@@ -138,12 +139,12 @@ non-generic `ICloudEventFunction` interface. Your function's method
 will then just be passed a `CloudEvent`, with no separate data object.
 
 After installing the template package described earlier, use the
-`gcf-untyped-event` template:
+`of-untyped-event` template:
 
 ```sh
 mkdir HelloUntypedEvents
 cd HelloUntypedEvents
-dotnet new gcf-untyped-event
+dotnet new of-untyped-event
 ```
 
 This will create a function that simply logs the information about
@@ -158,7 +159,7 @@ above can be used with VB like this:
 ```sh
 mkdir HelloFunctions
 cd HelloFunctions
-dotnet new gcf-http -lang vb
+dotnet new of-http -lang vb
 ```
 
 The examples and documentation are primarily written in C# for the

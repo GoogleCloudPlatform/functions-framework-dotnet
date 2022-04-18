@@ -12,15 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Cloud.Functions.Framework;
-using Google.Cloud.Functions.Hosting;
+using OpenFunction.Framework;
+using OpenFunction.Hosting;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Steeltoe.Extensions.Configuration.RandomValue;
 using System.Threading.Tasks;
 
-namespace Google.Cloud.Functions.Examples.CustomConfiguration
+namespace OpenFunction.Examples.CustomConfiguration
 {
 
     /// <summary>

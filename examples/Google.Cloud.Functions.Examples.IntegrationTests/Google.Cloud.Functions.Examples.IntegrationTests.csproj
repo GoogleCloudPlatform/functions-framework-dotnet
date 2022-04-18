@@ -16,11 +16,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Google.Cloud.Functions.Testing" Version="1.0.0" />
-    <ProjectReference Include="..\Google.Cloud.Functions.Examples.AdvancedDependencyInjection\Google.Cloud.Functions.Examples.AdvancedDependencyInjection.csproj" />
-    <ProjectReference Include="..\Google.Cloud.Functions.Examples.SimpleDependencyInjection\Google.Cloud.Functions.Examples.SimpleDependencyInjection.csproj" />
-    <ProjectReference Include="..\Google.Cloud.Functions.Examples.SimpleHttpFunction\Google.Cloud.Functions.Examples.SimpleHttpFunction.csproj" />
-    <ProjectReference Include="..\Google.Cloud.Functions.Examples.TestableDependencies\Google.Cloud.Functions.Examples.TestableDependencies.csproj" />
+    <PackageReference Include="OpenFunction.Testing" Version="1.0.0" />
+    <ProjectReference Include="..\OpenFunction.Examples.AdvancedDependencyInjection\OpenFunction.Examples.AdvancedDependencyInjection.csproj" />
+    <ProjectReference Include="..\OpenFunction.Examples.SimpleDependencyInjection\OpenFunction.Examples.SimpleDependencyInjection.csproj" />
+    <ProjectReference Include="..\OpenFunction.Examples.SimpleHttpFunction\OpenFunction.Examples.SimpleHttpFunction.csproj" />
+    <ProjectReference Include="..\OpenFunction.Examples.TestableDependencies\OpenFunction.Examples.TestableDependencies.csproj" />
   </ItemGroup>
 
 </Project>

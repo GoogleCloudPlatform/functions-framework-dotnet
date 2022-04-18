@@ -5,11 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Google.Cloud.Functions.Hosting" Version="1.0.0" />
+    <PackageReference Include="OpenFunction.Hosting" Version="1.0.0" />
     <None Include="appsettings*.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Google.Cloud.Functions.Examples.MultiProjectDependency\Google.Cloud.Functions.Examples.MultiProjectDependency.csproj" />
+    <ProjectReference Include="..\OpenFunction.Examples.MultiProjectDependency\OpenFunction.Examples.MultiProjectDependency.csproj" />
   </ItemGroup>
 </Project>

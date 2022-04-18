@@ -9,15 +9,15 @@ be readable in GitHub.
 
 This repository contains the source code for the following NuGet packages:
 
-- [Google.Cloud.Functions.Framework](https://www.nuget.org/packages/Google.Cloud.Functions.Framework)
+- [OpenFunction.Framework](https://www.nuget.org/packages/OpenFunction.Framework)
   is a very small package, primarily containing interfaces for Cloud
   Functions to implement, as well as adapters between function types.
-- [Google.Cloud.Functions.Hosting](https://www.nuget.org/packages/Google.Cloud.Functions.Hosting)
+- [OpenFunction.Hosting](https://www.nuget.org/packages/OpenFunction.Hosting)
   contains code to start up an ASP.NET Core webserver based on
   conventional environment variables etc.
-- [Google.Cloud.Functions.Testing](https://www.nuget.org/packages/Google.Cloud.Functions.Testing)
+- [OpenFunction.Testing](https://www.nuget.org/packages/OpenFunction.Testing)
   contains code to help simplify testing functions.
-- [Google.Cloud.Functions.Templates](https://www.nuget.org/packages/Google.Cloud.Functions.Templates)
+- [OpenFunction.Templates](https://www.nuget.org/packages/OpenFunction.Templates)
   contains templates for the `dotnet` command line to create a very
   simple getting-started experience.
 

@@ -17,10 +17,10 @@
 
   <ItemGroup Condition="'$(LocalFunctionsFramework)' != '' AND '$(TargetFramework)' == 'netcoreapp3.1'">
     <!-- Even if some projects don't actually need these, it doesn't hurt to have them. -->
-    <ProjectReference Include="..\..\src\Google.Cloud.Functions.Hosting\Google.Cloud.Functions.Hosting.csproj" />
-    <ProjectReference Include="..\..\src\Google.Cloud.Functions.Testing\Google.Cloud.Functions.Testing.csproj" />
-    <PackageReference Remove="Google.Cloud.Functions.Framework" />
-    <PackageReference Remove="Google.Cloud.Functions.Testing" />
-    <PackageReference Remove="Google.Cloud.Functions.Hosting" />
+    <ProjectReference Include="..\..\src\OpenFunction.Hosting\OpenFunction.Hosting.csproj" />
+    <ProjectReference Include="..\..\src\OpenFunction.Testing\OpenFunction.Testing.csproj" />
+    <PackageReference Remove="OpenFunction.Framework" />
+    <PackageReference Remove="OpenFunction.Testing" />
+    <PackageReference Remove="OpenFunction.Hosting" />
   </ItemGroup>
 </Project>

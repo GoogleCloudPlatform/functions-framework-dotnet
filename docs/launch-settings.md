@@ -11,7 +11,7 @@ single string, `%LAUNCHER_ARGS%` to the `Main` method.
 
 That's useful for a regular ASP.NET Core application, but isn't
 appropriate for a Functions Framework application using the
-Google.Cloud.Functions.Framework.Hosting package which *always* uses
+OpenFunction.Framework.Hosting package which *always* uses
 Kestrel, gets its port from the `PORT` environment variable etc.
 
 There are three simple solutions to this issue. In order of
@@ -33,10 +33,10 @@ simplicity and preference:
 - Stop using the Functions Framework Hosting package. If you want to run your
   function as part of a regular ASP.NET Core app, you can do so - and
   you *may* find it useful to still refer to the
-  Google.Cloud.Functions.Framework package, just not the hosting package.
+  OpenFunction.Framework package, just not the hosting package.
 
 There may be more complex options you wish to investigate if none
 of the above options work in your situation. It would be useful if
-you could [file an issue](https://github.com/GoogleCloudPlatform/functions-framework-dotnet/issues/new)
+you could [file an issue](https://github.com/OpenFunction/functions-framework-dotnet/issues/new)
 to provide some context, so we can help you find those options and
 perhaps work around the problem within the framework in the future.

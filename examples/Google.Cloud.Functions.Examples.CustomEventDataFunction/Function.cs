@@ -14,8 +14,8 @@
 
 using CloudNative.CloudEvents;
 using CloudNative.CloudEvents.NewtonsoftJson;
-using Google.Cloud.Functions.Framework;
-using Google.Cloud.Functions.Hosting;
+using OpenFunction.Framework;
+using OpenFunction.Hosting;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -23,7 +23,7 @@ using Newtonsoft.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Cloud.Functions.Examples.CustomEventDataFunction
+namespace OpenFunction.Examples.CustomEventDataFunction
 {
     /// <summary>
     /// Startup class to inject a suitable CloudEventFormatter. Our CustomData type

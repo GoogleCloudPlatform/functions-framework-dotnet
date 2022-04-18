@@ -2,7 +2,7 @@
 
 ## Deploying locally
 
-If your project depends on the Google.Cloud.Functions.Hosting
+If your project depends on the OpenFunction.Hosting
 package, your function can run locally either by starting it through
 Visual Studio or by running `dotnet run` from the command line. If
 your project contains multiple functions, you must specify which one

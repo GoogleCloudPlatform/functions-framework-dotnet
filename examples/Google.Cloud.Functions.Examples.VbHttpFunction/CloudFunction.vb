@@ -12,7 +12,7 @@
 ' See the License for the specific language governing permissions and
 ' limitations under the License.
 
-Imports Google.Cloud.Functions.Framework
+Imports OpenFunction.Framework
 Imports Microsoft.AspNetCore.Http
 
 Public Class CloudFunction

@@ -13,13 +13,13 @@
 // limitations under the License.
 
 using CloudNative.CloudEvents;
-using Google.Cloud.Functions.Framework;
+using OpenFunction.Framework;
 using Google.Events.Protobuf.Cloud.Storage.V1;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Cloud.Functions.Examples.SimpleEventFunction
+namespace OpenFunction.Examples.SimpleEventFunction
 {
     /// <summary>
     /// A function that can be triggered in responses to changes in Google Cloud Storage.

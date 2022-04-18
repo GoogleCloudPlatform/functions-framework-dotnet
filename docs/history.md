@@ -56,8 +56,8 @@ No API changes; just dependencies, and first beta release.
 
 Just package renaming:
 
-- Old Google.Cloud.Functions.Invoker package is now Google.Cloud.Functions.Hosting
-- Old Google.Cloud.Functions.Invoker.Testing package is now Google.Cloud.Functions.Testing
+- Old OpenFunction.Invoker package is now OpenFunction.Hosting
+- Old OpenFunction.Invoker.Testing package is now OpenFunction.Testing
 
 ## 1.0.0-alpha11 (released 2020-09-03)
 

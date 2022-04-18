@@ -13,12 +13,12 @@
 // limitations under the License.
 
 using CloudNative.CloudEvents;
-using Google.Cloud.Functions.Framework;
+using OpenFunction.Framework;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Cloud.Functions.Examples.SimpleUntypedEventFunction
+namespace OpenFunction.Examples.SimpleUntypedEventFunction
 {
     public class Function : ICloudEventFunction
     {

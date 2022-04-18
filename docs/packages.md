@@ -2,37 +2,37 @@
 
 This repository contains source code for the following NuGet packages:
 
-- [Google.Cloud.Functions.Framework](https://www.nuget.org/packages/Google.Cloud.Functions.Framework)
+- [OpenFunction.Framework](https://www.nuget.org/packages/OpenFunction.Framework)
   is a very small package, primarily containing interfaces for Cloud
   Functions to implement, as well as adapters between function types.
-- [Google.Cloud.Functions.Hosting](https://www.nuget.org/packages/Google.Cloud.Functions.Hosting)
+- [OpenFunction.Hosting](https://www.nuget.org/packages/OpenFunction.Hosting)
   contains code to start up an ASP.NET Core webserver based on
   conventional environment variables etc.
-- [Google.Cloud.Functions.Testing](https://www.nuget.org/packages/Google.Cloud.Functions.Testing)
+- [OpenFunction.Testing](https://www.nuget.org/packages/OpenFunction.Testing)
   contains code to help simplify testing functions.
-- [Google.Cloud.Functions.Templates](https://www.nuget.org/packages/Google.Cloud.Functions.Templates)
+- [OpenFunction.Templates](https://www.nuget.org/packages/OpenFunction.Templates)
   contains templates for the `dotnet` command line to create a very
   simple getting-started experience.
 
 This page describes when you might wish to use which package - and
 when you might want to opt for no package at all.
 
-## Google.Cloud.Functions.Templates
+## OpenFunction.Templates
 
-If you want to use the Google.Cloud.Functions.Hosting package
+If you want to use the OpenFunction.Hosting package
 described later, the templates package is the simplest way to get
 started. Install the templates, and just run `dotnet new gcf-http`
 (or specify any of the other templates provided) and you're away.
 
 The templates are very simple; each is just a project file and a
 single source file. The project is just a console application with a
-dependency on Google.Cloud.Functions.Hosting. If you're happy
+dependency on OpenFunction.Hosting. If you're happy
 creating the project yourself, you definitely don't *need* to use
 the templates. You can create a regular console application, replace
 the `Program` file with a function, add the dependency, and
 you're away.
 
-## Google.Cloud.Functions.Testing
+## OpenFunction.Testing
 
 The testing package makes it easier to write tests which start an
 in-memory ASP.NET Core server to respond to requests. It's not
@@ -42,7 +42,7 @@ generally needed to write unit tests for functions, and it's not
 See the [testing documentation](testing.md) for more details and
 links to sample code.
 
-## Google.Cloud.Functions.Framework
+## OpenFunction.Framework
 
 This package is the core of the Functions Framework for .NET. It
 contains:
@@ -63,7 +63,7 @@ package](https://github.com/cloudevents/sdk-csharp) for
 Cloud Functions can depend on just the types within this package in
 order to be portable however they're hosted.
 
-## Google.Cloud.Functions.Hosting
+## OpenFunction.Hosting
 
 The hosting package is expected to be used as a dependency from a
 *project*, but not usually from *source code* itself other than for
@@ -115,10 +115,10 @@ function. This would provide more control over the request pipeline,
 at the cost of convenience.
 
 If you take this approach, it's entirely up to you whether you
-depend on the Google.Cloud.Functions.Framework package. If you
+depend on the OpenFunction.Framework package. If you
 include the dependency and implement `IHttpFunction`, you can switch
 freely between your custom code and the hosting package. Likewise
 you may wish to use the adapters to perform the boilerplate request
 parsing for CloudEvents. But no server-side code will treat your
 function differently based on whether or not it happens to depend on
-Google.Cloud.Functions.Framework.
+OpenFunction.Framework.

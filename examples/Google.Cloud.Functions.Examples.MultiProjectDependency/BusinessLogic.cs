@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Google.Cloud.Functions.Examples.MultiProjectDependency
+namespace OpenFunction.Examples.MultiProjectDependency
 {
     /// <summary>
     /// See the comments in MultiProjectFunction.Function for the purpose

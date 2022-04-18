@@ -1,12 +1,12 @@
 {
   "$schema": "http://json.schemastore.org/template",
-  "author": "Google LLC",
-  "classifications": [ "Google", "Cloud" ],
-  "identity": "Google.Cloud.Functions.Templates.HttpFunction.FSharp",
-  "groupIdentity": "Google.Cloud.Functions.HttpFunction",
+  "author": "OpenFunction",
+  "classifications": [ "OpenFunction" ],
+  "identity": "OpenFunction.Templates.HttpFunction.FSharp",
+  "groupIdentity": "OpenFunction.HttpFunction",
   "name": "Google Cloud Functions HttpFunction",
-  "description": "A project template for creating a Google Cloud Function to respond to HTTP requests.",
-  "shortName": "gcf-http",
+  "description": "A project template for creating an OpenFunction to respond to HTTP requests.",
+  "shortName": "of-http",
   "sourceName": "MyFunction",
   "defaultName": "CloudHttpFunction",
   "tags": {

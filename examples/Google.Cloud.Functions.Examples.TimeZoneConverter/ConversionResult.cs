@@ -14,7 +14,7 @@
 
 using System.Text.Json.Serialization;
 
-namespace Google.Cloud.Functions.Examples.TimeZoneConverter
+namespace OpenFunction.Examples.TimeZoneConverter
 {
     // Note: Input and Result could be LocalDateTime values, if we use NodaTime.Serialization.SystemTextJson.
     // But we've already got a LocalDateTimePattern available, so it's simplest just to format with that.

@@ -11,15 +11,15 @@ description of what each example demonstrates, see the
 The following projects are the result of creating new projects from
 the templates:
 
-- Google.Cloud.Functions.Examples.SimpleHttpFunction
-- Google.Cloud.Functions.Examples.SimpleEventFunction
-- Google.Cloud.Functions.Examples.SimpleUntypedEventFunction
-- Google.Cloud.Functions.Examples.FSharpHttpFunction
-- Google.Cloud.Functions.Examples.FSharpEventFunction
-- Google.Cloud.Functions.Examples.FSharpUntypedEventFunction
-- Google.Cloud.Functions.Examples.VbHttpFunction
-- Google.Cloud.Functions.Examples.VbEventFunction
-- Google.Cloud.Functions.Examples.VbUntypedEventFunction
+- OpenFunction.Examples.SimpleHttpFunction
+- OpenFunction.Examples.SimpleEventFunction
+- OpenFunction.Examples.SimpleUntypedEventFunction
+- OpenFunction.Examples.FSharpHttpFunction
+- OpenFunction.Examples.FSharpEventFunction
+- OpenFunction.Examples.FSharpUntypedEventFunction
+- OpenFunction.Examples.VbHttpFunction
+- OpenFunction.Examples.VbEventFunction
+- OpenFunction.Examples.VbUntypedEventFunction
 
 In each case, after creating the project, a copyright notice is
 added to the code.
@@ -48,6 +48,6 @@ modified Functions Framework, you could run:
 gcloud functions deploy ff-test \
   --runtime=dotnet3 \
   --trigger-http \
-  --set-build-env-vars=GOOGLE_BUILDABLE=examples/Google.Cloud.Functions.Examples.SimpleHttpFunction,LOCALFUNCTIONSFRAMEWORK=true \
-  --entry-point=Google.Cloud.Functions.Examples.SimpleHttpFunction.Function
+  --set-build-env-vars=GOOGLE_BUILDABLE=examples/OpenFunction.Examples.SimpleHttpFunction,LOCALFUNCTIONSFRAMEWORK=true \
+  --entry-point=OpenFunction.Examples.SimpleHttpFunction.Function
 ```

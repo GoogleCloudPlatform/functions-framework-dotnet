@@ -11,7 +11,7 @@ invoking it with an appropriately-configured `HttpClient`.
 
 ## Creating an IHostBuilder with EntryPoint.CreateHostBuilder
 
-The hosting [EntryPoint](../src/Google.Cloud.Functions.Hosting/EntryPoint.cs) class
+The hosting [EntryPoint](../src/OpenFunction.Hosting/EntryPoint.cs) class
 not only contains the `Main` method used automatically to start the
 server, but an overloaded `CreateHostBuilder` method. The generic,
 parameterless overload expects the type argument to be a function
@@ -31,7 +31,7 @@ The `IHostBuilder` can be used in conjunction with the
 [Microsoft.AspNetCore.TestHost](https://www.nuget.org/packages/Microsoft.AspNetCore.TestHost)
 NuGet package to create a test server and execute requests against it.
 
-See [SimpleHttpFunctionTest](../examples/Google.Cloud.Functions.Examples.IntegrationTests/SimpleHttpFunctionTest.cs)
+See [SimpleHttpFunctionTest](../examples/OpenFunction.Examples.IntegrationTests/SimpleHttpFunctionTest.cs)
 for an example of this.
 
 ## Creating a FunctionTestServer
@@ -39,8 +39,8 @@ for an example of this.
 Using `TestHost` directly can be slightly verbose - it's not too bad
 for an occasional test, but not something you'd want to use in a
 large number of tests. The
-[Google.Cloud.Functions.Testing](../src/Google.Cloud.Functions.Testing)
-package provides a [FunctionTestServer](../src/Google.Cloud.Functions.Testing/FunctionTestServer.cs)
+[OpenFunction.Testing](../src/OpenFunction.Testing)
+package provides a [FunctionTestServer](../src/OpenFunction.Testing/FunctionTestServer.cs)
 class to simplify this. The generic `FunctionTestServer<TFunction>`
 class is a derived class allowing you to use the function type as a
 type argument, avoiding the need for any other configuration.
@@ -53,18 +53,18 @@ similar functionality.
   `FunctionTestBase<TFunction>`, which is described below.
 - It can be constructed directly within the test. This should be in the context
   of a `using` statement to dispose of the server afterwards. See
-  [SimpleHttpFunctionTest_WithTestServerInTest](../examples/Google.Cloud.Functions.Examples.IntegrationTests/SimpleHttpFunctionTest_WithTestServerInTest.cs)
+  [SimpleHttpFunctionTest_WithTestServerInTest](../examples/OpenFunction.Examples.IntegrationTests/SimpleHttpFunctionTest_WithTestServerInTest.cs)
   for an example of this.
 - It can be constructed directly in the test class constructor,
   and then disposed in an `IDisposable.Dispose()` implementation, which is
   automatically called by xUnit. This means a new server is constructed
   for each test. See
-  [SimpleHttpFunctionTest_WithTestServerInCtor](../examples/Google.Cloud.Functions.Examples.IntegrationTests/SimpleHttpFunctionTest_WithTestServerInCtor.cs)
+  [SimpleHttpFunctionTest_WithTestServerInCtor](../examples/OpenFunction.Examples.IntegrationTests/SimpleHttpFunctionTest_WithTestServerInCtor.cs)
   for an example of this.
 - It can be automatically constructed by xUnit as part of a fixture, then disposed
   of automatically when the fixture is disposed. This means a single server
   is used for all tests in the fixture. See
-  [SimpleHttpFunctionTest_WithTestServerFixture](../examples/Google.Cloud.Functions.Examples.IntegrationTests/SimpleHttpFunctionTest_WithTestServerFixture.cs)
+  [SimpleHttpFunctionTest_WithTestServerFixture](../examples/OpenFunction.Examples.IntegrationTests/SimpleHttpFunctionTest_WithTestServerFixture.cs)
   for an example of this.
   
 ## Simple testing with `FunctionTestBase<TFunction>`
@@ -72,7 +72,7 @@ similar functionality.
 Where the test framework you're using supports it,
 `FunctionTestBase<TFunction>` is the simplest way of writing
 function tests. See
-[SimpleHttpFunctionTest_WithFunctionTestBase](../examples/Google.Cloud.Functions.Examples.IntegrationTests/SimpleHttpFunctionTest_WithFunctionTestBase.cs)
+[SimpleHttpFunctionTest_WithFunctionTestBase](../examples/OpenFunction.Examples.IntegrationTests/SimpleHttpFunctionTest_WithFunctionTestBase.cs)
 for an example.
 
 `FunctionTestBase<TFunction>` is an abstract class designed to be a
@@ -144,7 +144,7 @@ The `Build()` method on `FunctionTestServerBuilder` constructs a
 `FunctionTestServer` for the given function target, using the
 configured behavior.
 
-See [TestableDependenciesTest.cs](../examples/Google.Cloud.Functions.Examples.IntegrationTests/TestableDependenciesTest.cs)
+See [TestableDependenciesTest.cs](../examples/OpenFunction.Examples.IntegrationTests/TestableDependenciesTest.cs)
 for an example of using `FunctionTestServerBuilder` in
 `FunctionTestBase` subclass to test a function that needs a custom
 dependency for testing.
@@ -161,7 +161,7 @@ corresponding with the function type's full name. If you inject an
 `ILogger<T>` where the type argument is the function type (as is the
 convention) then this method will provide the log entries for that
 logger. See
-[SimpleDependencyInjectionTest.cs](../examples/Google.Cloud.Functions.Examples.IntegrationTests/SimpleDependencyInjectionTest.cs)
+[SimpleDependencyInjectionTest.cs](../examples/OpenFunction.Examples.IntegrationTests/SimpleDependencyInjectionTest.cs)
 for an example of how this can be used.
 
 Currently the functionality is somewhat primitive, but should meet
@@ -193,11 +193,11 @@ this doesn't help if you want to make sure that the expected log
 entries are emitted. The logger implementation used by
 `FunctionTestServer` is also available for standalone testing. Just
 create an instance of
-[FunctionTestServer&lt;TCategoryName>](../src/Google.Cloud.Functions.Testing/MemoryLogger.cs)
+[FunctionTestServer&lt;TCategoryName>](../src/OpenFunction.Testing/MemoryLogger.cs)
 and pass that to the constructor. You can then retrieve a snapshot
 at any time by calling `ListLogEntries()` on the logger, or clear it
 using the `Clear()` method.
 
 See
-[SimpleDependencyInjectionUnitTest.cs](../examples/Google.Cloud.Functions.Examples.IntegrationTests/SimpleDependencyInjectionUnitTest.cs)
+[SimpleDependencyInjectionUnitTest.cs](../examples/OpenFunction.Examples.IntegrationTests/SimpleDependencyInjectionUnitTest.cs)
 for an example of a unit test that validates a log entry.
