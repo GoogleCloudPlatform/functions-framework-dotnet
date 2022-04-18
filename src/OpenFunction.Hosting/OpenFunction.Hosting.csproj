@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+  <Import Project="..\CommonProperties.xml" />
+  
+  <PropertyGroup>
+    <Title>OpenFunction Framework Hosting</Title>
+    <Description>The OpenFunction Framework Hosting package makes it easy to run a web server to execute functions.</Description>
+    <PackageTags>OpenFunction</PackageTags>
+	<Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="targets/*" PackagePath="build/$(TargetFramework)/" />
+    <PackageReference Include="CloudNative.CloudEvents.SystemTextJson" Version="2.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\OpenFunction.Framework\OpenFunction.Framework.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Update="Microsoft.SourceLink.GitHub" Version="1.1.1" />
+  </ItemGroup>
+</Project>

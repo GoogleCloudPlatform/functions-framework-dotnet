@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <!-- This includes various properties that aren't actually relevant for templates, but they do no harm. -->
+  <Import Project="..\CommonProperties.xml" />
+  
+  <PropertyGroup>
+    <PackageType>Template</PackageType>
+    <PackageVersion>$(VERSION)</PackageVersion>
+    <Title>Templates for OpenFunction Framework</Title>
+    <Description>Templates for OpenFunction Framework</Description>
+    <PackageTags>dotnet-new;templates;openfunction</PackageTags>
+
+    <IncludeContentInPack>true</IncludeContentInPack>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <ContentTargetFolders>content</ContentTargetFolders>
+
+    <!-- Suppress warning NU5128 when packing. I don't believe it's applicable to us. -->
+    <NoWarn>$(NoWarn);NU5128</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="templates\**\*" Exclude="templates\**\bin\**;templates\**\obj\**" />
+    <Compile Remove="**\*" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Update="Microsoft.SourceLink.GitHub" Version="1.1.1" />
+  </ItemGroup>
+
+</Project>

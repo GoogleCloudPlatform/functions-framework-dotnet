@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+  <Import Project="..\CommonProperties.xml" />
+  
+  <PropertyGroup>
+    <Title>OpenFunction Framework</Title>
+	<Nullable>enable</Nullable>
+    <Description>OpenFunction Framework</Description>
+    <PackageTags>Openfunction</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CloudNative.CloudEvents.AspNetCore" Version="2.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Update="Microsoft.SourceLink.GitHub" Version="1.1.1" />
+  </ItemGroup>
+</Project>
