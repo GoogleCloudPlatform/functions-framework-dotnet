@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <IsPackable>false</IsPackable>
+    <!-- When using the local framework, the imported targets would create an entry
+       - point by default. We don't want that for this project. -->
+    <AutoGenerateEntryPoint>false</AutoGenerateEntryPoint>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.1.0" />
+    <PackageReference Include="xunit" Version="2.4.1" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3" />
+    <PackageReference Include="coverlet.collector" Version="3.1.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\OpenFunction.Testing\OpenFunction.Testing.csproj" />
+    <ProjectReference Include="..\OpenFunction.Examples.AdvancedDependencyInjection\OpenFunction.Examples.AdvancedDependencyInjection.csproj" />
+    <ProjectReference Include="..\OpenFunction.Examples.SimpleDependencyInjection\OpenFunction.Examples.SimpleDependencyInjection.csproj" />
+    <ProjectReference Include="..\OpenFunction.Examples.SimpleHttpFunction\OpenFunction.Examples.SimpleHttpFunction.csproj" />
+    <ProjectReference Include="..\OpenFunction.Examples.TestableDependencies\OpenFunction.Examples.TestableDependencies.csproj" />
+  </ItemGroup>
+
+</Project>
