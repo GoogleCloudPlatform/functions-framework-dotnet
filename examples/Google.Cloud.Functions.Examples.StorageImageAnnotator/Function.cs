@@ -41,7 +41,7 @@ namespace Google.Cloud.Functions.Examples.StorageImageAnnotator
     {
         public override void ConfigureServices(WebHostBuilderContext context, IServiceCollection services) =>
             services
-                .AddSingleton(ImageAnnotatorClient.Create())
+                .AddImageAnnotatorClient()
                 .AddSingleton(StorageClient.Create());
     }
 
