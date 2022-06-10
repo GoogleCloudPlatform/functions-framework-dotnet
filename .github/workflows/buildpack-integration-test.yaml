@@ -1,0 +1,27 @@
+# Validates Functions Framework with GCF buildpacks.
+name: Buildpack Integration Test
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+jobs:
+  dotnet3:
+    uses: GoogleCloudPlatform/functions-framework-conformance/.github/workflows/buildpack-integration-test.yml@v1.5.2
+    with:
+      # This builds a local copy of the Functions Framework, and creates
+      # a standalone copy of the conformance test function in tmp
+      # with a NuGet config file to use the local FF.
+      prerun: 'src/Google.Cloud.Functions.ConformanceTests/create-standalone.sh'
+      http-builder-source: 'tmp/Google.Cloud.Functions.ConformanceTests'
+      http-builder-target: 'HttpFunction'
+      cloudevent-builder-source: 'tmp/Google.Cloud.Functions.ConformanceTests'
+      cloudevent-builder-target: 'UntypedCloudEventFunction'
+      builder-runtime: 'dotnet3'
+      # Latest uploaded tag from us.gcr.io/fn-img/buildpacks/dotnet3/builder
+      builder-tag: 'dotnet3_20220516_3_1_416_RC00'
+      # Ask the test runner to wait for 5 seconds for the server to start
+      # before sending it requests. It should come up much quicker
+      # than that, but 5 seconds will rule out "slow startup" as
+      # a failure mode.
+      start-delay: 5
