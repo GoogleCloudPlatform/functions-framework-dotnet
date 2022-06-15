@@ -14,6 +14,7 @@
 
 using Google.Cloud.Functions.Framework;
 using Microsoft.AspNetCore.Http;
+using System;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -22,7 +23,12 @@ public class HttpFunction : IHttpFunction
 {
     public async Task HandleAsync(HttpContext context)
     {
-        using var output = File.OpenWrite("function_output.json");
+        // Temporary hack: when running in buildpack validation mode, we need to change
+        // where we write the output.
+        var outputFile = Environment.CurrentDirectory == "/workspace/bin"
+            ? "/workspace/function_output.json" : "function_output.json";
+
+        using var output = File.OpenWrite(outputFile);
         await context.Request.Body.CopyToAsync(output);
     }
 }
