@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 jobs:
   dotnet3:
-    uses: GoogleCloudPlatform/functions-framework-conformance/.github/workflows/buildpack-integration-test.yml@v1.5.2
+    uses: GoogleCloudPlatform/functions-framework-conformance/.github/workflows/buildpack-integration-test.yml@v1.5.4
     with:
       # This builds a local copy of the Functions Framework, and creates
       # a standalone copy of the conformance test function in tmp
@@ -25,3 +25,6 @@ jobs:
       # than that, but 5 seconds will rule out "slow startup" as
       # a failure mode.
       start-delay: 5
+      # The conformance function writes to the current directory, which will be
+      # /workspace/bin when run from the buildpack.
+      output-file: bin/function_output.json
