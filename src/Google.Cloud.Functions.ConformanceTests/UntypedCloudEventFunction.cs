@@ -15,7 +15,6 @@
 using CloudNative.CloudEvents;
 using CloudNative.CloudEvents.SystemTextJson;
 using Google.Cloud.Functions.Framework;
-using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -25,14 +24,9 @@ public class UntypedCloudEventFunction : ICloudEventFunction
 {
     public async Task HandleAsync(CloudEvent cloudEvent, CancellationToken cancellationToken)
     {
-        // Temporary hack: when running in buildpack validation mode, we need to change
-        // where we write the output.
-        var outputFile = Environment.CurrentDirectory == "/workspace/bin"
-            ? "/workspace/function_output.json" : "function_output.json";
-
         // Write out a structured JSON representation of the CloudEvent
         var formatter = new JsonEventFormatter();
         var bytes = formatter.EncodeStructuredModeMessage(cloudEvent, out var contentType);
-        await File.WriteAllBytesAsync(outputFile, bytes.ToArray());
+        await File.WriteAllBytesAsync("function_output.json", bytes.ToArray());
     }
 }
