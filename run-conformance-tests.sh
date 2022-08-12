@@ -68,18 +68,21 @@ echo "Using Functions Framework test binary: $DOTNET_DLL"
 run_test() {
   TEST_TYPE=$1
   TEST_FUNCTION=$2
+  EXTRA_ARGS=$3
   echo "Running '$TEST_TYPE' test with function '$TEST_FUNCTION'"
   (cd tmp/conformance-test-output && \
-   mkdir $TEST_TYPE && \
-   cd $TEST_TYPE && \
+   mkdir $TEST_FUNCTION && \
+   cd $TEST_FUNCTION && \
    ../../../$CLIENT_BINARY \
      -buildpacks=false \
      -type=$TEST_TYPE \
      -cmd="dotnet ../../../$DOTNET_DLL $TEST_FUNCTION" \
+     $EXTRA_ARGS
   )
 }
 
 run_test http HttpFunction
 run_test cloudevent UntypedCloudEventFunction
+run_test http ConcurrentHttpFunction -validate-concurrency=true
 
 echo "Tests completed successfully"
