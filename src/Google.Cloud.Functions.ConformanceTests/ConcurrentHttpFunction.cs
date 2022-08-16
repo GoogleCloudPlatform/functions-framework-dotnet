@@ -20,8 +20,5 @@ using System.Threading.Tasks;
 // Note: no namespace, to make it simpler to run as part of conformance testing
 public class ConcurrentHttpFunction : IHttpFunction
 {
-    public async Task HandleAsync(HttpContext context)
-    {
-        await Task.Delay(1000);
-    }
+    public Task HandleAsync(HttpContext context) => Task.Delay(1000);
 }
