@@ -1,0 +1,195 @@
+{
+  "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+  "release-type": "simple",
+  "include-component-in-tag": true,
+  "include-v-in-tag": false,
+  "changelog-path": "docs/history.md",
+  "packages": {
+    "src/Google.Cloud.Functions.Framework": {
+      "component": "Google.Cloud.Functions.Framework",
+      "changelog-path": "/docs/history.md",
+      "extra-files": [
+        {
+          "type": "xml",
+          "path": "/src/CommonProperties.xml",
+          "xpath": "//Project/PropertyGroup/Version"
+        }
+      ]
+    },
+    "src/Google.Cloud.Functions.Hosting": {
+      "component": "Google.Cloud.Functions.Hosting",
+      "extra-files": [
+        {
+          "type": "xml",
+          "path": "/examples/Google.Cloud.Functions.Examples.AdvancedDependencyInjection/Google.Cloud.Functions.Examples.AdvancedDependencyInjection.csproj",
+          "xpath": "//Project/ItemGroup/PackageReference[@Include=\"Google.Cloud.Functions.Hosting\"]/@Version"
+        },
+        {
+          "type": "xml",
+          "path": "/examples/Google.Cloud.Functions.Examples.Configuration/Google.Cloud.Functions.Examples.Configuration.csproj",
+          "xpath": "//Project/ItemGroup/PackageReference[@Include=\"Google.Cloud.Functions.Hosting\"]/@Version"
+        },
+        {
+          "type": "xml",
+          "path": "/examples/Google.Cloud.Functions.Examples.CustomConfiguration/Google.Cloud.Functions.Examples.CustomConfiguration.csproj",
+          "xpath": "//Project/ItemGroup/PackageReference[@Include=\"Google.Cloud.Functions.Hosting\"]/@Version"
+        },
+        {
+          "type": "xml",
+          "path": "/examples/Google.Cloud.Functions.Examples.CustomEventDataFunction/Google.Cloud.Functions.Examples.CustomEventDataFunction.csproj",
+          "xpath": "//Project/ItemGroup/PackageReference[@Include=\"Google.Cloud.Functions.Hosting\"]/@Version"
+        },
+        {
+          "type": "xml",
+          "path": "/examples/Google.Cloud.Functions.Examples.FSharpEventFunction/Google.Cloud.Functions.Examples.FSharpEventFunction.fsproj",
+          "xpath": "//Project/ItemGroup/PackageReference[@Include=\"Google.Cloud.Functions.Hosting\"]/@Version"
+        },
+        {
+          "type": "xml",
+          "path": "/examples/Google.Cloud.Functions.Examples.FSharpHttpFunction/Google.Cloud.Functions.Examples.FSharpHttpFunction.fsproj",
+          "xpath": "//Project/ItemGroup/PackageReference[@Include=\"Google.Cloud.Functions.Hosting\"]/@Version"
+        },
+        {
+          "type": "xml",
+          "path": "/examples/Google.Cloud.Functions.Examples.FSharpUntypedEventFunction/Google.Cloud.Functions.Examples.FSharpUntypedEventFunction.fsproj",
+          "xpath": "//Project/ItemGroup/PackageReference[@Include=\"Google.Cloud.Functions.Hosting\"]/@Version"
+        },
+        {
+          "type": "xml",
+          "path": "/examples/Google.Cloud.Functions.Examples.Middleware/Google.Cloud.Functions.Examples.Middleware.csproj",
+          "xpath": "//Project/ItemGroup/PackageReference[@Include=\"Google.Cloud.Functions.Hosting\"]/@Version"
+        },
+        {
+          "type": "xml",
+          "path": "/examples/Google.Cloud.Functions.Examples.MultiProjectFunction/Google.Cloud.Functions.Examples.MultiProjectFunction.csproj",
+          "xpath": "//Project/ItemGroup/PackageReference[@Include=\"Google.Cloud.Functions.Hosting\"]/@Version"
+        },
+        {
+          "type": "xml",
+          "path": "/examples/Google.Cloud.Functions.Examples.SimpleDependencyInjection/Google.Cloud.Functions.Examples.SimpleDependencyInjection.csproj",
+          "xpath": "//Project/ItemGroup/PackageReference[@Include=\"Google.Cloud.Functions.Hosting\"]/@Version"
+        },
+        {
+          "type": "xml",
+          "path": "/examples/Google.Cloud.Functions.Examples.AdvancedDependencyInjection/Google.Cloud.Functions.Examples.AdvancedDependencyInjection.csproj",
+          "xpath": "//Project/ItemGroup/PackageReference[@Include=\"Google.Cloud.Functions.Hosting\"]/@Version"
+        },
+        {
+          "type": "xml",
+          "path": "/examples/Google.Cloud.Functions.Examples.SimpleEventFunction/Google.Cloud.Functions.Examples.SimpleEventFunction.csproj",
+          "xpath": "//Project/ItemGroup/PackageReference[@Include=\"Google.Cloud.Functions.Hosting\"]/@Version"
+        },
+        {
+          "type": "xml",
+          "path": "/examples/Google.Cloud.Functions.Examples.SimpleHttpFunction/Google.Cloud.Functions.Examples.SimpleHttpFunction.csproj",
+          "xpath": "//Project/ItemGroup/PackageReference[@Include=\"Google.Cloud.Functions.Hosting\"]/@Version"
+        },
+        {
+          "type": "xml",
+          "path": "/examples/Google.Cloud.Functions.Examples.SimpleUntypedEventFunction/Google.Cloud.Functions.Examples.SimpleUntypedEventFunction.csproj",
+          "xpath": "//Project/ItemGroup/PackageReference[@Include=\"Google.Cloud.Functions.Hosting\"]/@Version"
+        },
+        {
+          "type": "xml",
+          "path": "/examples/Google.Cloud.Functions.Examples.StorageImageAnnotator/Google.Cloud.Functions.Examples.StorageImageAnnotator.csproj",
+          "xpath": "//Project/ItemGroup/PackageReference[@Include=\"Google.Cloud.Functions.Hosting\"]/@Version"
+        },
+        {
+          "type": "xml",
+          "path": "/examples/Google.Cloud.Functions.Examples.TestableDependencies/Google.Cloud.Functions.Examples.TestableDependencies.csproj",
+          "xpath": "//Project/ItemGroup/PackageReference[@Include=\"Google.Cloud.Functions.Hosting\"]/@Version"
+        },
+        {
+          "type": "xml",
+          "path": "/examples/Google.Cloud.Functions.Examples.TimeZoneConverter/Google.Cloud.Functions.Examples.TimeZoneConverter.csproj",
+          "xpath": "//Project/ItemGroup/PackageReference[@Include=\"Google.Cloud.Functions.Hosting\"]/@Version"
+        },
+        {
+          "type": "xml",
+          "path": "/examples/Google.Cloud.Functions.Examples.VbEventFunction/Google.Cloud.Functions.Examples.VbEventFunction.vbproj",
+          "xpath": "//Project/ItemGroup/PackageReference[@Include=\"Google.Cloud.Functions.Hosting\"]/@Version"
+        },
+        {
+          "type": "xml",
+          "path": "/examples/Google.Cloud.Functions.Examples.VbHttpFunction/Google.Cloud.Functions.Examples.VbHttpFunction.vbproj",
+          "xpath": "//Project/ItemGroup/PackageReference[@Include=\"Google.Cloud.Functions.Hosting\"]/@Version"
+        },
+        {
+          "type": "xml",
+          "path": "/examples/Google.Cloud.Functions.Examples.VbUntypedEventFunction/Google.Cloud.Functions.Examples.VbUntypedEventFunction.vbproj",
+          "xpath": "//Project/ItemGroup/PackageReference[@Include=\"Google.Cloud.Functions.Hosting\"]/@Version"
+        },
+        {
+          "type": "xml",
+          "path": "/src/Google.Cloud.Functions.Templates/templates/event-function-cs/MyFunction.csproj",
+          "xpath": "//Project/ItemGroup/PackageReference[@Include=\"Google.Cloud.Functions.Hosting\"]/@Version"
+        },
+        {
+          "type": "xml",
+          "path": "/src/Google.Cloud.Functions.Templates/templates/event-function-fs/MyFunction.fsproj",
+          "xpath": "//Project/ItemGroup/PackageReference[@Include=\"Google.Cloud.Functions.Hosting\"]/@Version"
+        },
+        {
+          "type": "xml",
+          "path": "/src/Google.Cloud.Functions.Templates/templates/event-function-vb/MyFunction.vbproj",
+          "xpath": "//Project/ItemGroup/PackageReference[@Include=\"Google.Cloud.Functions.Hosting\"]/@Version"
+        },
+        {
+          "type": "xml",
+          "path": "/src/Google.Cloud.Functions.Templates/templates/http-function-cs/MyFunction.csproj",
+          "xpath": "//Project/ItemGroup/PackageReference[@Include=\"Google.Cloud.Functions.Hosting\"]/@Version"
+        },
+        {
+          "type": "xml",
+          "path": "/src/Google.Cloud.Functions.Templates/templates/http-function-fs/MyFunction.fsproj",
+          "xpath": "//Project/ItemGroup/PackageReference[@Include=\"Google.Cloud.Functions.Hosting\"]/@Version"
+        },
+        {
+          "type": "xml",
+          "path": "/src/Google.Cloud.Functions.Templates/templates/http-function-vb/MyFunction.vbproj",
+          "xpath": "//Project/ItemGroup/PackageReference[@Include=\"Google.Cloud.Functions.Hosting\"]/@Version"
+        },
+        {
+          "type": "xml",
+          "path": "/src/Google.Cloud.Functions.Templates/templates/untyped-event-function-cs/MyFunction.csproj",
+          "xpath": "//Project/ItemGroup/PackageReference[@Include=\"Google.Cloud.Functions.Hosting\"]/@Version"
+        },
+        {
+          "type": "xml",
+          "path": "/src/Google.Cloud.Functions.Templates/templates/untyped-event-function-fs/MyFunction.fsproj",
+          "xpath": "//Project/ItemGroup/PackageReference[@Include=\"Google.Cloud.Functions.Hosting\"]/@Version"
+        },
+        {
+          "type": "xml",
+          "path": "/src/Google.Cloud.Functions.Templates/templates/untyped-event-function-vb/MyFunction.vbproj",
+          "xpath": "//Project/ItemGroup/PackageReference[@Include=\"Google.Cloud.Functions.Hosting\"]/@Version"
+        }
+      ]
+    },
+    "src/Google.Cloud.Functions.Templates": {
+      "component": "Google.Cloud.Functions.Templates"
+    },
+    "src/Google.Cloud.Functions.Testing": {
+      "component": "Google.Cloud.Functions.Testing",
+      "extra-files": [
+        {
+          "type": "xml",
+          "path": "/examples/Google.Cloud.Functions.Examples.IntegrationTests/Google.Cloud.Functions.Examples.IntegrationTests.csproj",
+          "xpath": "//Project/ItemGroup/PackageReference[@Include=\"Google.Cloud.Functions.Testing\"]/@Version"
+        }
+      ]
+    }
+  },
+  "plugins": [
+    {
+      "type": "linked-versions",
+      "groupName": "Google.Cloud.Functions",
+      "components": [
+        "Google.Cloud.Functions.Framework",
+        "Google.Cloud.Functions.Hosting",
+        "Google.Cloud.Functions.Templates",
+        "Google.Cloud.Functions.Testing"
+      ]
+    }
+  ]
+}
