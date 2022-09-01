@@ -149,3 +149,20 @@ binaries.
 See [the multi-project example
 documentation](examples.md#multiprojectfunction-and-multiprojectdependency)
 for a sample deployment command line, as well as sample projects.
+
+### Deploying a function with an internal NuGet dependency
+
+Similar to the above description, real world functions may depend on
+internally-hosted NuGet packages. While the Google Cloud Functions build
+system doesn't have access to the internal packages, they can be fetched
+(as .nupkg files) as part of a pre-deployment step, included in a subdirectory
+of the function's source directory, and referenced via a `nuget.config` file.
+
+Unlike the example with multiple projects, the deployment command line
+doesn't need to be changed for this. It would be feasible to combine the two
+techniques, using a directory containing all the packages used by all the local
+projects.
+
+See [the local NuGet packages example
+documentation](examples.md#localnugetpackagefunction-and-localnugetpackagecode)
+for more details.
