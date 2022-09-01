@@ -447,7 +447,7 @@ gcloud functions deploy image-annotator \
 
 ## MultiProjectFunction and MultiProjectDependency
 
-All the other examples provided are standalone, but in real world
+All the examples above provided are standalone, but in real world
 projects, often the project containing your function will depend on
 another local project. The [MultiProjectFunction](../examples/Google.Cloud.Functions.Examples.MultiProjectFunction)
 and [MultiProjectDependency](../examples/Google.Cloud.Functions.Examples.MultiProjectDependency)
@@ -475,6 +475,44 @@ file in the examples directory](../examples/.gcloudignore) to avoid uploading al
 binaries.
 
 Note that the ability to set build environment variables is currently in beta.
+
+## LocalNuGetPackageFunction and LocalNuGetPackageCode
+
+The example above describes how to deploy a function with local *project* dependencies.
+However, often companies run internal NuGet servers to host internal code, and dependent code
+is expected to use package references.
+
+The Google Cloud Functions build system doesn't have access to that internal NuGet server, but
+the .nupkg package files can be included alongside the source of the function, along with a `nuget.config`
+file, so they can be used at build time.
+
+The [LocalNuGetPackageFunction](../examples/Google.Cloud.Functions.Examples.LocalNuGetPackageFunction) and
+[LocalNuGetPackageCode](../examples/Google.Cloud.Functions.Examples.LocalNuGetPackageCode) directories provide
+an example of this: the LocalNuGetPackageFunction project depends on the LocalNuGetPackageCode project using
+a `<PackageReference>` MSBuild element. It has a `nupkg` directory alongside the function code, with a `nuget.config` file:
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+  <packageSources>
+    <add key="Local Packages Directory" value="nupkg" />
+  </packageSources>
+</configuration>
+```
+
+In this repository, the .nupkg file is included in source control, just for simplicity. In a real deployment scenario,
+before deploying you would need to fetch all the relevant .nupkg files from the internal NuGet server, and place them into
+the `nupkg` directory. (The `nupkg` directory itself wouldn't be in source control at all.)
+
+Sample deployment:
+
+```sh
+gcloud functions deploy local-nuget \
+  --runtime=dotnet3 \
+  --trigger-http \
+  --allow-unauthenticated \
+  --entry-point Google.Cloud.Functions.Examples.LocalNuGetPackageFunction.Function
+```
 
 ## Integration Tests
 
