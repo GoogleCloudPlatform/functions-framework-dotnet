@@ -8,6 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CloudNative.CloudEvents.AspNetCore" Version="2.3.1" />
+    <PackageReference Include="CloudNative.CloudEvents.AspNetCore" Version="2.4.0" />
   </ItemGroup>
 </Project>
