@@ -17,9 +17,9 @@ populate_all_secrets
 
 NUGET_API_KEY="$(cat "$SECRETS_LOCATION"/google-cloud-nuget-api-key)"
 
-# Make sure we have the most recent version of pip, then install the gcp-releasetool package
-python -m pip install --upgrade pip
-python -m pip install gcp-releasetool
+# Make sure we have the most recent version of pip, then install other packages.
+python -m pip install --require-hashes -r pip-requirements.txt
+python -m pip install --require-hashes -r requirements.txt
 python -m releasetool publish-reporter-script > /tmp/publisher-script
 
 # The publish reporter script uses "python3" which doesn't exist on Windows.
