@@ -1,6 +1,6 @@
 {
-  "src/Google.Cloud.Functions.Framework": "1.0.0",
-  "src/Google.Cloud.Functions.Hosting": "1.0.0",
-  "src/Google.Cloud.Functions.Templates": "1.0.0",
-  "src/Google.Cloud.Functions.Testing": "1.0.0"
+  "src/Google.Cloud.Functions.Framework": "1.1.0",
+  "src/Google.Cloud.Functions.Hosting": "1.1.0",
+  "src/Google.Cloud.Functions.Templates": "1.1.0",
+  "src/Google.Cloud.Functions.Testing": "1.1.0"
 }
