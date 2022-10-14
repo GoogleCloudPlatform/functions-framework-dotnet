@@ -7,6 +7,14 @@ on:
   workflow_dispatch:
 jobs:
   dotnet3:
+    runs-on: ubuntu-latest    
+  
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v2
+      with:
+        submodules: true
+
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v3
       with:
