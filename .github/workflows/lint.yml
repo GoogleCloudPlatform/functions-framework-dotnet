@@ -6,13 +6,15 @@ on:
   pull_request:
 jobs:
   lint:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     steps:
     - name: Checkout repo
       uses: actions/checkout@v2
       with:
         submodules: true
     - name: Setup .NET Core
-      uses: actions/setup-dotnet@v2
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '3.1.x'
     - run: dotnet tool install -g dotnet-format
     - run: dotnet-format src
