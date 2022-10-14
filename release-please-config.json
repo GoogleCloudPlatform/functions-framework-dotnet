@@ -1,0 +1,41 @@
+{
+  "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+  "release-type": "simple",
+  "include-component-in-tag": true,
+  "include-v-in-tag": false,
+  "changelog-path": "docs/history.md",
+  "packages": {
+    "src/Google.Cloud.Functions.Framework": {
+      "component": "Google.Cloud.Functions.Framework",
+      "changelog-path": "/docs/history.md",
+      "extra-files": [
+        {
+          "type": "xml",
+          "path": "/src/CommonProperties.xml",
+          "xpath": "//Project/PropertyGroup/Version"
+        }
+      ]
+    },
+    "src/Google.Cloud.Functions.Hosting": {
+      "component": "Google.Cloud.Functions.Hosting"
+    },
+    "src/Google.Cloud.Functions.Templates": {
+      "component": "Google.Cloud.Functions.Templates"
+    },
+    "src/Google.Cloud.Functions.Testing": {
+      "component": "Google.Cloud.Functions.Testing"
+    }
+  },
+  "plugins": [
+    {
+      "type": "linked-versions",
+      "groupName": "Google.Cloud.Functions",
+      "components": [
+        "Google.Cloud.Functions.Framework",
+        "Google.Cloud.Functions.Hosting",
+        "Google.Cloud.Functions.Templates",
+        "Google.Cloud.Functions.Testing"
+      ]
+    }
+  ]
+}
