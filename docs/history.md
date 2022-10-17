@@ -1,5 +1,44 @@
 # Version History
 
+## [1.1.0](https://github.com/GoogleCloudPlatform/functions-framework-dotnet/compare/Google.Cloud.Functions.Testing-1.0.0...Google.Cloud.Functions.Testing-1.1.0) (2022-10-17)
+
+
+### Miscellaneous chores
+
+* **Google.Cloud.Functions.Testing:** Synchronize Google.Cloud.Functions versions
+
+## [1.1.0](https://github.com/GoogleCloudPlatform/functions-framework-dotnet/compare/Google.Cloud.Functions.Templates-1.0.0...Google.Cloud.Functions.Templates-1.1.0) (2022-10-17)
+
+
+### Miscellaneous chores
+
+* **Google.Cloud.Functions.Templates:** Synchronize Google.Cloud.Functions versions
+
+## [1.1.0](https://github.com/GoogleCloudPlatform/functions-framework-dotnet/compare/Google.Cloud.Functions.Hosting-1.0.0...Google.Cloud.Functions.Hosting-1.1.0) (2022-10-17)
+
+
+### Dependencies
+
+* Update CloudEvents SDK dependencies ([07fc94f](https://github.com/GoogleCloudPlatform/functions-framework-dotnet/commit/07fc94faa7b211b26920f2f28b4628548019faa0))
+
+## [1.1.0](https://github.com/GoogleCloudPlatform/functions-framework-dotnet/compare/Google.Cloud.Functions.Framework-1.0.0...Google.Cloud.Functions.Framework-1.1.0) (2022-10-17)
+
+
+### Features
+
+* Support Pub/Sub push notifications format (adapt to CloudEvent) ([af9f09d](https://github.com/GoogleCloudPlatform/functions-framework-dotnet/commit/af9f09d67f3f877c9796c8345273c7a06e114d1b)), closes [#234](https://github.com/GoogleCloudPlatform/functions-framework-dotnet/issues/234)
+* Warn if the "unknown topic" resource name is used ([59bf0ed](https://github.com/GoogleCloudPlatform/functions-framework-dotnet/commit/59bf0ed957a543c3a59cb6ada58d8cc1518af4c1))
+
+
+### Bug Fixes
+
+* Change Firebase RTDB event types (.ref instead of .document) ([36200ed](https://github.com/GoogleCloudPlatform/functions-framework-dotnet/commit/36200ed1ff6ac820f7b969c8e44bb61c398927b1))
+
+
+### Dependencies
+
+* Update CloudEvents SDK dependencies ([07fc94f](https://github.com/GoogleCloudPlatform/functions-framework-dotnet/commit/07fc94faa7b211b26920f2f28b4628548019faa0))
+
 ## 1.0.0 (released 2021-06-22)
 
 - Update to Google.Events.Protobuf 1.0.0 and CloudNative.CloudEvents 2.0.0
