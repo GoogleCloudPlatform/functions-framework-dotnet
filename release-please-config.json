@@ -18,13 +18,16 @@
       ]
     },
     "src/Google.Cloud.Functions.Hosting": {
-      "component": "Google.Cloud.Functions.Hosting"
+      "component": "Google.Cloud.Functions.Hosting",
+      "changelog-path": "/docs/history.md"
     },
     "src/Google.Cloud.Functions.Templates": {
-      "component": "Google.Cloud.Functions.Templates"
+      "component": "Google.Cloud.Functions.Templates",
+      "changelog-path": "/docs/history.md"
     },
     "src/Google.Cloud.Functions.Testing": {
-      "component": "Google.Cloud.Functions.Testing"
+      "component": "Google.Cloud.Functions.Testing",
+      "changelog-path": "/docs/history.md"
     }
   },
   "changelog-sections": [
