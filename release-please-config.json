@@ -3,6 +3,7 @@
   "release-type": "simple",
   "include-component-in-tag": true,
   "include-v-in-tag": false,
+  "pull-request-header": "Auto-generated release PR: merge to trigger a release",
   "changelog-path": "docs/history.md",
   "packages": {
     "src/Google.Cloud.Functions.Framework": {
@@ -26,6 +27,43 @@
       "component": "Google.Cloud.Functions.Testing"
     }
   },
+  "changelog-sections": [
+    {
+      "type": "feat",
+      "section": "Features",
+      "hidden": false
+    },
+    {
+      "type": "fix",
+      "section": "Bug Fixes",
+      "hidden": false
+    },
+    {
+      "type": "docs",
+      "section": "Documentation",
+      "hidden": false
+    },
+    {
+      "type": "deps",
+      "section": "Dependencies",
+      "hidden": false
+    },
+    {
+      "type": "refactor",
+      "section": "Refactoring",
+      "hidden": true
+    },
+    {
+      "type": "tests",
+      "section": "Tests",
+      "hidden": true
+    },
+    {
+      "type": "chore",
+      "section": "Miscellaneous chores",
+      "hidden": true
+    }
+  ],
   "plugins": [
     {
       "type": "linked-versions",
