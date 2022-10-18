@@ -1,5 +1,31 @@
 # Version History
 
+## [1.1.0](https://github.com/GoogleCloudPlatform/functions-framework-dotnet/compare/Google.Cloud.Functions.Framework-1.0.0...Google.Cloud.Functions.Framework-1.1.0) (2022-10-18)
+
+
+### Features
+
+* Support Pub/Sub push notifications format (adapt to CloudEvent) ([af9f09d](https://github.com/GoogleCloudPlatform/functions-framework-dotnet/commit/af9f09d67f3f877c9796c8345273c7a06e114d1b)), closes [#234](https://github.com/GoogleCloudPlatform/functions-framework-dotnet/issues/234)
+* Warn if the "unknown topic" resource name is used ([59bf0ed](https://github.com/GoogleCloudPlatform/functions-framework-dotnet/commit/59bf0ed957a543c3a59cb6ada58d8cc1518af4c1))
+
+
+### Bug Fixes
+
+* Change Firebase RTDB event types (.ref instead of .document) ([36200ed](https://github.com/GoogleCloudPlatform/functions-framework-dotnet/commit/36200ed1ff6ac820f7b969c8e44bb61c398927b1))
+* Temporary workaround for conformance client output ([dc93d1e](https://github.com/GoogleCloudPlatform/functions-framework-dotnet/commit/dc93d1e5f90e9cfa9e5671d0828949275093b700))
+
+
+### Documentation
+
+* Add an example of deployment using a local NuGet package ([4452440](https://github.com/GoogleCloudPlatform/functions-framework-dotnet/commit/44524408cfc85f4eec2f6163866a3e6b6ef79010))
+* Add missing backslash to sample deployment command line ([827b911](https://github.com/GoogleCloudPlatform/functions-framework-dotnet/commit/827b911bb10fe96a0092dd58189959b44d0a7795))
+* update broken badge ([4f3476f](https://github.com/GoogleCloudPlatform/functions-framework-dotnet/commit/4f3476f660e0e1e6df8bf4c64385b27e5c2933c4))
+
+
+### Dependencies
+
+* Update CloudEvents SDK dependencies ([07fc94f](https://github.com/GoogleCloudPlatform/functions-framework-dotnet/commit/07fc94faa7b211b26920f2f28b4628548019faa0))
+
 ## 1.0.0 (released 2021-06-22)
 
 - Update to Google.Events.Protobuf 1.0.0 and CloudNative.CloudEvents 2.0.0
