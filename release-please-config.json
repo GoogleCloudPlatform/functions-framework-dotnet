@@ -6,28 +6,15 @@
   "pull-request-header": "Auto-generated release PR: merge to trigger a release",
   "changelog-path": "docs/history.md",
   "packages": {
-    "src/Google.Cloud.Functions.Framework": {
+    ".": {
       "component": "Google.Cloud.Functions.Framework",
-      "changelog-path": "/docs/history.md",
       "extra-files": [
         {
           "type": "xml",
-          "path": "/src/CommonProperties.xml",
+          "path": "src/CommonProperties.xml",
           "xpath": "//Project/PropertyGroup/Version"
         }
       ]
-    },
-    "src/Google.Cloud.Functions.Hosting": {
-      "component": "Google.Cloud.Functions.Hosting",
-      "changelog-path": "/docs/history.md"
-    },
-    "src/Google.Cloud.Functions.Templates": {
-      "component": "Google.Cloud.Functions.Templates",
-      "changelog-path": "/docs/history.md"
-    },
-    "src/Google.Cloud.Functions.Testing": {
-      "component": "Google.Cloud.Functions.Testing",
-      "changelog-path": "/docs/history.md"
     }
   },
   "changelog-sections": [
@@ -65,18 +52,6 @@
       "type": "chore",
       "section": "Miscellaneous chores",
       "hidden": true
-    }
-  ],
-  "plugins": [
-    {
-      "type": "linked-versions",
-      "groupName": "Google.Cloud.Functions",
-      "components": [
-        "Google.Cloud.Functions.Framework",
-        "Google.Cloud.Functions.Hosting",
-        "Google.Cloud.Functions.Templates",
-        "Google.Cloud.Functions.Testing"
-      ]
     }
   ]
 }
