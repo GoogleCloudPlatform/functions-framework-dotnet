@@ -51,7 +51,7 @@ for more detailed information; this page is only intended to give simple
 Functions Framework function follows the same procedure as deploying
 a function written in every language. The .NET-specific aspects are:
 
-- The runtime should be specified as `dotnet3`
+- The runtime should be specified as `dotnet6`
 - The entry point should be specified as the name of the function
   type, including namespace (e.g. `HelloFunctions.Function`)
 
