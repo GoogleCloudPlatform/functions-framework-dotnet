@@ -173,16 +173,18 @@ namespace Google.Cloud.Functions.Hosting
             }
             else if (GetGenericInterfaceImplementationTypeArgument(functionType, typeof(ICloudEventFunction<>)) is Type payloadType)
             {
-                // Note: the formatter may be null, but that may be okay. We add it to dependency injection anyway,
-                // so that if the user hasn't configured a formatter themselves, we can give a helpful error message
-                // in the CloudEventAdapter<TData> constructor.
-                var formatter = CloudEventFormatterAttribute.CreateFormatter(payloadType);
                 services
                     .AddScoped(typeof(IHttpFunction), typeof(CloudEventAdapter<>).MakeGenericType(payloadType))
-                    .AddScoped(typeof(ICloudEventFunction<>).MakeGenericType(payloadType), functionType)
-                    // Note: we can't just add formatter, as that might be null, which throws.
-                    // A dependency function is allowed to return null though.
-                    .AddSingleton(provider => formatter);
+                    .AddScoped(typeof(ICloudEventFunction<>).MakeGenericType(payloadType), functionType);
+
+                var formatter = CloudEventFormatterAttribute.CreateFormatter(payloadType);
+                // Only add the formatter here if we have one. Even if we have one, it can be overridden by a function
+                // startup class adding its own. If no formatter is available, CloudEventAdapter<TData> will fail
+                // with a helpful error message in the constructor.
+                if (formatter is not null)
+                {
+                    services.AddSingleton(formatter);
+                }
             }
             else
             {
