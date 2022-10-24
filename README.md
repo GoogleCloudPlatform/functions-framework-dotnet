@@ -186,7 +186,7 @@ deploy` command to deploy the function. For the quickstart HTTP function
 described above, you could run:
 
 ```
-gcloud functions deploy hello-functions --runtime dotnet3 --trigger-http --entry-point HelloFunctions.Function
+gcloud functions deploy hello-functions --runtime dotnet6 --trigger-http --entry-point HelloFunctions.Function
 ```
 
 Other function types require different command line options. See the
