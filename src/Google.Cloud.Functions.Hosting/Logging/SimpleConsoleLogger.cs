@@ -86,7 +86,7 @@ namespace Google.Cloud.Functions.Hosting.Logging
                 }
                 builder.Append(" }");
             }
-            // Otherwise, format it invariently
+            // Otherwise, format it invariantly
             else
             {
                 builder.Append(ToInvariantString(value));
