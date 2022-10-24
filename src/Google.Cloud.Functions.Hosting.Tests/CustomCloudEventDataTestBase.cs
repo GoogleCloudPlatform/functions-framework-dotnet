@@ -78,7 +78,7 @@ namespace Google.Cloud.Functions.Hosting.Tests
         [Fact]
         public async Task RequestFails()
         {
-            var exception = await Assert.ThrowsAsync<ArgumentNullException>(() => ExecuteAsync());
+            var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => ExecuteAsync());
             // Check it's our custom message, in a fairly loose way.
             Assert.Contains("Functions Framework", exception.Message);
         }

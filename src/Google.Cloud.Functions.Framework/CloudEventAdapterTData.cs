@@ -29,23 +29,26 @@ namespace Google.Cloud.Functions.Framework
         private readonly ILogger _logger;
 
         /// <summary>
+        /// Constructor without a <see cref="CloudEventFormatter"/>, whose sole purpose is to throw a clear exception
+        /// if an event formatter has not been configured.
+        /// </summary>
+        [Obsolete("This constructor only exists to enable a clear error message. It always throws an exception.", error: true)]
+        public CloudEventAdapter(ICloudEventFunction<TData> function, ILogger<CloudEventAdapter<TData>> logger) =>
+            throw new InvalidOperationException(
+                "No CloudEventFormatter has been configured for the CloudEvent function. " +
+                "The Functions Framework hosting will provide an event formatter if the target " +
+                "data type is decorated with CloudEventFormatterAttribute; otherwise, the formatter " +
+                "should be configured via dependency injection.");
+
+        /// <summary>
         /// Constructs a new instance based on the given CloudEvent Function.
         /// </summary>
         /// <param name="function">The CloudEvent Function to invoke.</param>
-        /// <param name="formatter">The CloudEvent formatter to use to deserialize the CloudEvent. This is expected to be a single-type formatter,
-        /// targeting <typeparamref name="TData"/>.</param>
+        /// <param name="formatter">The CloudEvent formatter to use to deserialize the CloudEvent.</param>
         /// <param name="logger">The logger to use to report errors.</param>
         public CloudEventAdapter(ICloudEventFunction<TData> function, CloudEventFormatter formatter, ILogger<CloudEventAdapter<TData>> logger)
         {
             _function = Preconditions.CheckNotNull(function, nameof(function));
-            if (formatter is null)
-            {
-                throw new ArgumentNullException(nameof(formatter),
-                    "No CloudEventFormatter configured for the CloudEvent function. " + 
-                    "The Functions Framework hosting will provide an event formatter if the target " +
-                    "data type is decorated with CloudEventFormatterAttribute; otherwise, the formatter " +
-                    "should be configured via dependency injection.");
-            }
             _formatter = Preconditions.CheckNotNull(formatter, nameof(formatter));
             _logger = Preconditions.CheckNotNull(logger, nameof(logger));
         }
