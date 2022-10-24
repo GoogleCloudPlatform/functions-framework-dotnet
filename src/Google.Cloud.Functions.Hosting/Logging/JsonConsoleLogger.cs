@@ -37,7 +37,7 @@ namespace Google.Cloud.Functions.Hosting.Logging
         internal JsonConsoleLogger(string category, TextWriter console)
             : base(category) => _console = console;
 
-        protected override void LogImpl<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, string formattedMessage)
+        protected override void LogImpl<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, string formattedMessage)
         {
             string severity = logLevel switch
             {
@@ -133,8 +133,12 @@ namespace Google.Cloud.Functions.Hosting.Logging
             }
         }
 
-        private static void WriteScope(object value, Utf8JsonWriter writer)
+        private static void WriteScope(object? value, Utf8JsonWriter writer)
         {
+            if (value is null)
+            {
+                return;
+            }
             // Detect "first scope" and start the scopes array property.
             if (writer.CurrentDepth == NoScopesDepth)
             {

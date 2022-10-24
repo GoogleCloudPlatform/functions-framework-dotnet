@@ -145,7 +145,7 @@ namespace Google.Cloud.Functions.Framework.GcfEvents
                 throw new ConversionException($"Error parsing GCF event: {e.Message}", e);
             }
 
-            PubSubEventAdapter.NormalizeRawRequest(parsedRequest, request.Path.Value, logger);
+            PubSubEventAdapter.NormalizeRawRequest(parsedRequest, request.Path.Value ?? "", logger);
             parsedRequest.NormalizeContext();
             if (parsedRequest.Data is null ||
                 string.IsNullOrEmpty(parsedRequest.Context.Id) ||
@@ -207,7 +207,8 @@ namespace Google.Cloud.Functions.Framework.GcfEvents
             /// The resource within context of the request will definitely have its Service and Name properties populated.
             /// This base implementation populates the Source based on the service and resource.
             /// </summary>
-            /// <param name="request">The incoming request.</param>
+            /// <param name="request">The incoming request. The request's context always has a resource, and the service and name
+            /// are always populated by the time this method is called.</param>
             /// <param name="evt">The event to populate</param>
             protected virtual void PopulateAttributes(Request request, CloudEvent evt)
             {
@@ -238,7 +239,7 @@ namespace Google.Cloud.Functions.Framework.GcfEvents
             /// </summary>
             protected override void PopulateAttributes(Request request, CloudEvent evt)
             {
-                var resource = request.Context.Resource.Name;
+                var resource = request.Context.Resource.Name!;
                 if (StorageResourcePattern.Match(resource) is { Success: true } match)
                 {
                     // The source includes the resource name up to the bucket
@@ -269,7 +270,7 @@ namespace Google.Cloud.Functions.Framework.GcfEvents
             protected override void PopulateAttributes(Request request, CloudEvent evt)
             {
                 base.PopulateAttributes(request, evt);
-                var match = PubSubResourcePattern.Match(request.Context.Resource.Name);
+                var match = PubSubResourcePattern.Match(request.Context.Resource.Name!);
                 if (match.Success)
                 {
                     evt[s_topicAttribute] = match.Groups["topic"].Value;

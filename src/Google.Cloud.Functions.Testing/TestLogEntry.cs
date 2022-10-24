@@ -61,13 +61,17 @@ namespace Google.Cloud.Functions.Testing
 
         internal static TestLogEntry Create<TState>(
             string categoryName, LogLevel logLevel, EventId eventId,
-            TState state, Exception exception, Func<TState, Exception, string> formatter,
+            TState state, Exception? exception, Func<TState, Exception?, string> formatter,
             IExternalScopeProvider scopeProvider)
         {
             var message = formatter(state, exception);
             List<object>? scopes = null;
             scopeProvider.ForEachScope((scope, state) =>
             {
+                if (scope is null)
+                {
+                    return;
+                }
                 if (scopes is null)
                 {
                     scopes = new List<object>();
