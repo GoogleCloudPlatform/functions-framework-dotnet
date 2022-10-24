@@ -28,7 +28,7 @@ namespace Google.Cloud.Functions.Hosting.Logging
         internal SimpleConsoleLogger(string category, TextWriter console)
             : base(category) => _console = console;
 
-        protected override void LogImpl<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, string formattedMessage)
+        protected override void LogImpl<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, string formattedMessage)
         {
             // Note: these are deliberately the same values used by ASP.NET Core's console logger.
             string briefLevel = logLevel switch
@@ -59,8 +59,12 @@ namespace Google.Cloud.Functions.Hosting.Logging
             }
         }
 
-        private void AppendScope(object value, StringBuilder builder)
+        private void AppendScope(object? value, StringBuilder builder)
         {
+            if (value is null)
+            {
+                return;
+            }
             if (builder.Length != 0)
             {
                 builder.Append(", ");

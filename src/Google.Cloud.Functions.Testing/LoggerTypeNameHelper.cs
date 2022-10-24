@@ -28,7 +28,7 @@ namespace Google.Cloud.Functions.Testing
         internal static string GetCategoryNameForType<T>()
         {
             var wrapper = new Logger<T>(NoOpLoggerFactory.Instance);
-            return ((NoOpLogger) wrapper.BeginScope(null)).CategoryName;
+            return ((NoOpLogger) wrapper.BeginScope("")).CategoryName;
         }
 
         internal static string GetCategoryNameForType(Type type)
@@ -74,7 +74,7 @@ namespace Google.Cloud.Functions.Testing
             public bool IsEnabled(LogLevel logLevel) =>
                 throw new NotImplementedException();
 
-            public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter) =>
+            public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter) =>
                 throw new NotImplementedException();
         }
     }

@@ -59,7 +59,7 @@ namespace Google.Cloud.Functions.Testing
         /// <summary>
         /// Formats the log entry as a <see cref="TestLogEntry"/> and retains it in memory.
         /// </summary>
-        public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
+        public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
         {
             var entry = TestLogEntry.Create(_categoryName, logLevel, eventId, state, exception, formatter, _scopeProvider);
             _logEntries.Enqueue(entry);

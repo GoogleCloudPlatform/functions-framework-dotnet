@@ -47,7 +47,7 @@ namespace Google.Cloud.Functions.Hosting.Logging
         /// Performs common filtering and formats the message, before delegating
         /// to <see cref="LogImpl{TState}"/>.
         /// </summary>
-        public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
+        public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
         {
             // Functions expect to go for a long time without any CPU. It's reasonable to suppress this warning.
             if (_isKestrelCategory && eventId.Id == HeartbeatSlowEventId)
@@ -66,7 +66,7 @@ namespace Google.Cloud.Functions.Hosting.Logging
         /// <summary>
         /// Delegated "we've definitely got something to log" handling.
         /// </summary>
-        protected abstract void LogImpl<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, string formattedMessage);
+        protected abstract void LogImpl<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, string formattedMessage);
 
         // Used for scope handling.
         private class SingletonDisposable : IDisposable

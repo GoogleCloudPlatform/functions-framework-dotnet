@@ -78,7 +78,7 @@ namespace Google.Cloud.Functions.Hosting
             // Note: we can't use ILogger<EntryPoint> as EntryPoint is static. This is an equivalent.
             app.ApplicationServices
                 .GetRequiredService<ILoggerFactory>()
-                .CreateLogger(typeof(EntryPoint).FullName)
+                .CreateLogger(typeof(EntryPoint).FullName ?? "UnknownType")
                 .LogInformation($"Serving function {functionType.FullName}");
             return app;
 
