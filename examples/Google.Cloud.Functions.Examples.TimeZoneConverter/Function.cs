@@ -52,7 +52,7 @@ namespace Google.Cloud.Functions.Examples.TimeZoneConverter
     {
         private static readonly JsonSerializerOptions s_serializerOptions = new JsonSerializerOptions
         { 
-            IgnoreNullValues = true,
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
             WriteIndented = true,
             Converters = { new JsonStringEnumConverter() }
         };
