@@ -175,7 +175,7 @@ namespace Google.Cloud.Functions.Hosting
             {
                 // Note: the formatter may be null, but that may be okay. We add it to dependency injection anyway,
                 // so that if the user hasn't configured a formatter themselves, we can give a helpful error message
-                // in the CloudEventAdatper<TData> constructor.
+                // in the CloudEventAdapter<TData> constructor.
                 var formatter = CloudEventFormatterAttribute.CreateFormatter(payloadType);
                 services
                     .AddScoped(typeof(IHttpFunction), typeof(CloudEventAdapter<>).MakeGenericType(payloadType))
