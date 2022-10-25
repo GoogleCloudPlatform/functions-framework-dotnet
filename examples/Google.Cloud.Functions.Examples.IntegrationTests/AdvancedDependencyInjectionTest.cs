@@ -18,40 +18,39 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Google.Cloud.Functions.Examples.IntegrationTests
+namespace Google.Cloud.Functions.Examples.IntegrationTests;
+
+public class AdvancedDependencyInjectionTest : FunctionTestBase<AdvancedDependencyInjection.Function>
 {
-    public class AdvancedDependencyInjectionTest : FunctionTestBase<AdvancedDependencyInjection.Function>
+    [Fact]
+    public async Task SingletonOperationIdRemainsStable()
     {
-        [Fact]
-        public async Task SingletonOperationIdRemainsStable()
-        {
-            // Make two requests to the function. They should both return the same SingletonOperationId value.
-            var response1 = await CallFunctionAsync();
-            var response2 = await CallFunctionAsync();
+        // Make two requests to the function. They should both return the same SingletonOperationId value.
+        var response1 = await CallFunctionAsync();
+        var response2 = await CallFunctionAsync();
 
-            Assert.Equal(response1.SingletonOperationId, response2.SingletonOperationId);
-        }
+        Assert.Equal(response1.SingletonOperationId, response2.SingletonOperationId);
+    }
 
-        [Fact]
-        public async Task ScopedOperationIdChangesPerRequest()
-        {
-            // Make two requests to the function. They should provide different ScopedOperationId values.
-            var response1 = await CallFunctionAsync();
-            var response2 = await CallFunctionAsync();
+    [Fact]
+    public async Task ScopedOperationIdChangesPerRequest()
+    {
+        // Make two requests to the function. They should provide different ScopedOperationId values.
+        var response1 = await CallFunctionAsync();
+        var response2 = await CallFunctionAsync();
 
-            Assert.NotEqual(response1.ScopedOperationId, response2.ScopedOperationId);
-        }
+        Assert.NotEqual(response1.ScopedOperationId, response2.ScopedOperationId);
+    }
 
-        private async Task<ResponseModel> CallFunctionAsync()
-        {
-            var content = await ExecuteHttpGetRequestAsync();
-            return JsonSerializer.Deserialize<ResponseModel>(content);
-        }
+    private async Task<ResponseModel> CallFunctionAsync()
+    {
+        var content = await ExecuteHttpGetRequestAsync();
+        return JsonSerializer.Deserialize<ResponseModel>(content);
+    }
 
-        private class ResponseModel
-        {
-            public Guid SingletonOperationId { get; set; }
-            public Guid ScopedOperationId { get; set; }
-        }
+    private class ResponseModel
+    {
+        public Guid SingletonOperationId { get; set; }
+        public Guid ScopedOperationId { get; set; }
     }
 }

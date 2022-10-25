@@ -21,48 +21,47 @@ using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
-namespace Google.Cloud.Functions.Examples.Middleware
+namespace Google.Cloud.Functions.Examples.Middleware;
+
+/// <summary>
+/// The startup class can be used to perform additional configuration, including
+/// adding application configuration sources, reconfiguring logging, providing services
+/// for dependency injection, and adding middleware to the eventual application pipeline.
+/// In this case, we add a simple piece of middleware to the request pipeline.
+/// </summary>
+public class Startup : FunctionsStartup
 {
-    /// <summary>
-    /// The startup class can be used to perform additional configuration, including
-    /// adding application configuration sources, reconfiguring logging, providing services
-    /// for dependency injection, and adding middleware to the eventual application pipeline.
-    /// In this case, we add a simple piece of middleware to the request pipeline.
-    /// </summary>
-    public class Startup : FunctionsStartup
+    public override void Configure(WebHostBuilderContext context, IApplicationBuilder app) =>
+        app.UseMiddleware<SampleMiddleware>();
+}
+
+/// <summary>
+/// This middleware just provides a single log entry per successful request.
+/// (This is not terribly useful as middleware, but it demonstrates the concept simply.)
+/// </summary>
+public class SampleMiddleware
+{
+    private readonly RequestDelegate _next;
+
+    public SampleMiddleware(RequestDelegate next) =>
+        _next = next;
+
+    public async Task InvokeAsync(HttpContext context, ILogger<SampleMiddleware> logger)
     {
-        public override void Configure(WebHostBuilderContext context, IApplicationBuilder app) =>
-            app.UseMiddleware<SampleMiddleware>();
+        Stopwatch sw = Stopwatch.StartNew();
+        await _next(context);
+        sw.Stop();
+        logger.LogInformation("Path: {path}; Status: {status}; Time: {time}ms",
+            context.Request.Path, context.Response.StatusCode, sw.Elapsed.TotalMilliseconds);
     }
+}
 
-    /// <summary>
-    /// This middleware just provides a single log entry per successful request.
-    /// (This is not terribly useful as middleware, but it demonstrates the concept simply.)
-    /// </summary>
-    public class SampleMiddleware
-    {
-        private readonly RequestDelegate _next;
-
-        public SampleMiddleware(RequestDelegate next) =>
-            _next = next;
-
-        public async Task InvokeAsync(HttpContext context, ILogger<SampleMiddleware> logger)
-        {
-            Stopwatch sw = Stopwatch.StartNew();
-            await _next(context);
-            sw.Stop();
-            logger.LogInformation("Path: {path}; Status: {status}; Time: {time}ms",
-                context.Request.Path, context.Response.StatusCode, sw.Elapsed.TotalMilliseconds);
-        }
-    }
-
-    /// <summary>
-    /// The actual Cloud Function.
-    /// </summary>
-    [FunctionsStartup(typeof(Startup))]
-    public class Function : IHttpFunction
-    {
-        public async Task HandleAsync(HttpContext context) =>
-            await context.Response.WriteAsync("Response to be logged by middleware.");
-    }
+/// <summary>
+/// The actual Cloud Function.
+/// </summary>
+[FunctionsStartup(typeof(Startup))]
+public class Function : IHttpFunction
+{
+    public async Task HandleAsync(HttpContext context) =>
+        await context.Response.WriteAsync("Response to be logged by middleware.");
 }

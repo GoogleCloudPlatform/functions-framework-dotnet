@@ -19,40 +19,39 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using System.Threading.Tasks;
 
-namespace Google.Cloud.Functions.Examples.TestableDependencies
+namespace Google.Cloud.Functions.Examples.TestableDependencies;
+
+// The dependency interface required by the function.
+public interface IDependency
 {
-    // The dependency interface required by the function.
-    public interface IDependency
+    public string Name { get; }
+}
+
+// The production dependency, configured in the Startup class.
+public class ProductionDependency : IDependency
+{
+    public string Name => "Production dependency. Don't use me in tests!";
+}
+
+/// <summary>
+/// Adds the production dependency to the service collection.
+/// </summary>
+public class Startup : FunctionsStartup
+{
+    public override void ConfigureServices(WebHostBuilderContext context, IServiceCollection services) =>
+        services.AddSingleton<IDependency, ProductionDependency>();
+}
+
+[FunctionsStartup(typeof(Startup))]
+public class Function : IHttpFunction
+{
+    private readonly IDependency _dependency;
+
+    public Function(IDependency dependency) =>
+        _dependency = dependency;
+
+    public async Task HandleAsync(HttpContext context)
     {
-        public string Name { get; }
-    }
-
-    // The production dependency, configured in the Startup class.
-    public class ProductionDependency : IDependency
-    {
-        public string Name => "Production dependency. Don't use me in tests!";
-    }
-
-    /// <summary>
-    /// Adds the production dependency to the service collection.
-    /// </summary>
-    public class Startup : FunctionsStartup
-    {
-        public override void ConfigureServices(WebHostBuilderContext context, IServiceCollection services) =>
-            services.AddSingleton<IDependency, ProductionDependency>();
-    }
-
-    [FunctionsStartup(typeof(Startup))]
-    public class Function : IHttpFunction
-    {
-        private readonly IDependency _dependency;
-
-        public Function(IDependency dependency) =>
-            _dependency = dependency;
-
-        public async Task HandleAsync(HttpContext context)
-        {
-            await context.Response.WriteAsync($"Dependency configured for function: {_dependency.Name}");
-        }
+        await context.Response.WriteAsync($"Dependency configured for function: {_dependency.Name}");
     }
 }

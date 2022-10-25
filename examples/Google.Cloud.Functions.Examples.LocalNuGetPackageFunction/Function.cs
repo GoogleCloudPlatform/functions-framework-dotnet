@@ -17,18 +17,17 @@ using Google.Cloud.Functions.Framework;
 using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
 
-namespace Google.Cloud.Functions.Examples.LocalNuGetPackageFunction
+namespace Google.Cloud.Functions.Examples.LocalNuGetPackageFunction;
+
+public class Function : IHttpFunction
 {
-    public class Function : IHttpFunction
+    public async Task HandleAsync(HttpContext context)
     {
-        public async Task HandleAsync(HttpContext context)
-        {
-            // The message comes from SampleLibrary, which is in a separate
-            // nuget package. There's no local project dependency - just
-            // a package reference. The .nupkg file is in the nuget
-            // subdirectory of the function's source directory, which
-            // is referred to in nuget.config.
-            await context.Response.WriteAsync(SampleLibrary.Message);
-        }
+        // The message comes from SampleLibrary, which is in a separate
+        // nuget package. There's no local project dependency - just
+        // a package reference. The .nupkg file is in the nuget
+        // subdirectory of the function's source directory, which
+        // is referred to in nuget.config.
+        await context.Response.WriteAsync(SampleLibrary.Message);
     }
 }

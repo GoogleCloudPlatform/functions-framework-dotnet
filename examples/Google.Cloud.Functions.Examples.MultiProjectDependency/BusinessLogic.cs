@@ -12,18 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Google.Cloud.Functions.Examples.MultiProjectDependency
+namespace Google.Cloud.Functions.Examples.MultiProjectDependency;
+
+/// <summary>
+/// See the comments in MultiProjectFunction.Function for the purpose
+/// of this class.
+/// </summary>
+public class BusinessLogic
 {
     /// <summary>
-    /// See the comments in MultiProjectFunction.Function for the purpose
-    /// of this class.
+    /// Performs some general business logic which might be needed from multiple
+    /// applications, so belongs in a separate class library.
     /// </summary>
-    public class BusinessLogic
-    {
-        /// <summary>
-        /// Performs some general business logic which might be needed from multiple
-        /// applications, so belongs in a separate class library.
-        /// </summary>
-        public string PerformGeneralBusinessLogic() => "Profit!";
-    }
+    public string PerformGeneralBusinessLogic() => "Profit!";
 }

@@ -12,14 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Google.Cloud.Functions.Examples.LocalNuGetPackageCode
+namespace Google.Cloud.Functions.Examples.LocalNuGetPackageCode;
+
+/// <summary>
+/// Just a simple class to demonstrate access from a function to a NuGet package
+/// which has been built separately and is not available on nuget.org.
+/// </summary>
+public static class SampleLibrary
 {
-    /// <summary>
-    /// Just a simple class to demonstrate access from a function to a NuGet package
-    /// which has been built separately and is not available on nuget.org.
-    /// </summary>
-    public static class SampleLibrary
-    {
-        public static string Message => "This is from the library";
-    }
+    public static string Message => "This is from the library";
 }

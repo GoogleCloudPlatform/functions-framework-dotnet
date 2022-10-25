@@ -16,31 +16,30 @@ using Google.Cloud.Functions.Testing;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Google.Cloud.Functions.Examples.IntegrationTests
+namespace Google.Cloud.Functions.Examples.IntegrationTests;
+
+/// <summary>
+/// Simple example of an integration test creating a <see cref="FunctionTestServer{TFunction}"/>
+/// as a fixture. This uses the same test server across multiple tests.
+/// </summary>
+public class SimpleHttpFunctionTest_WithTestServerFixture : IClassFixture<FunctionTestServer<SimpleHttpFunction.Function>>
 {
-    /// <summary>
-    /// Simple example of an integration test creating a <see cref="FunctionTestServer{TFunction}"/>
-    /// as a fixture. This uses the same test server across multiple tests.
-    /// </summary>
-    public class SimpleHttpFunctionTest_WithTestServerFixture : IClassFixture<FunctionTestServer<SimpleHttpFunction.Function>>
+    // The function test server created automatically by xUnit. This will be disposed after all tests have run.
+    private readonly FunctionTestServer<SimpleHttpFunction.Function> _server;
+
+    public SimpleHttpFunctionTest_WithTestServerFixture(FunctionTestServer<SimpleHttpFunction.Function> server) =>
+        _server = server;
+
+    [Fact]
+    public async Task FunctionWritesHelloFunctionsFramework()
     {
-        // The function test server created automatically by xUnit. This will be disposed after all tests have run.
-        private readonly FunctionTestServer<SimpleHttpFunction.Function> _server;
+        var client = _server.CreateClient();
 
-        public SimpleHttpFunctionTest_WithTestServerFixture(FunctionTestServer<SimpleHttpFunction.Function> server) =>
-            _server = server;
+        // Make a request to the function, and test that the response looks how we expect it to.
+        var response = await client.GetAsync("request-uri");
+        response.EnsureSuccessStatusCode();
+        var content = await response.Content.ReadAsStringAsync();
 
-        [Fact]
-        public async Task FunctionWritesHelloFunctionsFramework()
-        {
-            var client = _server.CreateClient();
-
-            // Make a request to the function, and test that the response looks how we expect it to.
-            var response = await client.GetAsync("request-uri");
-            response.EnsureSuccessStatusCode();
-            var content = await response.Content.ReadAsStringAsync();
-
-            Assert.Equal("Hello, Functions Framework.", content);
-        }
+        Assert.Equal("Hello, Functions Framework.", content);
     }
 }

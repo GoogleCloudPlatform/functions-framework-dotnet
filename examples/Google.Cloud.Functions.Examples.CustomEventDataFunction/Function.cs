@@ -23,41 +23,40 @@ using Newtonsoft.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Cloud.Functions.Examples.CustomEventDataFunction
+namespace Google.Cloud.Functions.Examples.CustomEventDataFunction;
+
+/// <summary>
+/// Startup class to inject a suitable CloudEventFormatter. Our CustomData type
+/// has attributes for Json.NET, but no CloudEventFormatterAttribute, so we inject
+/// a suitable JsonEventFormatter.
+/// </summary>
+public class Startup : FunctionsStartup
 {
-    /// <summary>
-    /// Startup class to inject a suitable CloudEventFormatter. Our CustomData type
-    /// has attributes for Json.NET, but no CloudEventFormatterAttribute, so we inject
-    /// a suitable JsonEventFormatter.
-    /// </summary>
-    public class Startup : FunctionsStartup
+    public override void ConfigureServices(WebHostBuilderContext context, IServiceCollection services) =>
+        services.AddSingleton<CloudEventFormatter>(new JsonEventFormatter<CustomData>());
+}
+
+/// <summary>
+/// A function that can be triggered by a CloudEvent containing data of type
+/// CustomData in a JSON event format.
+/// </summary>
+[FunctionsStartup(typeof(Startup))]
+public class Function : ICloudEventFunction<CustomData>
+{
+    private readonly ILogger _logger;
+
+    public Function(ILogger<Function> logger) =>
+        _logger = logger;
+
+    public Task HandleAsync(CloudEvent cloudEvent, CustomData data, CancellationToken cancellationToken)
     {
-        public override void ConfigureServices(WebHostBuilderContext context, IServiceCollection services) =>
-            services.AddSingleton<CloudEventFormatter>(new JsonEventFormatter<CustomData>());
+        _logger.LogInformation("Data received. TextValue={value}", data.TextValue);
+        return Task.CompletedTask;
     }
+}
 
-    /// <summary>
-    /// A function that can be triggered by a CloudEvent containing data of type
-    /// CustomData in a JSON event format.
-    /// </summary>
-    [FunctionsStartup(typeof(Startup))]
-    public class Function : ICloudEventFunction<CustomData>
-    {
-        private readonly ILogger _logger;
-
-        public Function(ILogger<Function> logger) =>
-            _logger = logger;
-
-        public Task HandleAsync(CloudEvent cloudEvent, CustomData data, CancellationToken cancellationToken)
-        {
-            _logger.LogInformation("Data received. TextValue={value}", data.TextValue);
-            return Task.CompletedTask;
-        }
-    }
-
-    public class CustomData
-    {
-        [JsonProperty("text")]
-        public string TextValue { get; set; }
-    }
+public class CustomData
+{
+    [JsonProperty("text")]
+    public string TextValue { get; set; }
 }

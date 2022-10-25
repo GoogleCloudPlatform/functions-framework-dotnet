@@ -20,34 +20,32 @@ using Microsoft.Extensions.Configuration;
 using Steeltoe.Extensions.Configuration.RandomValue;
 using System.Threading.Tasks;
 
-namespace Google.Cloud.Functions.Examples.CustomConfiguration
+namespace Google.Cloud.Functions.Examples.CustomConfiguration;
+
+/// <summary>
+/// The startup class can be used to perform additional configuration, including
+/// adding application configuration sources, reconfiguring logging, providing services
+/// for dependency injection, and adding middleware to the eventual application pipeline.
+/// In this case, we add the "random value" provider from Steeltoe.
+/// See https://steeltoe.io/docs/2/configuration/random-value-provider for more details.
+/// </summary>
+public class Startup : FunctionsStartup
 {
+    public override void ConfigureAppConfiguration(WebHostBuilderContext context, IConfigurationBuilder configuration) =>
+        configuration.AddRandomValueSource();
+}
 
-    /// <summary>
-    /// The startup class can be used to perform additional configuration, including
-    /// adding application configuration sources, reconfiguring logging, providing services
-    /// for dependency injection, and adding middleware to the eventual application pipeline.
-    /// In this case, we add the "random value" provider from Steeltoe.
-    /// See https://steeltoe.io/docs/2/configuration/random-value-provider for more details.
-    /// </summary>
-    public class Startup : FunctionsStartup
+[FunctionsStartup(typeof(Startup))]
+public class Function : IHttpFunction
+{
+    private readonly IConfiguration _configuration;
+
+    public Function(IConfiguration configuration) =>
+        _configuration = configuration;
+
+    public async Task HandleAsync(HttpContext context)
     {
-        public override void ConfigureAppConfiguration(WebHostBuilderContext context, IConfigurationBuilder configuration) =>
-            configuration.AddRandomValueSource();
-    }
-
-    [FunctionsStartup(typeof(Startup))]
-    public class Function : IHttpFunction
-    {
-        private readonly IConfiguration _configuration;
-
-        public Function(IConfiguration configuration) =>
-            _configuration = configuration;
-
-        public async Task HandleAsync(HttpContext context)
-        {
-            int randomValue = _configuration.GetValue<int>("random:int");
-            await context.Response.WriteAsync($"Here's a random integer: {randomValue}");
-        }
+        int randomValue = _configuration.GetValue<int>("random:int");
+        await context.Response.WriteAsync($"Here's a random integer: {randomValue}");
     }
 }

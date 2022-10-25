@@ -16,15 +16,14 @@ using Google.Cloud.Functions.Testing;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Google.Cloud.Functions.Examples.IntegrationTests
+namespace Google.Cloud.Functions.Examples.IntegrationTests;
+
+public class SimpleHttpFunctionTest_WithFunctionTestBase : FunctionTestBase<SimpleHttpFunction.Function>
 {
-    public class SimpleHttpFunctionTest_WithFunctionTestBase : FunctionTestBase<SimpleHttpFunction.Function>
+    [Fact]
+    public async Task FunctionWritesHelloFunctionsFramework()
     {
-        [Fact]
-        public async Task FunctionWritesHelloFunctionsFramework()
-        {
-            string content = await ExecuteHttpGetRequestAsync();
-            Assert.Equal("Hello, Functions Framework.", content);
-        }
+        string content = await ExecuteHttpGetRequestAsync();
+        Assert.Equal("Hello, Functions Framework.", content);
     }
 }

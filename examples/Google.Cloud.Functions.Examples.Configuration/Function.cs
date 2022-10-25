@@ -20,69 +20,68 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Threading.Tasks;
 
-namespace Google.Cloud.Functions.Examples.Configuration
+namespace Google.Cloud.Functions.Examples.Configuration;
+
+/// <summary>
+/// An options class to be bound from the configuration.
+/// </summary>
+public class DatabaseConnectionOptions
 {
-    /// <summary>
-    /// An options class to be bound from the configuration.
-    /// </summary>
-    public class DatabaseConnectionOptions
-    {
-        public const string ConfigurationSection = "DbConnection";
+    public const string ConfigurationSection = "DbConnection";
 
-        public string Instance { get; set; }
-        public string Database { get; set; }
+    public string Instance { get; set; }
+    public string Database { get; set; }
+}
+
+/// <summary>
+/// A service connecting to a database, configured using <see cref="DatabaseConnectionOptions"/>.
+/// </summary>
+public class DatabaseService
+{
+    public string Instance { get; }
+    public string Database { get; }
+
+    public DatabaseService(DatabaseConnectionOptions options) =>
+        (Instance, Database) = (options.Instance, options.Database);
+}
+
+/// <summary>
+/// The startup class is provided with a host builder which exposes a service collection
+/// and configuration. This can be used to make additional dependencies available.
+/// In this case, we configure a <see cref="DatabaseService"/> based on the configuration.
+/// </summary>
+public class Startup : FunctionsStartup
+{
+    public override void ConfigureServices(WebHostBuilderContext context, IServiceCollection services)
+    {
+        // Bind the connection options based on the current configuration.
+        DatabaseConnectionOptions options = new DatabaseConnectionOptions();
+        context.Configuration
+            .GetSection(DatabaseConnectionOptions.ConfigurationSection)
+            .Bind(options);
+
+        // Build the database service from the connection options.
+        DatabaseService database = new DatabaseService(options);
+
+        // Add the database service to the service collection.
+        services.AddSingleton(database);
     }
+}
 
-    /// <summary>
-    /// A service connecting to a database, configured using <see cref="DatabaseConnectionOptions"/>.
-    /// </summary>
-    public class DatabaseService
+/// <summary>
+/// The actual Cloud Function using the DatabaseService dependency configured in
+/// Startup.
+/// </summary>
+[FunctionsStartup(typeof(Startup))]
+public class Function : IHttpFunction
+{
+    private readonly DatabaseService _database;
+
+    public Function(DatabaseService database) =>
+        _database = database;
+
+    public async Task HandleAsync(HttpContext context)
     {
-        public string Instance { get; }
-        public string Database { get; }
-
-        public DatabaseService(DatabaseConnectionOptions options) =>
-            (Instance, Database) = (options.Instance, options.Database);
-    }
-
-    /// <summary>
-    /// The startup class is provided with a host builder which exposes a service collection
-    /// and configuration. This can be used to make additional dependencies available.
-    /// In this case, we configure a <see cref="DatabaseService"/> based on the configuration.
-    /// </summary>
-    public class Startup : FunctionsStartup
-    {
-        public override void ConfigureServices(WebHostBuilderContext context, IServiceCollection services)
-        {
-            // Bind the connection options based on the current configuration.
-            DatabaseConnectionOptions options = new DatabaseConnectionOptions();
-            context.Configuration
-                .GetSection(DatabaseConnectionOptions.ConfigurationSection)
-                .Bind(options);
-
-            // Build the database service from the connection options.
-            DatabaseService database = new DatabaseService(options);
-
-            // Add the database service to the service collection.
-            services.AddSingleton(database);
-        }
-    }
-
-    /// <summary>
-    /// The actual Cloud Function using the DatabaseService dependency configured in
-    /// Startup.
-    /// </summary>
-    [FunctionsStartup(typeof(Startup))]
-    public class Function : IHttpFunction
-    {
-        private readonly DatabaseService _database;
-
-        public Function(DatabaseService database) =>
-            _database = database;
-
-        public async Task HandleAsync(HttpContext context)
-        {
-            await context.Response.WriteAsync($"Retrieving data from instance '{_database.Instance}', database '{_database.Database}'");
-        }
+        await context.Response.WriteAsync($"Retrieving data from instance '{_database.Instance}', database '{_database.Database}'");
     }
 }

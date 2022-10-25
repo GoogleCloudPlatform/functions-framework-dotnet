@@ -16,28 +16,27 @@ using Google.Cloud.Functions.Testing;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Google.Cloud.Functions.Examples.IntegrationTests
+namespace Google.Cloud.Functions.Examples.IntegrationTests;
+
+/// <summary>
+/// Simple example of an integration test creating a <see cref="FunctionTestServer{TFunction}"/>
+/// inside a test.
+/// </summary>
+public class SimpleHttpFunctionTest_WithTestServerInTest
 {
-    /// <summary>
-    /// Simple example of an integration test creating a <see cref="FunctionTestServer{TFunction}"/>
-    /// inside a test.
-    /// </summary>
-    public class SimpleHttpFunctionTest_WithTestServerInTest
+    [Fact]
+    public async Task FunctionWritesHelloFunctionsFramework()
     {
-        [Fact]
-        public async Task FunctionWritesHelloFunctionsFramework()
+        using (var server = new FunctionTestServer<SimpleHttpFunction.Function>())
         {
-            using (var server = new FunctionTestServer<SimpleHttpFunction.Function>())
-            {
-                var client = server.CreateClient();
+            var client = server.CreateClient();
 
-                // Make a request to the function, and test that the response looks how we expect it to.
-                var response = await client.GetAsync("request-uri");
-                response.EnsureSuccessStatusCode();
-                var content = await response.Content.ReadAsStringAsync();
+            // Make a request to the function, and test that the response looks how we expect it to.
+            var response = await client.GetAsync("request-uri");
+            response.EnsureSuccessStatusCode();
+            var content = await response.Content.ReadAsStringAsync();
 
-                Assert.Equal("Hello, Functions Framework.", content);
-            }
+            Assert.Equal("Hello, Functions Framework.", content);
         }
     }
 }

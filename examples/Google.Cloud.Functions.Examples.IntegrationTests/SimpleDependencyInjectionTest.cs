@@ -17,33 +17,32 @@ using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Google.Cloud.Functions.Examples.IntegrationTests
+namespace Google.Cloud.Functions.Examples.IntegrationTests;
+
+public class SimpleDependencyInjectionTest
 {
-    public class SimpleDependencyInjectionTest
+    [Fact]
+    public async Task LogEntryIsRecorded()
     {
-        [Fact]
-        public async Task LogEntryIsRecorded()
+        using (var server = new FunctionTestServer<SimpleDependencyInjection.Function>())
         {
-            using (var server = new FunctionTestServer<SimpleDependencyInjection.Function>())
-            {
-                // We shouldn't have any log entries (for the function's category) at the start of the test.
-                Assert.Empty(server.GetFunctionLogEntries());
-                // Note: server.GetFunctionLogEntries() is equivalent to
-                // server.GetLogEntries(typeof(SimpleDependencyInjection.Function)
+            // We shouldn't have any log entries (for the function's category) at the start of the test.
+            Assert.Empty(server.GetFunctionLogEntries());
+            // Note: server.GetFunctionLogEntries() is equivalent to
+            // server.GetLogEntries(typeof(SimpleDependencyInjection.Function)
 
-                var client = server.CreateClient();
+            var client = server.CreateClient();
 
-                // Make a request to the function.
-                var response = await client.GetAsync("sample-path");
-                response.EnsureSuccessStatusCode();
+            // Make a request to the function.
+            var response = await client.GetAsync("sample-path");
+            response.EnsureSuccessStatusCode();
 
-                // Check that we got the expected log entry.
-                var logs = server.GetFunctionLogEntries();
-                var entry = Assert.Single(logs);
+            // Check that we got the expected log entry.
+            var logs = server.GetFunctionLogEntries();
+            var entry = Assert.Single(logs);
 
-                Assert.Equal(LogLevel.Information, entry.Level);
-                Assert.Equal("Function called with path /sample-path", entry.Message);
-            }
+            Assert.Equal(LogLevel.Information, entry.Level);
+            Assert.Equal("Function called with path /sample-path", entry.Message);
         }
     }
 }
