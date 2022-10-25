@@ -19,34 +19,33 @@ using Microsoft.Extensions.Hosting;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Google.Cloud.Functions.Examples.IntegrationTests
+namespace Google.Cloud.Functions.Examples.IntegrationTests;
+
+/// <summary>
+/// Simple example of an integration test against a Cloud Function, without using
+/// the Google.Cloud.Functions.Testing package.
+/// </summary>
+public class SimpleHttpFunctionTest
 {
-    /// <summary>
-    /// Simple example of an integration test against a Cloud Function, without using
-    /// the Google.Cloud.Functions.Testing package.
-    /// </summary>
-    public class SimpleHttpFunctionTest
+    [Fact]
+    public async Task FunctionWritesHelloFunctionsFramework()
     {
-        [Fact]
-        public async Task FunctionWritesHelloFunctionsFramework()
-        {
-            // Various other extension methods are available to configure logging,
-            // startups, application configurers, along with reading configuration
-            // from the command line and environment variables - but those aren't
-            // required for this test.
-            var builder = Host.CreateDefaultBuilder()
-                .ConfigureWebHostDefaults(webHostBuilder => webHostBuilder
-                    .ConfigureServices(services => services.AddFunctionTarget<SimpleHttpFunction.Function>())
-                    .Configure((context, app) => app.UseFunctionsFramework(context))
-                    .UseTestServer());
-            using var server = await builder.StartAsync();
-            using var client = server.GetTestServer().CreateClient();
-                
-                // Make a request to the function, and test that the response looks how we expect it to.
-            using var response = await client.GetAsync("request-uri");
-            response.EnsureSuccessStatusCode();
-            var content = await response.Content.ReadAsStringAsync();
-            Assert.Equal("Hello, Functions Framework.", content);
-        }
+        // Various other extension methods are available to configure logging,
+        // startups, application configurers, along with reading configuration
+        // from the command line and environment variables - but those aren't
+        // required for this test.
+        var builder = Host.CreateDefaultBuilder()
+            .ConfigureWebHostDefaults(webHostBuilder => webHostBuilder
+                .ConfigureServices(services => services.AddFunctionTarget<SimpleHttpFunction.Function>())
+                .Configure((context, app) => app.UseFunctionsFramework(context))
+                .UseTestServer());
+        using var server = await builder.StartAsync();
+        using var client = server.GetTestServer().CreateClient();
+            
+            // Make a request to the function, and test that the response looks how we expect it to.
+        using var response = await client.GetAsync("request-uri");
+        response.EnsureSuccessStatusCode();
+        var content = await response.Content.ReadAsStringAsync();
+        Assert.Equal("Hello, Functions Framework.", content);
     }
 }

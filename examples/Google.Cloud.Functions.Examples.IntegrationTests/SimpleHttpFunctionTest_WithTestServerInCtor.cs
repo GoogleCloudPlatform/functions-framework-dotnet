@@ -17,36 +17,35 @@ using System;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Google.Cloud.Functions.Examples.IntegrationTests
+namespace Google.Cloud.Functions.Examples.IntegrationTests;
+
+/// <summary>
+/// Simple example of an integration test creating a <see cref="FunctionTestServer{TFunction}"/>
+/// in the constructor. This uses a different test server for each test, but makes the setup common
+/// across all tests.
+/// </summary>
+public class SimpleHttpFunctionTest_WithTestServerInCtor : IDisposable
 {
-    /// <summary>
-    /// Simple example of an integration test creating a <see cref="FunctionTestServer{TFunction}"/>
-    /// in the constructor. This uses a different test server for each test, but makes the setup common
-    /// across all tests.
-    /// </summary>
-    public class SimpleHttpFunctionTest_WithTestServerInCtor : IDisposable
+    // The function test server created in the constructor.
+    private readonly FunctionTestServer<SimpleHttpFunction.Function> _server;
+
+    public SimpleHttpFunctionTest_WithTestServerInCtor() =>
+        _server = new FunctionTestServer<SimpleHttpFunction.Function>();
+
+    // Dispose of the function test server, which in turn disposes of the underlying test server.
+    // xUnit calls this automatically when a test is complete.
+    public void Dispose() => _server.Dispose();
+
+    [Fact]
+    public async Task FunctionWritesHelloFunctionsFramework()
     {
-        // The function test server created in the constructor.
-        private readonly FunctionTestServer<SimpleHttpFunction.Function> _server;
+        var client = _server.CreateClient();
 
-        public SimpleHttpFunctionTest_WithTestServerInCtor() =>
-            _server = new FunctionTestServer<SimpleHttpFunction.Function>();
+        // Make a request to the function, and test that the response looks how we expect it to.
+        var response = await client.GetAsync("request-uri");
+        response.EnsureSuccessStatusCode();
+        var content = await response.Content.ReadAsStringAsync();
 
-        // Dispose of the function test server, which in turn disposes of the underlying test server.
-        // xUnit calls this automatically when a test is complete.
-        public void Dispose() => _server.Dispose();
-
-        [Fact]
-        public async Task FunctionWritesHelloFunctionsFramework()
-        {
-            var client = _server.CreateClient();
-
-            // Make a request to the function, and test that the response looks how we expect it to.
-            var response = await client.GetAsync("request-uri");
-            response.EnsureSuccessStatusCode();
-            var content = await response.Content.ReadAsStringAsync();
-
-            Assert.Equal("Hello, Functions Framework.", content);
-        }
+        Assert.Equal("Hello, Functions Framework.", content);
     }
 }

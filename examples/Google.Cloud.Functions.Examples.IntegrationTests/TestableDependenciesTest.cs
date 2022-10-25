@@ -19,37 +19,36 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Google.Cloud.Functions.Examples.IntegrationTests
+namespace Google.Cloud.Functions.Examples.IntegrationTests;
+
+/// <summary>
+/// By default, the test server will use the same Functions Startup classes
+/// as normal. Applying the FunctionsStartup attribute to the test class (and/or the assembly)
+/// signals to FunctionTestBase which startups should be used to inject test dependencies
+/// instead of the production ones. An alternative is to declare a parameterless constructor
+/// that creates a FunctionTestServer to pass into the base class constructor.
+/// </summary>
+[FunctionsStartup(typeof(TestStartup))]
+public class TestableDependenciesTest : FunctionTestBase<TestableDependencies.Function>
 {
-    /// <summary>
-    /// By default, the test server will use the same Functions Startup classes
-    /// as normal. Applying the FunctionsStartup attribute to the test class (and/or the assembly)
-    /// signals to FunctionTestBase which startups should be used to inject test dependencies
-    /// instead of the production ones. An alternative is to declare a parameterless constructor
-    /// that creates a FunctionTestServer to pass into the base class constructor.
-    /// </summary>
-    [FunctionsStartup(typeof(TestStartup))]
-    public class TestableDependenciesTest : FunctionTestBase<TestableDependencies.Function>
+    [Fact]
+    public async Task FunctionOutputDoesNotReferToProduction()
     {
-        [Fact]
-        public async Task FunctionOutputDoesNotReferToProduction()
-        {
-            string text = await ExecuteHttpGetRequestAsync();
-            Assert.DoesNotContain("Production dependency", text);
-            Assert.Contains("Test dependency", text);
-        }
+        string text = await ExecuteHttpGetRequestAsync();
+        Assert.DoesNotContain("Production dependency", text);
+        Assert.Contains("Test dependency", text);
+    }
 
-        // Functions Startup class specified in the FunctionTestStartup attribute on the test class,
-        // so that test-only dependencies can be used.
-        private class TestStartup : FunctionsStartup
-        {
-            public override void ConfigureServices(WebHostBuilderContext context, IServiceCollection services) =>
-                services.AddSingleton<TestableDependencies.IDependency, TestDependency>();
-        }
+    // Functions Startup class specified in the FunctionTestStartup attribute on the test class,
+    // so that test-only dependencies can be used.
+    private class TestStartup : FunctionsStartup
+    {
+        public override void ConfigureServices(WebHostBuilderContext context, IServiceCollection services) =>
+            services.AddSingleton<TestableDependencies.IDependency, TestDependency>();
+    }
 
-        public class TestDependency : TestableDependencies.IDependency
-        {
-            public string Name => "Test dependency";
-        }
+    public class TestDependency : TestableDependencies.IDependency
+    {
+        public string Name => "Test dependency";
     }
 }

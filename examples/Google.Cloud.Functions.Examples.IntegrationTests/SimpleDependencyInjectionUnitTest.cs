@@ -17,36 +17,35 @@ using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Google.Cloud.Functions.Examples.IntegrationTests
+namespace Google.Cloud.Functions.Examples.IntegrationTests;
+
+/// <summary>
+/// Example of a unit test using a MemoryLogger. Often integration tests are
+/// the simplest form of testing for functions, but MemoryLogger allows log entries
+/// to be tested in unit tests by implementing ILogger.
+/// </summary>
+public class SimpleDependencyInjectionUnitTest
 {
-    /// <summary>
-    /// Example of a unit test using a MemoryLogger. Often integration tests are
-    /// the simplest form of testing for functions, but MemoryLogger allows log entries
-    /// to be tested in unit tests by implementing ILogger.
-    /// </summary>
-    public class SimpleDependencyInjectionUnitTest
+    [Fact]
+    public async Task LogEntryIsRecorded()
     {
-        [Fact]
-        public async Task LogEntryIsRecorded()
+        var logger = new MemoryLogger<SimpleDependencyInjection.Function>();
+        var function = new SimpleDependencyInjection.Function(logger);
+
+        // Constructing the function does not create any log entries.
+        Assert.Empty(logger.ListLogEntries());
+
+        // Make a request to the function.
+        var context = new DefaultHttpContext
         {
-            var logger = new MemoryLogger<SimpleDependencyInjection.Function>();
-            var function = new SimpleDependencyInjection.Function(logger);
+            Request = { Path = "/sample-path" }
+        };
+        await function.HandleAsync(context);
 
-            // Constructing the function does not create any log entries.
-            Assert.Empty(logger.ListLogEntries());
+        var logs = logger.ListLogEntries();
+        var entry = Assert.Single(logs);
 
-            // Make a request to the function.
-            var context = new DefaultHttpContext
-            {
-                Request = { Path = "/sample-path" }
-            };
-            await function.HandleAsync(context);
-
-            var logs = logger.ListLogEntries();
-            var entry = Assert.Single(logs);
-
-            Assert.Equal(LogLevel.Information, entry.Level);
-            Assert.Equal("Function called with path /sample-path", entry.Message);
-        }
+        Assert.Equal(LogLevel.Information, entry.Level);
+        Assert.Equal("Function called with path /sample-path", entry.Message);
     }
 }

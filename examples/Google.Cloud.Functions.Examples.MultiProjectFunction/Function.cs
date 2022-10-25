@@ -17,22 +17,21 @@ using Google.Cloud.Functions.Framework;
 using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
 
-namespace Google.Cloud.Functions.Examples.MultiProjectFunction
+namespace Google.Cloud.Functions.Examples.MultiProjectFunction;
+
+/// <summary>
+/// Function demonstrating how to use a project dependency from the function
+/// project to a class library. When deploying to Google Cloud Functions, the
+/// class library code still needs to be uploaded as part of the build, and the
+/// GOOGLE_BUILDABLE build-time environment variable needs to be set to the
+/// path to the function project.
+/// </summary>
+public class Function : IHttpFunction
 {
-    /// <summary>
-    /// Function demonstrating how to use a project dependency from the function
-    /// project to a class library. When deploying to Google Cloud Functions, the
-    /// class library code still needs to be uploaded as part of the build, and the
-    /// GOOGLE_BUILDABLE build-time environment variable needs to be set to the
-    /// path to the function project.
-    /// </summary>
-    public class Function : IHttpFunction
+    public async Task HandleAsync(HttpContext context)
     {
-        public async Task HandleAsync(HttpContext context)
-        {
-            var logic = new BusinessLogic();
-            var result = logic.PerformGeneralBusinessLogic();
-            await context.Response.WriteAsync($"Result: {result}");
-        }
+        var logic = new BusinessLogic();
+        var result = logic.PerformGeneralBusinessLogic();
+        await context.Response.WriteAsync($"Result: {result}");
     }
 }

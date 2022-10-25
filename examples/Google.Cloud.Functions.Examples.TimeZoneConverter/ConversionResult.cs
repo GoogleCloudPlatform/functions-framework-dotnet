@@ -14,55 +14,54 @@
 
 using System.Text.Json.Serialization;
 
-namespace Google.Cloud.Functions.Examples.TimeZoneConverter
+namespace Google.Cloud.Functions.Examples.TimeZoneConverter;
+
+// Note: Input and Result could be LocalDateTime values, if we use NodaTime.Serialization.SystemTextJson.
+// But we've already got a LocalDateTimePattern available, so it's simplest just to format with that.
+
+/// <summary>
+/// The result of a zone-to-zone conversion.
+/// </summary>
+public sealed class ConversionResult
 {
-    // Note: Input and Result could be LocalDateTime values, if we use NodaTime.Serialization.SystemTextJson.
-    // But we've already got a LocalDateTimePattern available, so it's simplest just to format with that.
+    /// <summary>
+    /// The version of the data used, e.g. "TZDB: 2019b (mapping: 14742)".
+    /// </summary>
+    [JsonPropertyName("data_version")]
+    public string DataVersion { get; }
 
     /// <summary>
-    /// The result of a zone-to-zone conversion.
+    /// The local date/time used as input and interpreted in <see cref="FromZone"/>.
     /// </summary>
-    public sealed class ConversionResult
-    {
-        /// <summary>
-        /// The version of the data used, e.g. "TZDB: 2019b (mapping: 14742)".
-        /// </summary>
-        [JsonPropertyName("data_version")]
-        public string DataVersion { get; }
+    [JsonPropertyName("input")]
+    public string Input { get; }
 
-        /// <summary>
-        /// The local date/time used as input and interpreted in <see cref="FromZone"/>.
-        /// </summary>
-        [JsonPropertyName("input")]
-        public string Input { get; }
+    /// <summary>
+    /// The ID of the time zone to convert from.
+    /// </summary>
+    [JsonPropertyName("from_zone")]
+    public string FromZone { get; }
 
-        /// <summary>
-        /// The ID of the time zone to convert from.
-        /// </summary>
-        [JsonPropertyName("from_zone")]
-        public string FromZone { get; }
+    /// <summary>
+    /// The ID of the time zone to convert to.
+    /// </summary>
+    [JsonPropertyName("to_zone")]
+    public string ToZone { get; }
 
-        /// <summary>
-        /// The ID of the time zone to convert to.
-        /// </summary>
-        [JsonPropertyName("to_zone")]
-        public string ToZone { get; }
+    /// <summary>
+    /// The result date/time in <see cref="ToZone"/>.
+    /// </summary>
+    [JsonPropertyName("result")]
+    public string Result { get; }
 
-        /// <summary>
-        /// The result date/time in <see cref="ToZone"/>.
-        /// </summary>
-        [JsonPropertyName("result")]
-        public string Result { get; }
+    /// <summary>
+    /// The conversion type. While most local date/time values map 1:1 with instants in time,
+    /// daylight saving transitions and other offset changes mean that some local date/time values
+    /// are skipped entirely or occur twice.
+    /// </summary>
+    [JsonPropertyName("conversion_type")]
+    public ConversionType ConversionType { get; }
 
-        /// <summary>
-        /// The conversion type. While most local date/time values map 1:1 with instants in time,
-        /// daylight saving transitions and other offset changes mean that some local date/time values
-        /// are skipped entirely or occur twice.
-        /// </summary>
-        [JsonPropertyName("conversion_type")]
-        public ConversionType ConversionType { get; }
-
-        public ConversionResult(string dataVersion, string input, string fromZone, string toZone, string result, ConversionType conversionType) =>
-            (DataVersion, Input, FromZone, ToZone, Result, ConversionType) = (dataVersion, input, fromZone, toZone, result, conversionType);
-    }
+    public ConversionResult(string dataVersion, string input, string fromZone, string toZone, string result, ConversionType conversionType) =>
+        (DataVersion, Input, FromZone, ToZone, Result, ConversionType) = (dataVersion, input, fromZone, toZone, result, conversionType);
 }
