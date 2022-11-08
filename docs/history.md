@@ -1,5 +1,23 @@
 # Version History
 
+## [2.0.0-beta01](https://github.com/GoogleCloudPlatform/functions-framework-dotnet/compare/Google.Cloud.Functions.Framework-1.1.0...Google.Cloud.Functions.Framework-2.0.0-beta01) (2022-11-08)
+
+
+### Features
+
+* Update all projects to target .NET 6.0 ([26cff19](https://github.com/GoogleCloudPlatform/functions-framework-dotnet/commit/26cff19ae4ccb8595ae4cbdf69fc87631f6de974))
+* Use file-scoped namespaces in templates ([4bbce05](https://github.com/GoogleCloudPlatform/functions-framework-dotnet/commit/4bbce0519ae75dbfa14b9f04fb876f0f4faeb2ce))
+
+
+### Documentation
+
+* Update documentation to use dotnet6 runtime ([2a53c38](https://github.com/GoogleCloudPlatform/functions-framework-dotnet/commit/2a53c38fb86ac51e80d3c2bfec414ab3944fc9ca))
+
+
+### Miscellaneous chores
+
+* Update cryptography in pip requirements ([23367bb](https://github.com/GoogleCloudPlatform/functions-framework-dotnet/commit/23367bb94046f212bdbd813dd6e7b0ae79bf3da6))
+
 ## [1.1.0](https://github.com/GoogleCloudPlatform/functions-framework-dotnet/compare/Google.Cloud.Functions.Framework-1.0.0...Google.Cloud.Functions.Framework-1.1.0) (2022-10-18)
 
 
