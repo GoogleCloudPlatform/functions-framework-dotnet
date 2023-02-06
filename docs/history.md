@@ -1,5 +1,9 @@
 # Version History
 
+## [2.0.0](https://github.com/GoogleCloudPlatform/functions-framework-dotnet/compare/Google.Cloud.Functions.Framework-2.0.0-beta01...Google.Cloud.Functions.Framework-2.0.0) (2023-02-06)
+
+GA release targeting .NET 6.0.
+
 ## [2.0.0-beta01](https://github.com/GoogleCloudPlatform/functions-framework-dotnet/compare/Google.Cloud.Functions.Framework-1.1.0...Google.Cloud.Functions.Framework-2.0.0-beta01) (2022-11-08)
 
 
