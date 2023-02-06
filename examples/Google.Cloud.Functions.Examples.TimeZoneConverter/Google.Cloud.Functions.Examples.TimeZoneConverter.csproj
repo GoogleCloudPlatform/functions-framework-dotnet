@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Google.Cloud.Functions.Hosting" Version="2.0.0-beta01" />
+    <PackageReference Include="Google.Cloud.Functions.Hosting" Version="2.0.0" />
     <PackageReference Include="NodaTime" Version="3.1.6" />
     <None Include="appsettings*.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
