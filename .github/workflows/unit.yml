@@ -4,6 +4,9 @@ on:
     branches:
     - main
   pull_request:
+permissions:
+  contents: read
+
 jobs:
   test:
     strategy:
@@ -18,13 +21,18 @@ jobs:
       DOTNET_CLI_TELEMETRY_OPTOUT: true
 
     steps:
+    - name: Harden Runner
+      uses: step-security/harden-runner@18bf8ad2ca49c14cbb28b91346d626ccfb00c518 # v2.1.0
+      with:
+        egress-policy: audit # TODO: change to 'egress-policy: block' after couple of runs
+
     - name: Checkout repo
-      uses: actions/checkout@v2
+      uses: actions/checkout@dc323e67f16fb5f7663d20ff7941f27f5809e9b6 # v2.6.0
       with:
         submodules: true
 
     - name: Setup .NET
-      uses: actions/setup-dotnet@v3
+      uses: actions/setup-dotnet@607fce577a46308457984d59e4954e075820f10a # v3.0.3
       with:
         dotnet-version: ${{ matrix.dotnet }}
 
