@@ -27,6 +27,8 @@ using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Threading.Tasks;
+using System.Text.Json;
+using System.IO;
 
 namespace Google.Cloud.Functions.Hosting
 {
@@ -171,6 +173,22 @@ namespace Google.Cloud.Functions.Hosting
                     .AddSingleton<CloudEventFormatter>(new JsonEventFormatter())
                     .AddScoped(typeof(ICloudEventFunction), functionType);
             }
+            else if (GetGenericInterfaceImplementationTypeArguments(functionType, typeof(ITypedFunction<,>)) is Type[] signatureTypes)
+            {
+                Type requestType = signatureTypes[0];
+                Type responseType = signatureTypes[1];
+
+                services
+                    .AddScoped(typeof(IHttpFunction), typeof(TypedFunctionAdapter<,>).MakeGenericType(signatureTypes))
+                    .AddScoped(typeof(ITypedFunction<,>).MakeGenericType(signatureTypes), functionType);
+
+                // Provide JSON reader/writer implementations using System.Text.Json by default.
+                // If the user provides a reader (or writer) in the startup class, that will take priority.
+                Type jsonReaderType = typeof(JsonHttpRequestReader<>).MakeGenericType(requestType);
+                Type jsonWriterType = typeof(JsonHttpResponseWriter<>).MakeGenericType(responseType);
+                services.AddSingleton(typeof(IHttpRequestReader<>).MakeGenericType(requestType), jsonReaderType);
+                services.AddSingleton(typeof(IHttpResponseWriter<>).MakeGenericType(responseType), jsonWriterType);
+            }
             else if (GetGenericInterfaceImplementationTypeArgument(functionType, typeof(ICloudEventFunction<>)) is Type payloadType)
             {
                 services
@@ -245,7 +263,8 @@ namespace Google.Cloud.Functions.Hosting
                 t.IsClass && !t.IsAbstract && !t.IsGenericType &&
                 (typeof(IHttpFunction).IsAssignableFrom(t) ||
                 typeof(ICloudEventFunction).IsAssignableFrom(t) ||
-                GetGenericInterfaceImplementationTypeArgument(t, typeof(ICloudEventFunction<>)) is object);
+                GetGenericInterfaceImplementationTypeArgument(t, typeof(ICloudEventFunction<>)) is object) ||
+                GetGenericInterfaceImplementationTypeArguments(t, typeof(ITypedFunction<,>)) is object;
         }
 
         /// <summary>
@@ -266,12 +285,42 @@ namespace Google.Cloud.Functions.Hosting
             return matches.Count() == 1 ? matches.Single().GetGenericArguments()[0] : null;
         }
 
+        private static Type[]? GetGenericInterfaceImplementationTypeArguments(Type target, Type genericInterface)
+        {
+            var matches = target.GetInterfaces()
+                .Where(iface => iface.IsGenericType && iface.GetGenericTypeDefinition() == genericInterface);
+            // We only want to return an unambiguous match. Note that this will evaluate the list twice in the "got one" case,
+            // but that's okay.
+            return matches.Count() == 1 ? matches.Single().GetGenericArguments() : null;
+        }
+
         internal sealed class FunctionTypeProvider
         {
             internal Type FunctionType { get; }
 
             internal FunctionTypeProvider(Type functionType) =>
                 FunctionType = functionType;
+        }
+
+        /// <summary>
+        /// Implementation of <see cref="IHttpRequestReader{TRequest}"/> using System.Text.Json.
+        /// </summary>
+        internal sealed class JsonHttpRequestReader<TRequest> : IHttpRequestReader<TRequest>
+        {
+            public async Task<TRequest> ReadRequestAsync(HttpRequest httpRequest)
+            {
+                var request = await JsonSerializer.DeserializeAsync<TRequest>(httpRequest.Body);
+                return request ?? throw new InvalidDataException("Deserialization of HTTP request resulted in null.");
+            }
+        }
+
+        /// <summary>
+        /// Implementation of <see cref="JsonHttpResponseWriter{TResponse}"/> using System.Text.Json.
+        /// </summary>
+        internal sealed class JsonHttpResponseWriter<TResponse> : IHttpResponseWriter<TResponse>
+        {
+            public Task WriteResponseAsync(HttpResponse httpResponse, TResponse functionResponse) =>
+                JsonSerializer.SerializeAsync(httpResponse.Body, functionResponse);
         }
     }
 }
