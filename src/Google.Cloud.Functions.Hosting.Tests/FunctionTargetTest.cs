@@ -20,6 +20,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.IO;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
@@ -114,6 +115,95 @@ namespace Google.Cloud.Functions.Hosting.Tests
             await function.HandleAsync(context);
             Assert.Equal(eventId, StorageCloudEventFunction.LastEventId);
             Assert.Equal("testdata", StorageCloudEventFunction.LastData.Name);
+        }
+
+        [Fact]
+        public async Task TargetFunction_TypedFunction()
+        {
+            var payload = "{\"payload\":\"Hello world\"}";
+
+            var services = new ServiceCollection();
+            services.AddLogging();
+            HostingInternals.AddServicesForFunctionTarget(services, typeof(TypedFunction));
+            var provider = services.BuildServiceProvider();
+            var function = provider.GetRequiredService<IHttpFunction>();
+
+            Assert.Equal(typeof(TypedFunction), provider.GetRequiredService<HostingInternals.FunctionTypeProvider>().FunctionType);
+
+            var context = new DefaultHttpContext
+            {
+                Request =
+                {
+                    ContentType = "application/json",
+                    Body = new MemoryStream(Encoding.UTF8.GetBytes(payload)),
+                    Headers = {}
+                },
+                Response =
+                {
+                    Body = new MemoryStream(),
+                }
+            };
+
+            await function.HandleAsync(context);
+
+            context.Response.Body.Position = 0;
+            var expectedResponse = "{\"payload\":\"Echo: Hello world\"}";
+            var actualResponse = new StreamReader(context.Response.Body).ReadToEnd();
+            Assert.Equal(expectedResponse, actualResponse);
+        }
+
+        [Fact]
+        public async Task TargetFunction_TypedFunction_NullRequest()
+        {
+            var payload = "null";
+
+            var services = new ServiceCollection();
+            services.AddLogging();
+            HostingInternals.AddServicesForFunctionTarget(services, typeof(TypedFunction));
+            var provider = services.BuildServiceProvider();
+            var function = provider.GetRequiredService<IHttpFunction>();
+
+            Assert.Equal(typeof(TypedFunction), provider.GetRequiredService<HostingInternals.FunctionTypeProvider>().FunctionType);
+
+            var context = new DefaultHttpContext
+            {
+                Request =
+                {
+                    ContentType = "application/json",
+                    Body = new MemoryStream(Encoding.UTF8.GetBytes(payload)),
+                    Headers = {}
+                }
+            };
+
+            await function.HandleAsync(context);
+            Assert.Equal(400, context.Response.StatusCode);
+        }
+
+        [Fact]
+        public async Task TargetFunction_TypedFunctionParseError()
+        {
+            var payload = "Not valid JSON";
+
+            var services = new ServiceCollection();
+            services.AddLogging();
+            HostingInternals.AddServicesForFunctionTarget(services, typeof(TypedFunction));
+            var provider = services.BuildServiceProvider();
+            var function = provider.GetRequiredService<IHttpFunction>();
+
+            Assert.Equal(typeof(TypedFunction), provider.GetRequiredService<HostingInternals.FunctionTypeProvider>().FunctionType);
+
+            var context = new DefaultHttpContext
+            {
+                Request =
+                {
+                    ContentType = "application/json",
+                    Body = new MemoryStream(Encoding.UTF8.GetBytes(payload)),
+                    Headers = {}
+                }
+            };
+
+            await function.HandleAsync(context);
+            Assert.Equal(400, context.Response.StatusCode);
         }
 
         [Fact]
@@ -222,6 +312,24 @@ namespace Google.Cloud.Functions.Hosting.Tests
                 => Task.CompletedTask;
             public Task HandleAsync(CloudEvent cloudEvent, object data, CancellationToken cancellationToken)
                 => Task.CompletedTask;
+        }
+
+        public class EchoRequest
+        {
+            [JsonPropertyName("payload")]
+            public string Payload { get; set; }
+        }
+
+        public class EchoResponse
+        {
+            [JsonPropertyName("payload")]
+            public string Payload { get; set; }
+        }
+
+        public class TypedFunction : ITypedFunction<EchoRequest, EchoResponse>
+        {
+            public Task<EchoResponse> HandleAsync(EchoRequest request, CancellationToken cancellationToken) =>
+                Task.FromResult(new EchoResponse { Payload = $"Echo: {request.Payload}" });
         }
     }
 }
