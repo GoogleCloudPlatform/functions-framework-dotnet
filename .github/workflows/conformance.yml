@@ -49,7 +49,7 @@ jobs:
       run: ./run-conformance-tests.sh
 
     - name: Upload logs on failure
-      uses: actions/upload-artifact@82c141cc518b40d92cc801eee768e7aafc9c2fa2 # v2.3.1
+      uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3.1.2
       if: failure()
       with:
         name: conformance-logs-${{ matrix.os }}-${{ matrix.dotnet }}
