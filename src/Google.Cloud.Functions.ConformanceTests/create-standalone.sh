@@ -32,6 +32,9 @@ rm -rf $TMP_TESTS/bin
 rm -rf $TMP_TESTS/obj
 mkdir $TMP_TESTS/nupkg
 
+# For these conformance tests, use whatever .NET SDK is already present.
+rm $REPO_ROOT/global.json
+
 dotnet pack $REPO_ROOT/src \
   -o $TMP_TESTS/nupkg \
   -p:Version=999.0.0
