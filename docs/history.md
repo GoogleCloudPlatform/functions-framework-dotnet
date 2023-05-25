@@ -1,5 +1,12 @@
 # Version History
 
+## [2.1.0](https://github.com/GoogleCloudPlatform/functions-framework-dotnet/compare/Google.Cloud.Functions.Framework-2.0.0...Google.Cloud.Functions.Framework-2.1.0) (2023-05-23)
+
+
+### Features
+
+* Implement strongly typed function signatures for dotnet ([bb812fb](https://github.com/GoogleCloudPlatform/functions-framework-dotnet/commit/bb812fb2a25d9727f616e10839b9e0304e2d5669))
+
 ## [2.0.0](https://github.com/GoogleCloudPlatform/functions-framework-dotnet/compare/Google.Cloud.Functions.Framework-2.0.0-beta01...Google.Cloud.Functions.Framework-2.0.0) (2023-02-06)
 
 GA release targeting .NET 6.0.
