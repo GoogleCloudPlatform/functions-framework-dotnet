@@ -3,6 +3,7 @@
 [![.NET Unit CI](https://github.com/GoogleCloudPlatform/functions-framework-dotnet/actions/workflows/unit.yml/badge.svg)](https://github.com/GoogleCloudPlatform/functions-framework-dotnet/actions/workflows/unit.yml)
 [![.NET Lint CI](https://github.com/GoogleCloudPlatform/functions-framework-dotnet/actions/workflows/lint.yml/badge.svg)](https://github.com/GoogleCloudPlatform/functions-framework-dotnet/actions/workflows/lint.yml)
 [![.NET Conformance CI](https://github.com/GoogleCloudPlatform/functions-framework-dotnet/actions/workflows/conformance.yml/badge.svg)](https://github.com/GoogleCloudPlatform/functions-framework-dotnet/actions/workflows/conformance.yml)
+![Security Scorecard](https://api.securityscorecards.dev/projects/github.com/GoogleCloudPlatform/functions-framework-dotnet/badge)
 
 [![Google.Cloud.Functions.Framework](https://img.shields.io/nuget/vpre/Google.Cloud.Functions.Framework?label=Google.Cloud.Functions.Framework)](https://nuget.org/packages/Google.Cloud.Functions.Framework)
 [![Google.Cloud.Functions.Hosting](https://img.shields.io/nuget/vpre/Google.Cloud.Functions.Hosting?label=Google.Cloud.Functions.Hosting)](https://nuget.org/packages/Google.Cloud.Functions.Hosting)
