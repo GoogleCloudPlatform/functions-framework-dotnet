@@ -11,7 +11,7 @@ permissions: read-all
 
 jobs:
   dotnet6:
-    uses: GoogleCloudPlatform/functions-framework-conformance/.github/workflows/buildpack-integration-test.yml@v1.8.0
+    uses: GoogleCloudPlatform/functions-framework-conformance/.github/workflows/buildpack-integration-test.yml@v1.8.1
     with:
       # This builds a local copy of the Functions Framework, and creates
       # a standalone copy of the conformance test function in tmp
