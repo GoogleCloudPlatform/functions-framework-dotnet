@@ -5,6 +5,10 @@ on:
     branches:
       - main
   workflow_dispatch:
+  pull_request:
+  # Runs every day on 12:00 AM PST
+  schedule:
+    - cron: "0 0 * * *"
 
 # Declare default permissions as read only.
 permissions: read-all
@@ -22,6 +26,7 @@ jobs:
       cloudevent-builder-source: 'tmp/Google.Cloud.Functions.ConformanceTests'
       cloudevent-builder-target: 'UntypedCloudEventFunction'
       builder-runtime: 'dotnet'
+      builder-runtime-version: '6'
       # Ask the test runner to wait for 5 seconds for the server to start
       # before sending it requests. It should come up much quicker
       # than that, but 5 seconds will rule out "slow startup" as
