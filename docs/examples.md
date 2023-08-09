@@ -297,14 +297,13 @@ gcloud functions deploy advanced-dependency-injection \
 
 ## CustomEventDataFunction
 
-
 The [CustomEventDataFunction](../examples/Google.Cloud.Functions.Examples.CustomEventDataFunction)
 example demonstrates how a CloudEvent function can specify a
 CloudEventFormatter to use when deserializing the CloudEvent. If the
 target data type for the CloudEvent function is annotated with the
 `CloudEventFormatterAttribute` type, the formatter specified by that
 attribute is used automatically. Otherwise, a `CloudEventFormatter`
-must be added as a dependency via a Functions Startup class. 
+must be added as a dependency via a Functions Startup class.
 
 The same approach can be used for untyped CloudEvent functions.
 Those use
@@ -478,7 +477,7 @@ Note that the ability to set build environment variables is currently in beta.
 
 ## LocalNuGetPackageFunction and LocalNuGetPackageCode
 
-The example above describes how to deploy a function with local *project* dependencies.
+The example above describes how to deploy a function with local _project_ dependencies.
 However, often companies run internal NuGet servers to host internal code, and dependent code
 is expected to use package references.
 
@@ -512,6 +511,25 @@ gcloud functions deploy local-nuget \
   --trigger-http \
   --allow-unauthenticated \
   --entry-point Google.Cloud.Functions.Examples.LocalNuGetPackageFunction.Function
+```
+
+## Typed GoogleChatBot
+
+The [GoogleChatbot](../examples/Google.Cloud.Functions.Examples.GoogleChatBot)
+sample implements the [Google Chat App
+API](https://developers.google.com/chat/how-tos/apps-develop) to create a simple
+bot that replies to messages with a copy of your Google Chat profile image. See
+[google chat quickstart](https://developers.google.com/chat/quickstart/gcf-app)
+for instructions on connecting a Cloud Function to Google Chat.
+
+Sample deployment:
+
+```sh
+gcloud functions deploy googlechatbot \
+  --runtime dotnet6 \
+  --trigger-http \
+  --allow-unauthenticated \
+  --entry-point=Google.Cloud.Functions.Examples.GoogleChatBot.TypedFunction
 ```
 
 ## Integration Tests
