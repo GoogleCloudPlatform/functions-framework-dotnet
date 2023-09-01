@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "isRoot": true,
+  "tools": {
+    "Google.Cloud.Tools.ReleaseProgressReporter": {
+      "version": "0.3.0",
+      "commands": [
+        "release-progress-reporter"
+      ]
+    }
+  }
+}
