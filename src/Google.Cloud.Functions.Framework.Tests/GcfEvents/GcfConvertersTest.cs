@@ -48,7 +48,7 @@ namespace Google.Cloud.Functions.Framework.Tests.GcfEvents
         [InlineData("firebase-auth2.json", "google.firebase.auth.user.v1.deleted", "//firebaseauth.googleapis.com/projects/my-project-id", "users/UUpby3s4spZre6kHsgVSPetzQ8l2")]
         [InlineData("firebase-remote-config.json", "google.firebase.remoteconfig.remoteConfig.v1.updated", "//firebaseremoteconfig.googleapis.com/projects/sample-project", null)]
         [InlineData("firebase-analytics.json", "google.firebase.analytics.log.v1.written", "//firebaseanalytics.googleapis.com/projects/my-project-id/apps/com.example.exampleapp", "events/session_start")]
-        public async Task ConvertGcfEvent_TypeSourceSubject(string resourceName, string expectedType, string expectedSource, string expectedSubject)
+        public async Task ConvertGcfEvent_TypeSourceSubject(string resourceName, string expectedType, string expectedSource, string? expectedSubject)
         {
             var cloudEvent = await ConvertResource(resourceName);
             Assert.Equal(expectedType, cloudEvent.Type);
