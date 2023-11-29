@@ -47,6 +47,7 @@ then
   cd ./tmp/release/nupkg
   for pkg in *.nupkg
   do
+    dotnet generate-sbom $pkg
     dotnet nuget push -s https://api.nuget.org/v3/index.json -k $NUGET_API_KEY $pkg
   done
   cd ../../..
