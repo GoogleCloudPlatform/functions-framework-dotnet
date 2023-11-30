@@ -173,7 +173,7 @@ performed by overriding the `ConfigureAppConfiguration` method in a Functions St
 public virtual void ConfigureAppConfiguration(WebHostBuilderContext context, IConfigurationBuilder configuration)
 ```
 
-See [CustomConfiguration](../examples/Google.Cloud.Functions.Examplles.CustomConfiguration/Function.cs)
+See [CustomConfiguration](../examples/Google.Cloud.Functions.Examples.CustomConfiguration/Function.cs)
 for an example that installs the [Steeltoe](https://steeltoe.io/)
 random value provider to the available configuration sources.
 
