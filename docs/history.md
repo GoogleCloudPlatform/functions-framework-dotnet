@@ -1,5 +1,17 @@
 # Version History
 
+## [2.1.1](https://github.com/GoogleCloudPlatform/functions-framework-dotnet/compare/Google.Cloud.Functions.Framework-2.1.0...Google.Cloud.Functions.Framework-2.1.1) (2024-04-06)
+
+
+### Bug Fixes
+
+* **readme:** min dotnet version ([ed235ac](https://github.com/GoogleCloudPlatform/functions-framework-dotnet/commit/ed235ac72a4a781dba026bbf0e3f242609e30afe))
+
+
+### Documentation
+
+* Fix link in customization.md ([6f191c7](https://github.com/GoogleCloudPlatform/functions-framework-dotnet/commit/6f191c7704db5ae8673c180913b9537c3b9b024a))
+
 ## [2.1.0](https://github.com/GoogleCloudPlatform/functions-framework-dotnet/compare/Google.Cloud.Functions.Framework-2.0.0...Google.Cloud.Functions.Framework-2.1.0) (2023-05-23)
 
 
