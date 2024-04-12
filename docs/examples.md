@@ -474,7 +474,9 @@ This uses the [.gcloudignore
 file in the examples directory](../examples/.gcloudignore) to avoid uploading already-built
 binaries.
 
-Note that the ability to set build environment variables is currently in beta.
+Note that the `GOOGLE_BUILDABLE` value is a path to the relevant
+project; in this case it just happens to be the name of the resulting
+assembly.
 
 ## LocalNuGetPackageFunction and LocalNuGetPackageCode
 
