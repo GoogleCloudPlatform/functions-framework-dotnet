@@ -63,7 +63,7 @@ triggered.
 HTTP functions are deployed using `--trigger-http`. For example:
 
 ```text
-gcloud functions deploy hello-functions --runtime dotnet3 --trigger-http --entry-point HelloFunctions.Function
+gcloud functions deploy hello-functions --runtime dotnet6 --trigger-http --entry-point HelloFunctions.Function
 ```
 
 On successful deployment, details of the deployed function will be
@@ -166,3 +166,39 @@ projects.
 See [the local NuGet packages example
 documentation](examples.md#localnugetpackagefunction-and-localnugetpackagecode)
 for more details.
+
+### Deploying a .NET 8 function
+
+You can build and deploy .NET 8 functions with the Functions
+Framework using the Cloud Functions "2nd gen" version.
+
+First, edit your project file to target the `net8.0` target
+framework moniker. Just change this line in your project file:
+
+```xml
+<TargetFramework>net6.0</TargetFramework>
+```
+
+to this:
+
+```xml
+<TargetFramework>net8.0</TargetFramework>
+```
+
+If you do this within Visual Studio, you may be prompted to reload
+the project. If you *aren't* prompted to do so, but see spurious
+build failures, simply unload the project and reload it - or restart
+Visual Studio.
+
+Next, when deploying, you need to specify the `dotnet8` runtime
+instead of `dotnet6`, and specify the `--gen2` command line option
+to deploy on Cloud Functions 2nd gen. So for example:
+
+```sh
+gcloud functions deploy dotnet8-test \
+  --gen2 \
+  --runtime dotnet8
+  --trigger-http
+  --allow-unauthenticated
+  --entry-point TestDotnet8.Function
+```
