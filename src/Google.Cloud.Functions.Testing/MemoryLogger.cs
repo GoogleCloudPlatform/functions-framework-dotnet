@@ -27,13 +27,23 @@ namespace Google.Cloud.Functions.Testing
     {
         private readonly string _categoryName;
         private readonly ConcurrentQueue<TestLogEntry> _logEntries = new ConcurrentQueue<TestLogEntry>();
-        private readonly IExternalScopeProvider _scopeProvider = new LoggerExternalScopeProvider();
+        private readonly IExternalScopeProvider _scopeProvider;
 
         /// <summary>
         /// Creates a logger with the given category name.
         /// </summary>
         /// <param name="categoryName">The category name of the logger.</param>
-        public MemoryLogger(string categoryName) => _categoryName = categoryName;
+        public MemoryLogger(string categoryName) : this(categoryName, null)
+        {
+        }
+
+        /// <summary>
+        /// Creates a logger with the given category name and scope provider
+        /// </summary>
+        /// <param name="categoryName">The category name of the logger.</param>
+        /// <param name="scopeProvider">The scope provider to use, or null to create a new provider.</param>
+        public MemoryLogger(string categoryName, IExternalScopeProvider? scopeProvider) =>
+            (_categoryName, _scopeProvider) = (categoryName, scopeProvider ?? new LoggerExternalScopeProvider());
 
         /// <summary>
         /// Clears the log entries in this logger.

@@ -20,14 +20,18 @@ namespace Google.Cloud.Functions.Hosting.Logging
     /// <summary>
     /// Simple logger provider that just calls a factory method each time it's asked for logger.
     /// </summary>
-    internal class FactoryLoggerProvider : ILoggerProvider
+    internal class FactoryLoggerProvider : ILoggerProvider, ISupportExternalScope
     {
-        private readonly Func<string, ILogger> _factory;
+        private readonly Func<string, IExternalScopeProvider?, ILogger> _factory;
+        private IExternalScopeProvider? _externalScopeProvider;
 
-        internal FactoryLoggerProvider(Func<string, ILogger> factory) =>
+        void ISupportExternalScope.SetScopeProvider(IExternalScopeProvider externalScopeProvider) =>
+            _externalScopeProvider = externalScopeProvider;
+
+        internal FactoryLoggerProvider(Func<string, IExternalScopeProvider?, ILogger> factory) =>
             _factory = factory;
 
-        public ILogger CreateLogger(string categoryName) => _factory(categoryName);
+        public ILogger CreateLogger(string categoryName) => _factory(categoryName, _externalScopeProvider);
 
         public void Dispose()
         {

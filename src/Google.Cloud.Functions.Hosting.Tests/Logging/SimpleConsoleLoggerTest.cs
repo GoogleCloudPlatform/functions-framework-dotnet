@@ -116,7 +116,7 @@ namespace Google.Cloud.Functions.Hosting.Logging.Tests
         private static List<string> GetLogLines(string category, Action<ILogger> action)
         {
             var builder = new StringBuilder();
-            ILogger logger = new SimpleConsoleLogger(category, new StringWriter(builder));
+            ILogger logger = new SimpleConsoleLogger(category, scopeProvider: null, new StringWriter(builder));
             action(logger);
             var reader = new StringReader(builder.ToString());
             List<string> ret = new List<string>();

@@ -36,8 +36,8 @@ namespace Microsoft.Extensions.Logging
         {
             var options = FunctionsFrameworkOptions.FromConfiguration(context.Configuration);
             ILoggerProvider provider = options.JsonLogging
-                ? new FactoryLoggerProvider(category => new JsonConsoleLogger(category, System.Console.Out))
-                : new FactoryLoggerProvider(category => new SimpleConsoleLogger(category, System.Console.Out));
+                ? new FactoryLoggerProvider((category, scopeProvider) => new JsonConsoleLogger(category, scopeProvider, System.Console.Out))
+                : new FactoryLoggerProvider((category, scopeProvider) => new SimpleConsoleLogger(category, scopeProvider, System.Console.Out));
             builder.AddProvider(provider);
             return builder;
         }

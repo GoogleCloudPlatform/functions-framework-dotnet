@@ -94,7 +94,7 @@ namespace Google.Cloud.Functions.Hosting.Logging.Tests
         private static JObject GetLogEntry(string category, Action<ILogger> action)
         {
             var builder = new StringBuilder();
-            ILogger logger = new JsonConsoleLogger(category, new StringWriter(builder));
+            ILogger logger = new JsonConsoleLogger(category, scopeProvider: null, new StringWriter(builder));
             action(logger);
             return JObject.Parse(builder.ToString());
         }

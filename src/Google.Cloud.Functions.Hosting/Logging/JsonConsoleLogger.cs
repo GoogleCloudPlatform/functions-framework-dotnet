@@ -34,8 +34,8 @@ namespace Google.Cloud.Functions.Hosting.Logging
 
         private readonly TextWriter _console;
 
-        internal JsonConsoleLogger(string category, TextWriter console)
-            : base(category) => _console = console;
+        internal JsonConsoleLogger(string category, IExternalScopeProvider? scopeProvider, TextWriter console)
+            : base(category, scopeProvider) => _console = console;
 
         protected override void LogImpl<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, string formattedMessage)
         {
