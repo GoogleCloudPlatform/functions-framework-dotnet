@@ -1,5 +1,25 @@
 # Version History
 
+## [2.2.0](https://github.com/GoogleCloudPlatform/functions-framework-dotnet/compare/Google.Cloud.Functions.Framework-2.1.0...Google.Cloud.Functions.Framework-2.2.0) (2024-04-30)
+
+
+### Bug Fixes
+
+* Propagate framework scopes ([dedf36c](https://github.com/GoogleCloudPlatform/functions-framework-dotnet/commit/dedf36cd740276d73015146798ef149bf1f9a52e))
+* **readme:** min dotnet version ([ed235ac](https://github.com/GoogleCloudPlatform/functions-framework-dotnet/commit/ed235ac72a4a781dba026bbf0e3f242609e30afe))
+
+
+### Documentation
+
+* Clarify GOOGLE_BUILDABLE meaning ([8ccefd0](https://github.com/GoogleCloudPlatform/functions-framework-dotnet/commit/8ccefd06ed3123b740c1e1245280baaca33157f2))
+* Deployment instructions for .NET 8 ([dcbcfa0](https://github.com/GoogleCloudPlatform/functions-framework-dotnet/commit/dcbcfa0f24a35db351e5e5631040667dfe6ae5a9))
+* Fix link in customization.md ([6f191c7](https://github.com/GoogleCloudPlatform/functions-framework-dotnet/commit/6f191c7704db5ae8673c180913b9537c3b9b024a))
+
+
+### Miscellaneous chores
+
+* release 2.2.0 ([#511](https://github.com/GoogleCloudPlatform/functions-framework-dotnet/issues/511)) ([170cb0c](https://github.com/GoogleCloudPlatform/functions-framework-dotnet/commit/170cb0c0fac78ce6e961b5d6a8218471b13c9519))
+
 ## [2.1.0](https://github.com/GoogleCloudPlatform/functions-framework-dotnet/compare/Google.Cloud.Functions.Framework-2.0.0...Google.Cloud.Functions.Framework-2.1.0) (2023-05-23)
 
 
