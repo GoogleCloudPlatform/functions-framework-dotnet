@@ -21,13 +21,18 @@ namespace Google.Cloud.Functions.Testing
     /// <summary>
     /// A logger provider that creates instances of <see cref="MemoryLogger"/>.
     /// </summary>
-    internal sealed class MemoryLoggerProvider : ILoggerProvider
+    internal sealed class MemoryLoggerProvider : ILoggerProvider, ISupportExternalScope
     {
         private readonly ConcurrentDictionary<string, MemoryLogger> _loggersByCategory =
             new ConcurrentDictionary<string, MemoryLogger>();
 
+        private IExternalScopeProvider? _scopeProvider;
+
+        void ISupportExternalScope.SetScopeProvider(IExternalScopeProvider scopeProvider) =>
+            _scopeProvider = scopeProvider;
+
         public ILogger CreateLogger(string categoryName) =>
-            _loggersByCategory.GetOrAdd(categoryName, name => new MemoryLogger(name));
+            _loggersByCategory.GetOrAdd(categoryName, name => new MemoryLogger(name, _scopeProvider));
 
         internal void Clear() => _loggersByCategory.Clear();
 

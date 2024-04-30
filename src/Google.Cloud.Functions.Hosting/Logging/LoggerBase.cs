@@ -33,10 +33,11 @@ namespace Google.Cloud.Functions.Hosting.Logging
 
         private readonly bool _isKestrelCategory;
         protected string Category { get; }
-        protected IExternalScopeProvider ScopeProvider { get; } = new LoggerExternalScopeProvider();
+        protected IExternalScopeProvider ScopeProvider { get; }
 
-        protected LoggerBase(string category) =>
-            (Category, _isKestrelCategory) = (category, category == KestrelCategory);
+        protected LoggerBase(string category, IExternalScopeProvider? scopeProvider) =>
+            (Category, _isKestrelCategory, ScopeProvider) =
+            (category, category == KestrelCategory, scopeProvider ?? new LoggerExternalScopeProvider());
 
         public IDisposable BeginScope<TState>(TState state) => ScopeProvider.Push(state);
 
@@ -67,14 +68,6 @@ namespace Google.Cloud.Functions.Hosting.Logging
         /// Delegated "we've definitely got something to log" handling.
         /// </summary>
         protected abstract void LogImpl<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, string formattedMessage);
-
-        // Used for scope handling.
-        private class SingletonDisposable : IDisposable
-        {
-            internal static readonly SingletonDisposable Instance = new SingletonDisposable();
-            private SingletonDisposable() { }
-            public void Dispose() { }
-        }
 
         /// <summary>
         /// Convenience method to convert a value into a string using the invariant
