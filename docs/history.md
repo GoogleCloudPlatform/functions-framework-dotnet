@@ -1,5 +1,12 @@
 # Version History
 
+## [2.2.1](https://github.com/GoogleCloudPlatform/functions-framework-dotnet/compare/Google.Cloud.Functions.Framework-2.2.0...Google.Cloud.Functions.Framework-2.2.1) (2024-05-02)
+
+
+### Miscellaneous chores
+
+* Update SBOM generator ([e067fa9](https://github.com/GoogleCloudPlatform/functions-framework-dotnet/commit/e067fa9dca51b7c607c4592e63117c116eec8112))
+
 ## [2.2.0](https://github.com/GoogleCloudPlatform/functions-framework-dotnet/compare/Google.Cloud.Functions.Framework-2.1.0...Google.Cloud.Functions.Framework-2.2.0) (2024-04-30)
 
 
