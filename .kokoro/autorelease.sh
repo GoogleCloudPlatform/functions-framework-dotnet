@@ -45,9 +45,16 @@ then
   echo "Pushing NuGet packages"
   # Push the changes to nuget.
   cd ./tmp/release/nupkg
+  
+  # First generate all the SBOMs.
   for pkg in *.nupkg
   do
     dotnet generate-sbom $pkg
+  done
+  
+  # Only start pushing to NuGet when SBOM generation has succeeded.
+  for pkg in *.nupkg
+  do
     dotnet nuget push -s https://api.nuget.org/v3/index.json -k $NUGET_API_KEY $pkg
   done
   cd ../../..
