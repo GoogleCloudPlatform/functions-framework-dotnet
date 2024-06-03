@@ -88,7 +88,7 @@ public class Function : ICloudEventFunction<StorageObjectData>
 
         var annotations = await AnnotateImageAsync(data, cancellationToken);
         var text = DescribeAnnotations(annotations);
-        string newObjectName = await CreateDescriptionFileAsync(data, text);
+        string newObjectName = await CreateDescriptionFileAsync(data, text, cancellationToken);
         _logger.LogInformation("Created object {object} with image annotations", newObjectName);
     }
 
@@ -150,12 +150,12 @@ public class Function : ICloudEventFunction<StorageObjectData>
     /// <summary>
     /// Creates a storage object alongside the original one, just renaming the extension to .txt.
     /// </summary>
-    private async Task<string> CreateDescriptionFileAsync(StorageObjectData payload, string text)
+    private async Task<string> CreateDescriptionFileAsync(StorageObjectData payload, string text, CancellationToken cancellationToken)
     {
         var name = Path.ChangeExtension(payload.Name, TextExtension);
         using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(text)))
         {
-            await _storageClient.UploadObjectAsync(payload.Bucket, name, TextContentType, stream);
+            await _storageClient.UploadObjectAsync(payload.Bucket, name, TextContentType, stream, cancellationToken: cancellationToken);
         }
         return name;
     }

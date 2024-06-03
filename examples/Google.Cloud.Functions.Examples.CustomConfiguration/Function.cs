@@ -46,6 +46,6 @@ public class Function : IHttpFunction
     public async Task HandleAsync(HttpContext context)
     {
         int randomValue = _configuration.GetValue<int>("random:int");
-        await context.Response.WriteAsync($"Here's a random integer: {randomValue}");
+        await context.Response.WriteAsync($"Here's a random integer: {randomValue}", context.RequestAborted);
     }
 }

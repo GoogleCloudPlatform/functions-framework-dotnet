@@ -52,6 +52,8 @@ public class Function : IHttpFunction
 
     public async Task HandleAsync(HttpContext context)
     {
-        await context.Response.WriteAsync($"Dependency configured for function: {_dependency.Name}");
+        await context.Response.WriteAsync(
+            $"Dependency configured for function: {_dependency.Name}",
+            context.RequestAborted);
     }
 }

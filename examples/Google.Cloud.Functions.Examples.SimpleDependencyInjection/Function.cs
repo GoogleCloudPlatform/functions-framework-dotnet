@@ -34,6 +34,8 @@ public class Function : IHttpFunction
     public async Task HandleAsync(HttpContext context)
     {
         _logger.LogInformation("Function called with path {path}", context.Request.Path);
-        await context.Response.WriteAsync("Written the request path to the logger provided by dependency injection.");
+        await context.Response.WriteAsync(
+            "Written the request path to the logger provided by dependency injection.",
+            context.RequestAborted);
     }
 }

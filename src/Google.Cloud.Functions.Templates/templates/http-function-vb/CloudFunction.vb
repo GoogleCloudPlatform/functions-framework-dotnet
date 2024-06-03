@@ -10,6 +10,6 @@ Public Class CloudFunction
     ''' <param name="context">The HTTP context, containing the request and the response.</param>
     ''' <returns>A task representing the asynchronous operation.</returns>
     Public Async Function HandleAsync(context As HttpContext) As Task Implements IHttpFunction.HandleAsync
-        Await context.Response.WriteAsync("Hello, Functions Framework.")
+        Await context.Response.WriteAsync("Hello, Functions Framework.", context.RequestAborted)
     End Function
 End Class
