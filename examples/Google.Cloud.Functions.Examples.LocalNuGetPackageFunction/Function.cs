@@ -28,6 +28,6 @@ public class Function : IHttpFunction
         // a package reference. The .nupkg file is in the nuget
         // subdirectory of the function's source directory, which
         // is referred to in nuget.config.
-        await context.Response.WriteAsync(SampleLibrary.Message);
+        await context.Response.WriteAsync(SampleLibrary.Message, context.RequestAborted);
     }
 }

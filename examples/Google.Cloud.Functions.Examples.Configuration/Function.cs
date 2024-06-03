@@ -82,6 +82,8 @@ public class Function : IHttpFunction
 
     public async Task HandleAsync(HttpContext context)
     {
-        await context.Response.WriteAsync($"Retrieving data from instance '{_database.Instance}', database '{_database.Database}'");
+        await context.Response.WriteAsync(
+            $"Retrieving data from instance '{_database.Instance}', database '{_database.Database}'",
+            context.RequestAborted);
     }
 }

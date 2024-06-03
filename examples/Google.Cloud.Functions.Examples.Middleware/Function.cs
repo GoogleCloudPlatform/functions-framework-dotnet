@@ -63,5 +63,5 @@ public class SampleMiddleware
 public class Function : IHttpFunction
 {
     public async Task HandleAsync(HttpContext context) =>
-        await context.Response.WriteAsync("Response to be logged by middleware.");
+        await context.Response.WriteAsync("Response to be logged by middleware.", context.RequestAborted);
 }

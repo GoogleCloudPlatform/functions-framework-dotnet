@@ -32,6 +32,6 @@ public class Function : IHttpFunction
     {
         var logic = new BusinessLogic();
         var result = logic.PerformGeneralBusinessLogic();
-        await context.Response.WriteAsync($"Result: {result}");
+        await context.Response.WriteAsync($"Result: {result}", context.RequestAborted);
     }
 }
