@@ -5,7 +5,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Google.Cloud.Functions.Hosting" Version="2.2.1" />
-    <PackageReference Include="Steeltoe.Extensions.Configuration.RandomValueBase" Version="3.2.7" />
+    <PackageReference Include="Steeltoe.Extensions.Configuration.RandomValueBase" Version="3.2.8" />
     <None Include="appsettings*.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
