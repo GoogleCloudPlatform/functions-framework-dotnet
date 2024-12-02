@@ -16,9 +16,8 @@ An open source FaaS (Function as a service) framework for writing portable
 The Functions Framework lets you write lightweight functions that run in many
 different environments, including:
 
-* [Google Cloud Functions](https://cloud.google.com/functions/)
+* [Google Cloud Run functions](https://cloud.google.com/functions/)
 * Your local development machine
-* [Cloud Run and Cloud Run on GKE](https://cloud.google.com/run/)
 * [Knative](https://github.com/knative/)-based environments
 
 ## Prerequisites
@@ -123,10 +122,10 @@ README](https://github.com/googleapis/google-cloudevents-dotnet/blob/main/README
 for more information about this package.
 
 > **Note:**  
-> Google Cloud Functions support for events predates the CNCF Cloud
+> Google Cloud Run functions support for events predates the CNCF Cloud
 > Events initiative. The types in the `Google.Cloud.Functions.Framework.GcfEvents`
 > namespace provide payloads for these events. The Functions Framework
-> converts the Google Cloud Functions representation into a CloudEvent
+> converts the Google Cloud Run functions representation into a CloudEvent
 > representation transparently, so as a developer you only need to
 > handle CloudEvents.
 
@@ -171,44 +170,22 @@ how we can provide a more familiar F# experience is welcome.
 
 ## Run your function on serverless platforms
 
-### Google Cloud Functions
+### Google Cloud Run functions
 
 You can use the [Google Cloud SDK](https://cloud.google.com/sdk) to
 deploy to Google Cloud Functions from the command line with the
 `gcloud` tool.
 
 Once you have created and configured a Google Cloud project (as
-described in the [Google Cloud Functions
+described in the [Google Cloud Run functions
 Quickstarts](https://cloud.google.com/functions/docs/quickstarts)
 and [installed the Google Cloud
 SDK](https://cloud.google.com/sdk/docs/install), open a command line
 and navigate to the function directory. Use the `gcloud functions
-deploy` command to deploy the function. For the quickstart HTTP function
-described above, you could run:
-
-```
-gcloud functions deploy hello-functions --runtime dotnet6 --trigger-http --entry-point HelloFunctions.Function
-```
+deploy` command to deploy the function.
 
 Other function types require different command line options. See the
 [deployment documentation](docs/deployment.md) for more details.
-
-### Cloud Run/Cloud Run on GKE
-
-Once you've written your function and added the Functions Framework, all that's
-left is to create a container image. [Check out the Cloud Run
-quickstart](https://cloud.google.com/run/docs/quickstarts/build-and-deploy) for
-C# to create a container image and deploy it to Cloud Run. You'll write a
-`Dockerfile` when you build your container. This `Dockerfile` allows you to specify
-exactly what goes into your container (including custom binaries, a specific
-operating system, and more).
-
-If you want even more control over the environment, you can [deploy your
-container image to Cloud Run on
-GKE](https://cloud.google.com/run/docs/quickstarts/prebuilt-deploy-gke). With
-Cloud Run on GKE, you can run your function on a GKE cluster, which gives you
-additional control over the environment (including use of GPU-based instances,
-longer timeouts and more).
 
 ### Container environments based on Knative
 
