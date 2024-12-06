@@ -11,7 +11,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Google.Cloud.Functions.Framework\Google.Cloud.Functions.Framework.csproj" />
     <ProjectReference Include="..\Google.Cloud.Functions.Testing\Google.Cloud.Functions.Testing.csproj" />
-    <PackageReference Include="Google.Events.Protobuf" Version="1.5.0" />
+    <PackageReference Include="Google.Events.Protobuf" Version="1.6.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
     <PackageReference Include="xunit" Version="2.9.2" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2" />
