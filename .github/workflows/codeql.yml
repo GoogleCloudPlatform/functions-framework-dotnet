@@ -34,8 +34,7 @@ jobs:
           dc.services.visualstudio.com:443
           dot.net:443
           dotnet.microsoft.com:443
-          dotnetbuilds.azureedge.net:443
-          dotnetcli.azureedge.net:443
+          builds.dotnet.microsoft.com:443
           github.com:443
           objects.githubusercontent.com:443
           uploads.github.com:443
