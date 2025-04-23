@@ -47,7 +47,7 @@ namespace Google.Cloud.Functions.Hosting
 
             public override void Load()
             {
-                var dict = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+                var dict = new Dictionary<string, string?>(StringComparer.OrdinalIgnoreCase);
                 MaybeAdd(EntryPoint.FunctionTargetEnvironmentVariable, nameof(FunctionsFrameworkOptions.FunctionTarget), target => target);
                 MaybeAdd(EntryPoint.PortEnvironmentVariable, "Port", port => port);
                 MaybeAdd("DOTNET_RUNNING_IN_CONTAINER", "Address",

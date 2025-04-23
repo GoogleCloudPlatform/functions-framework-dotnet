@@ -51,7 +51,7 @@ fi
 # ready a little bit earlier than it is.
 # TODO: Remove this when we can.
 echo "Running Functions Framework for 5 seconds as a warm-up step."
-dotnet src/Google.Cloud.Functions.ConformanceTests/bin/Release/net6.0/Google.Cloud.Functions.ConformanceTests.dll HttpFunction &
+dotnet src/Google.Cloud.Functions.ConformanceTests/bin/Release/net8.0/Google.Cloud.Functions.ConformanceTests.dll HttpFunction &
 DOTNETPID=$!
 sleep 5
 kill $DOTNETPID
@@ -59,7 +59,7 @@ kill $DOTNETPID
 # Note: we run the DLL directly rather than using "dotnet run" as this
 # responds more correctly to being killed by the conformance test runner
 # on Linux.
-DOTNET_DLL=src/Google.Cloud.Functions.ConformanceTests/bin/Release/net6.0/Google.Cloud.Functions.ConformanceTests.dll
+DOTNET_DLL=src/Google.Cloud.Functions.ConformanceTests/bin/Release/net8.0/Google.Cloud.Functions.ConformanceTests.dll
 
 echo "Using conformance test runner binary: $CLIENT_BINARY"
 echo "Using Functions Framework test binary: $DOTNET_DLL"

@@ -51,19 +51,35 @@ for more detailed information; this page is only intended to give simple
 Functions Framework function follows the same procedure as deploying
 a function written in every language. The .NET-specific aspects are:
 
-- The runtime should be specified as `dotnet6`
+- The runtime should be specified as `dotnet8`
 - The entry point should be specified as the name of the function
   type, including namespace (e.g. `HelloFunctions.Function`)
 
 The command line options are used to specify how the function is
 triggered.
 
+### Redeploying a previous 1st-generation function
+
+The `dotnet8` runtime is only supported in Cloud Run functions,
+formerly known as "Cloud Functions (2nd gen)".
+
+Using `gcloud functions deploy` for *new* functions uses this
+environment by default. If you need to redeploy a function which was
+previously deployed on "Cloud Functions (1st gen)" you have two
+options:
+
+- (Recommended) Delete the 1st gen function, and then deploy as
+  normal.
+- Specify the `--gen2` flag to explicitly request 2nd generation.
+  This will leave the existing 1st gen function in place, deploying
+  a new Cloud Run function alongside it.
+
 ### HTTP functions
 
 HTTP functions are deployed using `--trigger-http`. For example:
 
 ```text
-gcloud functions deploy hello-functions --runtime dotnet6 --trigger-http --entry-point HelloFunctions.Function
+gcloud functions deploy hello-functions --runtime dotnet8 --trigger-http --entry-point HelloFunctions.Function
 ```
 
 On successful deployment, details of the deployed function will be
@@ -169,39 +185,3 @@ projects.
 See [the local NuGet packages example
 documentation](examples.md#localnugetpackagefunction-and-localnugetpackagecode)
 for more details.
-
-### Deploying a .NET 8 function
-
-You can build and deploy .NET 8 functions with the Functions
-Framework using the Cloud Functions "2nd gen" version.
-
-First, edit your project file to target the `net8.0` target
-framework moniker. Just change this line in your project file:
-
-```xml
-<TargetFramework>net6.0</TargetFramework>
-```
-
-to this:
-
-```xml
-<TargetFramework>net8.0</TargetFramework>
-```
-
-If you do this within Visual Studio, you may be prompted to reload
-the project. If you *aren't* prompted to do so, but see spurious
-build failures, simply unload the project and reload it - or restart
-Visual Studio.
-
-Next, when deploying, you need to specify the `dotnet8` runtime
-instead of `dotnet6`, and specify the `--gen2` command line option
-to deploy on Cloud Functions 2nd gen. So for example:
-
-```sh
-gcloud functions deploy dotnet8-test \
-  --gen2 \
-  --runtime dotnet8
-  --trigger-http
-  --allow-unauthenticated
-  --entry-point TestDotnet8.Function
-```

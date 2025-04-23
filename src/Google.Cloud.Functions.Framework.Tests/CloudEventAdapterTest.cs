@@ -51,10 +51,10 @@ namespace Google.Cloud.Functions.Framework.Tests
                     ContentType = "application/json",
                     Headers =
                     {
-                        { "ce-specversion", "1.0" },
-                        { "ce-source", "test" },
-                        { "ce-type", "test" },
-                        { "ce-id", eventId }
+                        ["ce-specversion"] = "1.0",
+                        ["ce-source"] = "test",
+                        ["ce-type"] = "test",
+                        ["ce-id"] = eventId
                     }
                 }
             };
