@@ -58,7 +58,7 @@ namespace Google.Cloud.Functions.Testing
         public List<TestLogEntry> ListLogEntries() => _logEntries.ToList();
 
         /// <inheritdoc />
-        public IDisposable BeginScope<TState>(TState state) => _scopeProvider.Push(state);
+        public IDisposable BeginScope<TState>(TState state) where TState : notnull => _scopeProvider.Push(state);
 
         /// <summary>
         /// Returns true for any log level other than None; filtering is expected

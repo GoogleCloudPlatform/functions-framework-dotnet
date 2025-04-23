@@ -28,7 +28,7 @@ namespace Google.Cloud.Functions.Testing
         internal static string GetCategoryNameForType<T>()
         {
             var wrapper = new Logger<T>(NoOpLoggerFactory.Instance);
-            return ((NoOpLogger) wrapper.BeginScope("")).CategoryName;
+            return ((NoOpLogger) wrapper.BeginScope("")!).CategoryName;
         }
 
         internal static string GetCategoryNameForType(Type type)
@@ -66,7 +66,7 @@ namespace Google.Cloud.Functions.Testing
             internal NoOpLogger(string categoryName) =>
                 CategoryName = categoryName;
 
-            public IDisposable BeginScope<TState>(TState state) => this;
+            public IDisposable BeginScope<TState>(TState state) where TState : notnull => this;
 
             public void Dispose() =>
                 throw new NotImplementedException();

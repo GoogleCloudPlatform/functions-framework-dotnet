@@ -57,7 +57,7 @@ topics or Storage buckets.
 > command to deploy SimpleHttpFunction would be:
 >
 > ```sh
-> gcloud functions deploy simple-http --runtime dotnet6 --trigger-http --allow-unauthenticated --entry-point Google.Cloud.Functions.Examples.SimpleHttpFunction.Function
+> gcloud functions deploy simple-http --runtime dotnet8 --trigger-http --allow-unauthenticated --entry-point Google.Cloud.Functions.Examples.SimpleHttpFunction.Function
 > ```
 
 Where environment variables are used in the command line (e.g. `$GCS_BUCKET_NAME`)
@@ -80,7 +80,7 @@ Sample deployment:
 
 ```sh
 gcloud functions deploy simple-http \
-  --runtime dotnet6 \
+  --runtime dotnet8 \
   --trigger-http \
   --allow-unauthenticated \
   --entry-point Google.Cloud.Functions.Examples.SimpleHttpFunction.Function
@@ -102,7 +102,7 @@ Sample deployment:
 
 ```sh
 gcloud functions deploy simple-event \
-  --runtime dotnet6 \
+  --runtime dotnet8 \
   --trigger-event google.storage.object.finalize \
   --trigger-resource $GCS_BUCKET_NAME \
   --entry-point Google.Cloud.Functions.Examples.SimpleEventFunction.Function
@@ -125,7 +125,7 @@ Sample deployment to listen to Pub/Sub events:
 
 ```sh
 gcloud functions deploy simple-untyped-event \
-  --runtime dotnet6 \
+  --runtime dotnet8 \
   --trigger-topic $PUBSUB_TOPIC_NAME \
   --entry-point Google.Cloud.Functions.Examples.SimpleUntypedEventFunction.Function
 ```
@@ -144,7 +144,7 @@ Sample deployment:
 
 ```sh
 gcloud functions deploy vb-http \
-  --runtime dotnet6 \
+  --runtime dotnet8 \
   --trigger-http \
   --allow-unauthenticated \
   --entry-point Google.Cloud.Functions.Examples.VbHttpFunction.CloudFunction
@@ -166,7 +166,7 @@ Sample deployment:
 
 ```sh
 gcloud functions deploy vb-event \
-  --runtime dotnet6 \
+  --runtime dotnet8 \
   --trigger-event google.storage.object.finalize \
   --trigger-resource $ \
   --entry-point Google.Cloud.Functions.Examples.VbEventFunction.CloudFunction
@@ -190,7 +190,7 @@ Sample deployment to listen to Pub/Sub events:
 
 ```sh
 gcloud functions deploy vb-untyped-event \
-  --runtime dotnet6 \
+  --runtime dotnet8 \
   --trigger-topic $PUBSUB_TOPIC_NAME \
   --entry-point Google.Cloud.Functions.Examples.VbUntypedEventFunction.CloudFunction
 ```
@@ -209,7 +209,7 @@ Sample deployment:
 
 ```sh
 gcloud functions deploy fsharp-http \
-  --runtime dotnet6 \
+  --runtime dotnet8 \
   --trigger-http \
   --allow-unauthenticated \
   --entry-point Google.Cloud.Functions.Examples.FSharpHttpFunction.Function
@@ -231,7 +231,7 @@ Sample deployment:
 
 ```sh
 gcloud functions deploy fsharp-event \
-  --runtime dotnet6 \
+  --runtime dotnet8 \
   --trigger-event google.storage.object.finalize \
   --trigger-resource $GCS_BUCKET_NAME \
   --entry-point Google.Cloud.Functions.Examples.FSharpEventFunction.Function
@@ -254,7 +254,7 @@ Sample deployment to listen to Pub/Sub events:
 
 ```sh
 gcloud functions deploy fsharp-untyped-event \
-  --runtime dotnet6 \
+  --runtime dotnet8 \
   --trigger-topic $PUBSUB_TOPIC_NAME \
   --entry-point Google.Cloud.Functions.Examples.FSharpUntypedEventFunction.Function
 ```
@@ -271,7 +271,7 @@ Sample deployment:
 
 ```sh
 gcloud functions deploy simple-dependency-injection \
-  --runtime dotnet6 \
+  --runtime dotnet8 \
   --trigger-http \
   --allow-unauthenticated \
   --entry-point Google.Cloud.Functions.Examples.SimpleDependencyInjection.Function
@@ -289,7 +289,7 @@ Sample deployment:
 
 ```sh
 gcloud functions deploy advanced-dependency-injection \
-  --runtime dotnet6 \
+  --runtime dotnet8 \
   --trigger-http \
   --allow-unauthenticated \
   --entry-point Google.Cloud.Functions.Examples.AdvancedDependencyInjection.Function
@@ -314,7 +314,7 @@ startup class will instruct the framework to use that formatter.
 
 ```sh
 gcloud functions deploy advanced-dependency-injection \
-  --runtime dotnet6 \
+  --runtime dotnet8 \
   --trigger-http \
   --allow-unauthenticated \
 ```
@@ -335,7 +335,7 @@ Sample deployment:
 
 ```sh
 gcloud functions deploy testable-dependencies \
-  --runtime dotnet6 \
+  --runtime dotnet8 \
   --trigger-http \
   --allow-unauthenticated \
   --entry-point Google.Cloud.Functions.Examples.TestableDependencies.Function
@@ -352,7 +352,7 @@ Sample deployment:
 
 ```sh
 gcloud functions deploy middleware \
-  --runtime dotnet6 \
+  --runtime dotnet8 \
   --trigger-http \
   --allow-unauthenticated \
   --entry-point Google.Cloud.Functions.Examples.Middleware.Function
@@ -382,7 +382,7 @@ Sample deployment:
 
 ```sh
 gcloud functions deploy configuration-example \
-  --runtime dotnet6 \
+  --runtime dotnet8 \
   --trigger-http \
   --allow-unauthenticated \
   --set-env-vars ASPNETCORE_ENVIRONMENT=Development \
@@ -398,7 +398,7 @@ See the [customization documentation](customization.md) for more details.
 
 ```sh
 gcloud functions deploy additional-configuration-example \
-  --runtime dotnet6 \
+  --runtime dotnet8 \
   --trigger-http \
   --allow-unauthenticated \
   --entry-point Google.Cloud.Functions.Examples.CustomConfiguration.Function
@@ -418,7 +418,7 @@ Sample deployment:
 
 ```sh
 gcloud functions deploy time-zone-converter \
-  --runtime dotnet6 \
+  --runtime dotnet8 \
   --trigger-http \
   --allow-unauthenticated \
   --entry-point Google.Cloud.Functions.Examples.TimeZoneConverter.Function
@@ -439,7 +439,7 @@ Sample deployment:
 
 ```sh
 gcloud functions deploy image-annotator \
-  --runtime dotnet6 \
+  --runtime dotnet8 \
   --trigger-event google.storage.object.finalize \
   --trigger-resource $GCS_BUCKET_NAME \
   --entry-point=Google.Cloud.Functions.Examples.StorageImageAnnotator.Function
@@ -464,7 +464,7 @@ Sample deployment, from the `examples` directory:
 
 ```sh
 gcloud functions deploy multi-project \
-  --runtime dotnet6 \
+  --runtime dotnet8 \
   --trigger-http \
   --entry-point=Google.Cloud.Functions.Examples.MultiProjectFunction.Function \
   --set-build-env-vars=GOOGLE_BUILDABLE=Google.Cloud.Functions.Examples.MultiProjectFunction
@@ -510,7 +510,7 @@ Sample deployment:
 
 ```sh
 gcloud functions deploy local-nuget \
-  --runtime dotnet6 \
+  --runtime dotnet8 \
   --trigger-http \
   --allow-unauthenticated \
   --entry-point Google.Cloud.Functions.Examples.LocalNuGetPackageFunction.Function

@@ -73,10 +73,10 @@ namespace Google.Cloud.Functions.Hosting.Tests
                     ContentType = "application/json",
                     Headers =
                     {
-                        { "ce-specversion", "1.0" },
-                        { "ce-source", "test" },
-                        { "ce-type", "test" },
-                        { "ce-id", eventId }
+                        ["ce-specversion"] = "1.0",
+                        ["ce-source"] = "test",
+                        ["ce-type"] = "test",
+                        ["ce-id"] = eventId
                     }
                 }
             };
@@ -104,10 +104,10 @@ namespace Google.Cloud.Functions.Hosting.Tests
                     Body = new MemoryStream(Encoding.UTF8.GetBytes("{\"name\": \"testdata\"}")),
                     Headers =
                     {
-                        { "ce-specversion", "1.0" },
-                        { "ce-source", "test" },
-                        { "ce-type", "test" },
-                        { "ce-id", eventId }
+                        ["ce-specversion"] = "1.0",
+                        ["ce-source"] = "test",
+                        ["ce-type"] = "test",
+                        ["ce-id"] = eventId
                     }
                 },
             };

@@ -39,7 +39,8 @@ namespace Google.Cloud.Functions.Hosting.Logging
             (Category, _isKestrelCategory, ScopeProvider) =
             (category, category == KestrelCategory, scopeProvider ?? new LoggerExternalScopeProvider());
 
-        public IDisposable BeginScope<TState>(TState state) => ScopeProvider.Push(state);
+        public IDisposable BeginScope<TState>(TState state) where TState : notnull =>
+            ScopeProvider.Push(state);
 
         // Note: log level filtering is handled by other logging infrastructure, so we don't do any of it here.
         public bool IsEnabled(LogLevel logLevel) => logLevel != LogLevel.None;
