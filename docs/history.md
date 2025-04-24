@@ -1,5 +1,12 @@
 # Version History
 
+## [2.3.0](https://github.com/GoogleCloudPlatform/functions-framework-dotnet/compare/Google.Cloud.Functions.Framework-2.2.1...Google.Cloud.Functions.Framework-2.3.0) (2025-04-24)
+
+
+### Features
+
+* Update all projects and documentation to .NET 8 ([befb1c2](https://github.com/GoogleCloudPlatform/functions-framework-dotnet/commit/befb1c278731e260aade6b2c4bdd6678aba4fb46))
+
 ## [2.2.1](https://github.com/GoogleCloudPlatform/functions-framework-dotnet/compare/Google.Cloud.Functions.Framework-2.2.0...Google.Cloud.Functions.Framework-2.2.1) (2024-05-02)
 
 
