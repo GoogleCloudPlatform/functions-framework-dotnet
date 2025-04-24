@@ -40,6 +40,7 @@ jobs:
             oss-fuzz-build-logs.storage.googleapis.com:443
             sigstore-tuf-root.storage.googleapis.com:443
             rekor.sigstore.dev:443
+            ts-crl.ws.symantec.com:443
             tuf-repo-cdn.sigstore.dev:443
             www.bestpractices.dev:443
 
