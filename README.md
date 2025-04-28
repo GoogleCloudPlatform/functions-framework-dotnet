@@ -22,7 +22,7 @@ different environments, including:
 
 ## Prerequisites
 
-The Functions Framework for .NET requires the [.NET 6.0](https://dotnet.microsoft.com/download) or later.
+The Functions Framework for .NET requires [.NET 8.0](https://dotnet.microsoft.com/download) or later.
 
 ## Quickstarts
 
