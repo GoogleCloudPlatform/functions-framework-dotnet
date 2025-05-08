@@ -42,6 +42,7 @@ jobs:
             rekor.sigstore.dev:443
             ts-crl.ws.symantec.com:443
             tuf-repo-cdn.sigstore.dev:443
+            crl3.digicert.com:443
             www.bestpractices.dev:443
 
       - name: "Checkout code"
