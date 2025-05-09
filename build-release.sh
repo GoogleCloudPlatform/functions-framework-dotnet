@@ -2,18 +2,11 @@
 
 if [[ -z "$1" ]]
 then
-  echo "Please specify the release tag"
+  echo "This script does not take any args"
   exit 1
 fi
 
 set -e
 
-rm -rf tmp
-mkdir tmp
-
-git clone https://github.com/GoogleCloudPlatform/functions-framework-dotnet.git \
-  --depth 1 -b $1 --recursive tmp/release
-  
-cd tmp/release
 ./build.sh
 
