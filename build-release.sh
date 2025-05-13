@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [[ -z "$1" ]]
+if [[ $# -gt 0 ]];
 then
   echo "This script does not take any args"
   exit 1
