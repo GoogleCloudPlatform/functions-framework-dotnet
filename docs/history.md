@@ -1,5 +1,12 @@
 # Version History
 
+## [3.0.1](https://github.com/GoogleCloudPlatform/functions-framework-dotnet/compare/Google.Cloud.Functions.Framework-3.0.0...Google.Cloud.Functions.Framework-3.0.1) (2025-05-16)
+
+
+### Bug Fixes
+
+* Update project references in templates ([a70a276](https://github.com/GoogleCloudPlatform/functions-framework-dotnet/commit/a70a276980e43538beba24dd3f4da64a570a2cca))
+
 ## [3.0.0](https://github.com/GoogleCloudPlatform/functions-framework-dotnet/compare/Google.Cloud.Functions.Framework-2.3.0...Google.Cloud.Functions.Framework-3.0.0) (2025-05-16)
 
 New major version as all of the Functions Framework - templates and libraries - require .NET 8.0.
