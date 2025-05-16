@@ -11,7 +11,7 @@
 [![Google.Cloud.Functions.Testing](https://img.shields.io/nuget/vpre/Google.Cloud.Functions.Testing?label=Google.Cloud.Functions.Testing)](https://nuget.org/packages/Google.Cloud.Functions.Testing)
 
 An open source FaaS (Function as a service) framework for writing portable
-.NET functions -- brought to you by the Google Cloud Functions team.
+.NET functions -- brought to you by the Google Cloud Run Functions team.
 
 The Functions Framework lets you write lightweight functions that run in many
 different environments, including:
@@ -173,7 +173,7 @@ how we can provide a more familiar F# experience is welcome.
 ### Google Cloud Run functions
 
 You can use the [Google Cloud SDK](https://cloud.google.com/sdk) to
-deploy to Google Cloud Functions from the command line with the
+deploy to Google Cloud Run Functions from the command line with the
 `gcloud` tool.
 
 Once you have created and configured a Google Cloud project (as

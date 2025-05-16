@@ -1,11 +1,19 @@
 # Version History
 
-## [2.3.0](https://github.com/GoogleCloudPlatform/functions-framework-dotnet/compare/Google.Cloud.Functions.Framework-2.2.1...Google.Cloud.Functions.Framework-2.3.0) (2025-04-24)
+## [3.0.1](https://github.com/GoogleCloudPlatform/functions-framework-dotnet/compare/Google.Cloud.Functions.Framework-3.0.0...Google.Cloud.Functions.Framework-3.0.1) (2025-05-16)
 
 
-### Features
+### Bug Fixes
 
-* Update all projects and documentation to .NET 8 ([befb1c2](https://github.com/GoogleCloudPlatform/functions-framework-dotnet/commit/befb1c278731e260aade6b2c4bdd6678aba4fb46))
+* Update project references in templates ([a70a276](https://github.com/GoogleCloudPlatform/functions-framework-dotnet/commit/a70a276980e43538beba24dd3f4da64a570a2cca))
+
+## [3.0.0](https://github.com/GoogleCloudPlatform/functions-framework-dotnet/compare/Google.Cloud.Functions.Framework-2.3.0...Google.Cloud.Functions.Framework-3.0.0) (2025-05-16)
+
+New major version as all of the Functions Framework - templates and libraries - require .NET 8.0.
+
+There are no other changes (beyond dependency versions) since 2.2.1.
+
+Users who currently still require .NET 6 should stay on 2.2.1, but please be aware that .NET 6 is no longer supported by Microsoft, and is not supported by Cloud Run Functions, only 1st-generation Cloud Functions. You are recommended to update to .NET 8+ and Cloud Run Functions ("Cloud Functions 2nd gen") when you are able to.
 
 ## [2.2.1](https://github.com/GoogleCloudPlatform/functions-framework-dotnet/compare/Google.Cloud.Functions.Framework-2.2.0...Google.Cloud.Functions.Framework-2.2.1) (2024-05-02)
 
