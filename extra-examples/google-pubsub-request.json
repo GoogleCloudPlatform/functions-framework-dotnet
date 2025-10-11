@@ -1,0 +1,19 @@
+{
+  "specversion": "1.0",
+  "id": "pubsub-event-id",
+  "datacontenttype": "application/json",
+  "source": "//local",
+  "type": "google.cloud.pubsub.topic.v1.messagePublished",
+  "data": {
+    "subscription": "projects/my-project/subscriptions/my-subscription",
+    "message": {
+      "@type": "type.googleapis.com/google.pubsub.v1.PubsubMessage",
+      "attributes": {
+        "attr1":"attr1-value"
+      },
+      "data": "dGVzdCBtZXNzYWdlIDM=",
+      "messageId": "message-id",
+      "publishTime":"2021-02-05T04:06:14.109Z"
+    }
+  }
+}
