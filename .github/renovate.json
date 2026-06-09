@@ -7,6 +7,15 @@
   "ignorePaths": [
     ".kokoro/**"
   ],
+  "packageRules":[
+    {
+      "matchPackageNames": [
+        "dotnet-sdk"
+      ],
+      "allowedVersions": "<9.0.0",
+      "minimumReleaseAge": "7 days"
+    }
+  ],
   "schedule": ["before 8am"],
   "timezone": "Europe/London"
 }
