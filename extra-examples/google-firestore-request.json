@@ -1,0 +1,46 @@
+{
+  "specversion": "1.0",
+  "id": "firestore-event-id",
+  "datacontenttype": "application/json",
+  "source": "//local",
+  "type": "google.cloud.firestore.document.v1.updated",
+  "data": {
+    "oldValue":{
+      "createTime":"2020-04-23T09:58:53.211035Z",
+      "fields":{
+        "another test":{
+          "stringValue":"asd"
+        },
+        "count":{
+           "integerValue":"3"
+        },
+        "foo":{
+           "stringValue":"bar"
+        }
+      },
+      "name":"projects/project-id/databases/(default)/documents/gcf-test/2Vm2mI1d0wIaK2Waj5to",
+      "updateTime":"2020-04-23T12:00:27.247187Z"
+    },
+    "updateMask":{
+       "fieldPaths":[
+         "count"
+       ]
+    },
+    "value":{
+      "createTime":"2020-04-23T09:58:53.211035Z",
+      "fields":{
+        "another test":{
+          "stringValue":"asd"
+        },
+        "count":{
+          "integerValue":"4"
+        },
+        "foo":{
+          "stringValue":"bar"
+        }
+      },
+      "name":"projects/project-id/databases/(default)/documents/gcf-test/2Vm2mI1d0wIaK2Waj5to",
+      "updateTime":"2020-04-23T12:00:27.247187Z"
+    }
+  }
+}

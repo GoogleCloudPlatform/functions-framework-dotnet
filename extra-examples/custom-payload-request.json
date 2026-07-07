@@ -1,0 +1,11 @@
+{
+  "specversion": "1.0",
+  "id": "event-id",
+  "datacontenttype": "application/json",
+  "source": "//local",
+  "type": "example",
+  "data": {
+    "text":"Some text",
+    "number":20
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "specversion": "1.0",
+  "id": "storage-event-id",
+  "datacontenttype": "application/json",
+  "source": "//local",
+  "type": "google.cloud.storage.object.v1.finalized",
+  "data": {
+    "bucket": "some-bucket",
+    "name": "folder/Test.cs"
+  }
+}
